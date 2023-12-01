@@ -1,13 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaTelegramPlane, FaStar, FaRegClock, FaBookOpen, FaArrowLeft } from "react-icons/fa";
 import { RiShieldStarLine } from "react-icons/ri";
 import { Modal } from "flowbite-react";
 import { FaArrowCircleRight } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaRegCheckCircle } from "react-icons/fa";
+import { FaCirclePlay } from "react-icons/fa6";
+import { GiPadlock } from "react-icons/gi";
+import Onboarding from "../../assets/img/onboarding.png";
 
 export const Detail = () => {
   const [openModal, setOpenModal] = useState(false);
+  const [showTelegramModal, setShowTelegramModal] = useState(false);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Ambil query parameter showTelegramModal dari URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const showTelegramModalParam = urlParams.get("showTelegramModal");
+
+    // Jika showTelegramModalParam bernilai "true", maka tampilkan modal Telegram
+    if (showTelegramModalParam === "true") {
+      setShowTelegramModal(true);
+    }
+  }, []);
+  const handleClick = () => {
+    navigate("/payment");
+  };
+
   return (
     <div className="bg-gray-100 min-h-screen">
       {/* Modal */}
@@ -57,11 +78,36 @@ export const Detail = () => {
           </div>
         </div>
         <Modal.Footer className="flex justify-center">
-          <button className="bg-[#6148FF] h-12 w-1/2 flex justify-center items-center rounded-full" onClick={() => setOpenModal(false)}>
+          <button className="bg-[#6148FF] h-12 w-1/2 flex justify-center items-center rounded-full" onClick={handleClick}>
             <span className="text-white font-semibold">Beli Sekarang</span>
             <FaArrowCircleRight className="text-[#EBF3FC] ml-2" />
           </button>
         </Modal.Footer>
+      </Modal>
+
+      {/* Modal Telegram */}
+      <Modal show={showTelegramModal} onClose={() => setShowTelegramModal(false)}>
+        <Modal.Body>
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-[#6148FF] mb-4">OnBoarding...</h1>
+            {/* Atur gambar menjadi 50% lebar modal dan tinggi sama dengan lebar */}
+            <img
+              className="mx-auto" // Center the image
+              style={{ width: "50%", height: "auto", aspectRatio: "1 / 1" }} // Set width to 50% and height automatically to maintain the aspect ratio
+              src={Onboarding}
+              alt="Deskripsi Gambar"
+            />
+            <h2 className="text-sm font-bold text-black mb-4 mt-4">Persiapkan hal berikut untuk belajar yang maksimal:</h2>
+            <h2 className="text-sm text-black">Mempunyai akun Figma atau Install Adobe XD</h2>
+            <h2 className="text-sm text-black">Menggunakan internet minimal kecepatan 2Mbps</h2>
+            <h2 className="text-sm text-black mb-7">Belajar di tempat yang nyaman</h2>
+            <div className="flex justify-center w-full">
+              <button className="bg-[#6148FF] w-1/2 text-white rounded-full px-5 py-2.5 text-center mb-2" onClick={() => setShowTelegramModal(false)}>
+                Ikuti Kelas
+              </button>
+            </div>
+          </div>
+        </Modal.Body>
       </Modal>
 
       <div className="bg-[#EBF3FC] mb-6">
@@ -95,10 +141,11 @@ export const Detail = () => {
                   </div>
                 </div>
                 <div className="flex">
-                  <button className="flex items-center px-4 py-2 bg-[#73CA5C] text-white rounded-full mr-4">
+                  <button className="flex items-center px-4 py-2 bg-[#73CA5C] text-white rounded-full mr-4" onClick={() => setShowTelegramModal(true)}>
                     Join Grup Telegram
                     <FaTelegramPlane className="ml-2" />
                   </button>
+
                   <button className="flex items-center px-4 py-2 bg-[#73CA5C] text-white rounded-full" onClick={() => setOpenModal(true)}>
                     Gabung Kelas
                   </button>
@@ -131,23 +178,32 @@ export const Detail = () => {
           {/* Chapter 1 */}
           <div className="mb-8">
             <div className="flex justify-between items-center mb-2">
-              <p className="text-gray-800 font-semibold">Chapter 1 - Pendahuluan</p>
-              <span className="text-sm bg-purple-500 text-white py-1 px-3 rounded-full">60 Menit</span>
+              <p className="text-[#6148FF] font-bold">Chapter 1 - Pendahuluan</p>
+              <span className="text-sm font-bold text-[#489CFF] py-1 px-3 rounded-full">60 Menit</span>
             </div>
             <ol className="list-decimal list-inside">
-              <li className="mb-2 flex items-center">
-                <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">1</span>
-                Tujuan Mengikuti Kelas Design System
+              <li className="mb-2 mt-2 flex items-center justify-between">
+                <div className="flex items-center">
+                  <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">1</span>
+                  Tujuan Mengikuti Kelas Design System
+                </div>
+                <FaCirclePlay className="text-xl text-[#73CA5C]" />
               </li>
               <hr />
-              <li className="mb-2 flex items-center">
-                <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">2</span>
-                Pengenalan Design System
+              <li className="mb-2 mt-2 flex items-center justify-between">
+                <div className="flex items-center">
+                  <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">1</span>
+                  Tujuan Mengikuti Kelas Design System
+                </div>
+                <FaCirclePlay className="text-xl text-[#73CA5C]" />
               </li>
               <hr />
-              <li className="mb-2 flex items-center">
-                <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">3</span>
-                Contoh Dalam Membangun Design System
+              <li className="mb-2 mt-2 flex items-center justify-between">
+                <div className="flex items-center">
+                  <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">1</span>
+                  Tujuan Mengikuti Kelas Design System
+                </div>
+                <FaCirclePlay className="text-xl text-[#73CA5C]" />
               </li>
               <hr />
             </ol>
@@ -156,38 +212,56 @@ export const Detail = () => {
           {/* Chapter 2 */}
           <div className="mb-6">
             <div className="flex justify-between items-center mb-2">
-              <p className="text-gray-700 font-semibold">Chapter 2 - Memulai Desain</p>
-              <span className="text-sm bg-purple-500 text-white py-1 px-3 rounded-full">120 Menit</span>
+              <p className="text-[#6148FF] font-bold">Chapter 2 - Memulai Desain</p>
+              <span className="text-sm font-bold text-[#489CFF] py-1 px-3 rounded-full">120 Menit</span>
             </div>
             <ol className="list-decimal list-inside">
-              <li className="mb-2 flex items-center">
-                <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">4</span>
-                Color Palette
+              <li className="mb-2 mt-2 flex items-center justify-between">
+                <div className="flex items-center">
+                  <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">1</span>
+                  Tujuan Mengikuti Kelas Design System
+                </div>
+                <GiPadlock className="text-xl text-gray-500" />
               </li>
               <hr />
-              <li className="mb-2 flex items-center">
-                <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">5</span>
-                Typography, Layout dan Grid
+              <li className="mb-2 mt-2 flex items-center justify-between">
+                <div className="flex items-center">
+                  <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">1</span>
+                  Tujuan Mengikuti Kelas Design System
+                </div>
+                <GiPadlock className="text-xl text-gray-500" />
               </li>
               <hr />
-              <li className="mb-2 flex items-center">
-                <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">6</span>
-                Membuat Components
+              <li className="mb-2 mt-2 flex items-center justify-between">
+                <div className="flex items-center">
+                  <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">1</span>
+                  Tujuan Mengikuti Kelas Design System
+                </div>
+                <GiPadlock className="text-xl text-gray-500" />
               </li>
               <hr />
-              <li className="mb-2 flex items-center">
-                <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">7</span>
-                Membuat Components
+              <li className="mb-2 mt-2 flex items-center justify-between">
+                <div className="flex items-center">
+                  <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">1</span>
+                  Tujuan Mengikuti Kelas Design System
+                </div>
+                <GiPadlock className="text-xl text-gray-500" />
               </li>
               <hr />
-              <li className="mb-2 flex items-center">
-                <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">8</span>
-                Membuat Components
+              <li className="mb-2 mt-2 flex items-center justify-between">
+                <div className="flex items-center">
+                  <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">1</span>
+                  Tujuan Mengikuti Kelas Design System
+                </div>
+                <GiPadlock className="text-xl text-gray-500" />
               </li>
               <hr />
-              <li className="mb-2 flex items-center">
-                <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">9</span>
-                Membuat Components
+              <li className="mb-2 mt-2 flex items-center justify-between">
+                <div className="flex items-center">
+                  <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">1</span>
+                  Tujuan Mengikuti Kelas Design System
+                </div>
+                <GiPadlock className="text-xl text-gray-500" />
               </li>
               <hr />
             </ol>
@@ -196,7 +270,7 @@ export const Detail = () => {
       </div>
 
       {/* Video Section - Adjusted size */}
-      <div className="flex justify-start mb-6 pl-28">
+      <div className="justify-start mb-6 pl-28">
         <iframe
           className="w-11/12 md:w-3/4 lg:w-1/2 xl:w-2,5/5 aspect-video rounded-3xl" // This line controls the width at different breakpoints
           src="https://www.youtube.com/embed/pI4ELkxxMGM?si=KM2w3EAICG6GZpVD"
@@ -205,12 +279,23 @@ export const Detail = () => {
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
         ></iframe>
+        <div className="w-11/12 md:w-3/4 lg:w-1/2 xl:w-2,5/5 flex justify-end mt-5 gap-5">
+          <Link to="/beranda" className="bg-[#EBF3FC] text-[#6148FF] py-2 px-4 rounded-full shadow-lg w-1/5 text-center">
+            Kelas Lainnya
+          </Link>
+          <Link to="/detail" className="bg-[#6148FF] text-white py-2 px-4 rounded-full shadow-lg w-1/6 text-center">
+            Next
+          </Link>
+        </div>
       </div>
 
       {/* Content Section */}
-      <div className="pl-28">
+      <div className="pl-28 md:w-3/4 lg:w-1/2 xl:w-2,5/5">
         <h2 className="text-2xl font-bold mb-4">Tentang Kelas</h2>
-        <p className="text-gray-700 mb-6">{/* Content text here */}</p>
+        <p className="text-gray-700 mb-6">
+          Design system adalah kumpulan komponen design, code, ataupun dokumentasi yang dapat digunakan sebagai panduan utama yang memungkinkan designer serta developer memiliki lebih banyak kontrol atas berbagai platform. Dengan hadirnya
+          design system, dapat menjaga konsistensi tampilan user interface dan meningkatkan user experience menjadi lebih baik. Disisi bisnis, design system sangat berguna dalam menghemat waktu dan biaya ketika mengembangkan suatu produk.
+        </p>
 
         <h2 className="text-2xl font-bold mb-4">Kelas Ini Ditujukan Untuk</h2>
         <ul className="list-disc pl-5 mb-6 text-gray-700">{/* List items here */}</ul>
