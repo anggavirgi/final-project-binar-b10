@@ -114,7 +114,7 @@ export const Detail = () => {
         <div className="relative pl-28">
           {/* Isi dari bagian dengan latar belakang #EBF3FC */}
           <div className="pt-4">
-            <Link to="/beranda" className="hover:underline">
+            <Link to="/kelas" className="hover:underline">
               <div className="flex items-center mb-4">
                 <FaArrowLeft className="mr-4 text-black" />
                 <h2 className="text-black font-bold">Kelas Lainnya</h2>
@@ -280,7 +280,7 @@ export const Detail = () => {
           allowFullScreen
         ></iframe>
         <div className="w-11/12 md:w-3/4 lg:w-1/2 xl:w-2,5/5 flex justify-end mt-5 gap-5">
-          <Link to="/beranda" className="bg-[#EBF3FC] text-[#6148FF] py-2 px-4 rounded-full shadow-lg w-1/5 text-center">
+          <Link to="/kelas" className="bg-[#EBF3FC] text-[#6148FF] py-2 px-4 rounded-full shadow-lg w-1/5 text-center">
             Kelas Lainnya
           </Link>
           <Link to="/detail" className="bg-[#6148FF] text-white py-2 px-4 rounded-full shadow-lg w-1/6 text-center">

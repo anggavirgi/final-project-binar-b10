@@ -29,7 +29,7 @@ export const Berhasil = () => {
           <Link to="/detail" className="text-center bg-[#6148FF] text-white font-bold py-2 px-4 rounded-full mt-10 mb-2 w-full" onClick={handleMulaiBelajarClick}>
             Mulai Belajar
           </Link>
-          <Link to="/beranda" className="flex justify-center items-center text-black hover:underline">
+          <Link to="/kelas" className="flex justify-center items-center text-black hover:underline">
             <h2 className="font-bold text-[#489CFF]">Kembali ke Beranda</h2>
           </Link>
         </div>
