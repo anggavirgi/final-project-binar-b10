@@ -1,6 +1,9 @@
+import { RouteLists } from "./routes/RouteLists";
+
 function App() {
   return (
-    <div className="App">
+    <div>
+      <RouteLists />
     </div>
   );
 }
