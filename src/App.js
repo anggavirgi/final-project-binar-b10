@@ -2,7 +2,9 @@ import { RouteLists } from "./routes/RouteLists";
 
 function App() {
   return (
-    <RouteLists/>
+    <div>
+      <RouteLists />
+    </div>
   );
 }
 
