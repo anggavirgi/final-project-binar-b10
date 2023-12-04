@@ -1,10 +1,60 @@
-import React from "react";
+import React, { useState } from "react";
 import { LayoutAdmin } from "../../Layout/LayoutAdmin";
 import { CardAdmin } from "../../components/Card/CardAdmin";
-import { HiSearch } from "react-icons/hi";
 import { CiFilter } from "react-icons/ci";
+import { FaSearch } from "react-icons/fa";
 
 export const DashboardAdmin = () => {
+  const [getModalFilter, setModalFilter] = useState(false);
+
+  const modalFilter = () => {
+    return (
+      <div className="absolute right-0 mt-2 bg-white shadow-lg border-t border-primary rounded-lg px-3 pt-1.5 pb-3 text-sm">
+        <div className="font-semibold mb-2">Status</div>
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-1.5">
+            <input
+              type="radio"
+              id="notyet"
+              name="status"
+              value=""
+              className="h-4 w-4 border border-gray-300 rounded-md"
+            />
+            <label htmlFor="notyet" className="whitespace-nowrap">
+              Belum Bayar
+            </label>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <input
+              type="radio"
+              id="done"
+              name="status"
+              value=""
+              className="h-4 w-4 border border-gray-300 rounded-md"
+            />
+            <label htmlFor="done" className="whitespace-nowrap">
+              Sudah Bayar
+            </label>
+          </div>
+        </div>
+        <hr className="mt-3 mb-2" />
+        <div className="flex justify-end items-center gap-2 text-sm">
+          <button
+            className="bg-gray-400 text-white rounded-lg px-2 py-1"
+            onClick={() =>
+              getModalFilter ? setModalFilter(false) : setModalFilter(true)
+            }
+          >
+            batal
+          </button>
+          <button className="bg-primary text-white rounded-lg px-2 py-1">
+            simpan
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
       <LayoutAdmin>
@@ -14,12 +64,23 @@ export const DashboardAdmin = () => {
             <div className="flex justify-between items-center">
               <div className="font-bold text-xl">Status Pembayaran</div>
               <div className="flex items-center gap-6 text-primary">
-                <div className="flex items-center gap-1 text-lg border border-primary rounded-2xl px-4 py-0.5 cursor-pointer">
-                  <CiFilter className="stroke-1 text-xl" />
-                  <span className="font-semibold">Filter</span>
+                <div className="relative">
+                  <div
+                    className="flex items-center gap-1 text-lg border border-primary rounded-lg px-4 py-0.5 cursor-pointer hover:text-purple-800"
+                    onClick={() =>
+                      getModalFilter
+                        ? setModalFilter(false)
+                        : setModalFilter(true)
+                    }
+                  >
+                    <CiFilter className="stroke-1 text-xl" />
+                    <span className="font-semibold">Filter</span>
+                  </div>
+                  {getModalFilter ? modalFilter() : ""}
                 </div>
-                <div>
-                  <HiSearch className="text-[1.7rem] cursor-pointer" />
+                <div className="relative flex items-center">
+                  <input type="text" placeholder="cari.." className="border border-primary rounded-lg ps-8 pe-3 py-[0.275rem] w-[15rem]"/>
+                  <FaSearch className="w-3.5 h-3.5 absolute left-2.5"/>
                 </div>
               </div>
             </div>
