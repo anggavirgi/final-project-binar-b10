@@ -8,12 +8,14 @@ import { UserProfile } from "../pages/UserProfile";
 import { Notif } from "../pages/Notif";
 import { GantiPWUser } from "../pages/GantiPWUser";
 import { RiwayatUser } from "../pages/RiwayatUser";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+// import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { DashboardAdmin } from "../pages/Admin/DashboardAdmin";
 import { ClassAdmin } from "../pages/Admin/ClassAdmin";
 import { Class } from "../pages/User/Class";
 import { Homepage } from "../pages/User/Homepage";
 import Detail from "../pages/User/Detail";
+import { Payment } from "../pages/User/Payment";
+import { Berhasil } from "../pages/User/Berhasil";
 
 export const RouteLists = () => {
   return (
@@ -33,6 +35,8 @@ export const RouteLists = () => {
         <Route path="/home" element={<Homepage />} />
         <Route path="/kelas" element={<Class />} />
         <Route path="/detail" element={<Detail />} />
+        <Route path="/payment" element={<Payment />} />
+        <Route path="/berhasil" element={<Berhasil />} />
 
         {/* ADMIN */}
         <Route path="/admin" element={<DashboardAdmin />} />
