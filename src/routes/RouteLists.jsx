@@ -8,7 +8,6 @@ import { UserProfile } from "../pages/UserProfile";
 import { Notif } from "../pages/Notif";
 import { GantiPWUser } from "../pages/GantiPWUser";
 import { RiwayatUser } from "../pages/RiwayatUser";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { DashboardAdmin } from "../pages/Admin/DashboardAdmin";
 import { ClassAdmin } from "../pages/Admin/ClassAdmin";
 import { Class } from "../pages/User/Class";
