@@ -1,13 +1,50 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { navigate, useNavigate } from "react-router-dom";
+import { useLoginUser } from "../services/login-user";
+import GoogleLogin from "../assets/component/Googlelogin";
 import BelajarImage from "../assets/img/Belajar_white.png";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 
 export const LoginUser = () => {
   const [passwordShown, setPasswordShown] = useState(false);
-
+  const [email, setemail] = useState("");
+  const [password, setpassword] = useState("");
+  const { mutate: Login, isSuccess, data } = useLoginUser();
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
   const togglePasswordVisibility = () => {
     setPasswordShown(!passwordShown);
   };
+
+  const handleInput = (e) => {
+    if (e) {
+      if (e.target.id === "email") {
+        setemail(e.target.value);
+      }
+      if (e.target.id === "password") {
+        setpassword(e.target.value);
+      }
+    }
+  };
+
+  const showpass = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const LoginUser = () => {
+    Login({
+      email: email,
+      password: password,
+    });
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Anda berhasil login");
+      navigate("/dashboard");
+    }
+  }, [data]);
 
   return (
     <div className="flex h-screen">
@@ -21,6 +58,7 @@ export const LoginUser = () => {
                 Email atau No Telepon
               </label>
               <input
+                onChange={handleInput}
                 type="text"
                 id="emailPhone"
                 name="emailPhone"
@@ -34,6 +72,7 @@ export const LoginUser = () => {
               </label>
               <div className="relative">
                 <input
+                  onChange={handleInput}
                   type={passwordShown ? "text" : "password"}
                   id="password"
                   name="password"
@@ -56,6 +95,9 @@ export const LoginUser = () => {
             </div>
 
             <button
+              onClick={() => {
+                LoginUser();
+              }}
               type="submit"
               className="bg-indigo-600 hover:bg-blue-600 text-white font-semibold rounded-2xl py-2 px-4 w-full mb-4"
             >
