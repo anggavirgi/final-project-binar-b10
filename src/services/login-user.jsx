@@ -6,6 +6,7 @@ import { CookieKeys, CookieStorage } from "../utils/cookies";
 import { Navigate } from "react-router-dom";
 
 const LoginUser = async (input) => {
+  console.log('input', input)
   return await http
     .post(API_ENDPOINT.LOGIN_USER, input)
     .then((result) => {
