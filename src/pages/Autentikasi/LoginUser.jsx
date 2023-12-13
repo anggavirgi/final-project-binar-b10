@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import BelajarImage from "../assets/img/Belajar_white.png";
+import BelajarImage from "../../assets/img/Belajar_white.png";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 
 export const LoginUser = () => {
@@ -78,7 +78,7 @@ export const LoginUser = () => {
       <div className="w-1/2 bg-indigo-600">
         <img
           src="../assets/img/Belajar_white.png"
-          alt="Belajar Image"
+          alt="Belajar"
           className="object-cover w-full h-screen"
         />
       </div>

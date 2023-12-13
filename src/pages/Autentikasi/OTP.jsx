@@ -1,9 +1,7 @@
 import React from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
 
-const OTP = () => {
-  
-
+export const OTP = () => {
   return (
     <div className="flex flex-wrap h-screen">
       {/* Kolom Pertama */}
@@ -68,12 +66,10 @@ const OTP = () => {
       <div className="w-1/2 bg-indigo-600">
         <img
           src="../assets/img/Belajar_white.png"
-          alt="Belajar Image"
+          alt="Belajar"
           className="object-cover w-full h-screen"
         />
       </div>
     </div>
   );
 };
-
-export default OTP;

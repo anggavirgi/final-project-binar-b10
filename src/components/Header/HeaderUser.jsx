@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FiLogIn } from "react-icons/fi";
 import { BiSearchAlt } from "react-icons/bi";
 import { FiUser } from "react-icons/fi";
@@ -27,7 +27,7 @@ export const HeaderUser = () => {
         <FiLogIn />
         <span className="font-medium">Masuk</span>
       </div> */}
-      <div className="flex items-center gap-8 font-medium">
+      <div className="relative flex items-center gap-8 font-medium">
         <div
           className="px-6 py-1 bg-[#489CFF] rounded-xl cursor-pointer hover:bg-white hover:text-[#489CFF]"
           onClick={() => navigate("/kelas")}
@@ -35,7 +35,7 @@ export const HeaderUser = () => {
           Kelas
         </div>
         <LuBell className="w-6 h-6" />
-        <FiUser className="w-6 h-6" />
+        <FiUser className="w-6 h-6 cursor-pointer" />
       </div>
     </div>
   );
