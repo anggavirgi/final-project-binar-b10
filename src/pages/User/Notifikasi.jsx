@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { GoBellFill } from "react-icons/go";
 
-export const Notif = () => {
+export const Notifikasi = () => {
   const [notifikasi, setNotifikasi] = useState([]);
 
   useEffect(() => {
@@ -30,7 +30,6 @@ export const Notif = () => {
     ];
     setNotifikasi(data);
   }, []);
-
   return (
     <div className="w-[900px] h-[512px] shadow flex flex-col justify-start items-start">
       <div className="w-full h-[62px] p-6 bg-indigo-600 rounded-tl-2xl rounded-tr-2xl flex flex-col justify-start items-center gap-6">
