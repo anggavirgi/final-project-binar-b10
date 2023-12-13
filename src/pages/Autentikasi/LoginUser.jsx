@@ -114,7 +114,7 @@ export const LoginUser = () => {
         {/* Pastikan path ke gambar sudah benar */}
         <img
           src="../assets/img/Belajar_white.png"
-          alt="Belajar Image"
+          alt="Belajar"
           className="object-cover w-full h-screen"
         />
       </div>
