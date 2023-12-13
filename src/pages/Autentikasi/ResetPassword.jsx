@@ -1,15 +1,30 @@
 import React, { useState } from "react";
-import {
-  IoArrowBackOutline,
-  IoEyeOffOutline,
-  IoEyeOutline,
-} from "react-icons/io5";
+import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
+import { useResetPassword } from "../../services/auth/PutResetPassword.";
+import { useLocation } from "react-router-dom";
+import { CookieStorage, CookiesKeys } from "../../utils/cookies";
 
-export const ResetPw = () => {
+export const ResetPassword = () => {
+  const location = useLocation();
+
   const [passwordShown, setPasswordShown] = useState(false);
+  const [getPassword, setPassword] = useState("");
+  const [getConfPassword, setConfPassword] = useState("");
 
   const togglePasswordVisibility = () => {
     setPasswordShown(!passwordShown);
+  };
+
+  const params = new URLSearchParams(location.search);
+  const token = params.get("token");
+  CookieStorage.set(CookiesKeys.JwtToken, token);
+
+  const { mutate: putPassword } = useResetPassword();
+  const handlePassword = () => {
+    putPassword({
+      password: getPassword,
+      confirmationPassword: getConfPassword,
+    });
   };
 
   return (
@@ -20,7 +35,7 @@ export const ResetPw = () => {
           <h1 className="text-2xl font-bold mb-4 text-indigo-600">
             Reset Password
           </h1>
-          <form action="#" method="POST">
+          <div>
             <div className="mb-4">
               <label htmlFor="password" className="block text-black-600">
                 Password Baru
@@ -28,10 +43,11 @@ export const ResetPw = () => {
               <div className="relative">
                 <input
                   type={passwordShown ? "text" : "password"}
-                  id="pwbaru"
-                  name="pwbaru"
+                  id="password"
+                  name="password"
                   className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 rounded-2xl"
                   autoComplete="off"
+                  onChange={(e) => setPassword(e.target.value)}
                 />
                 <span
                   className="absolute right-3 top-3 cursor-pointer"
@@ -42,16 +58,20 @@ export const ResetPw = () => {
               </div>
 
               <div className="mb-4">
-                <label htmlFor="password" className="block text-black-600">
+                <label
+                  htmlFor="confirmationpassword"
+                  className="block text-black-600"
+                >
                   Ulangi Password Baru
                 </label>
                 <div className="relative">
                   <input
                     type={passwordShown ? "text" : "password"}
-                    id="ulangpwbaru"
-                    name="ulangpwbaru"
+                    id="confirmationpassword"
+                    name="confirmationpassword"
                     className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 rounded-2xl"
                     autoComplete="off"
+                    onChange={(e) => setConfPassword(e.target.value)}
                   />
                   <span
                     className="absolute right-3 top-3 cursor-pointer"
@@ -66,10 +86,11 @@ export const ResetPw = () => {
             <button
               type="submit"
               className="bg-indigo-600 hover:bg-blue-600 text-white font-semibold rounded-2xl py-2 px-4 w-full mb-4"
+              onClick={handlePassword}
             >
               Simpan
             </button>
-          </form>
+          </div>
         </div>
       </div>
 
@@ -77,7 +98,7 @@ export const ResetPw = () => {
       <div className="w-1/2 bg-indigo-600">
         <img
           src="../assets/img/Belajar_white.png"
-          alt="Belajar Image"
+          alt="Belajar"
           className="object-cover w-full h-screen"
         />
       </div>
