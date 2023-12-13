@@ -11,9 +11,8 @@ import { RiwayatUser } from "../pages/RiwayatUser";
 import { DashboardAdmin } from "../pages/Admin/DashboardAdmin";
 import { ClassAdmin } from "../pages/Admin/ClassAdmin";
 import { Class } from "../pages/User/Class";
+import { Homepage } from "../pages/User/Homepage";
 import Detail from "../pages/User/Detail";
-import { Payment } from "../pages/User/Payment";
-import { Berhasil } from "../pages/User/Berhasil";
 
 export const RouteLists = () => {
   return (
@@ -27,12 +26,16 @@ export const RouteLists = () => {
         <Route path="/5" element={<Notif />} />
         <Route path="/6" element={<GantiPWUser />} />
         <Route path="/7" element={<RiwayatUser />} />
-        <Route path="/admin" element={<DashboardAdmin />} />
-        <Route path="/kelolakelas" element={<ClassAdmin />} />
+
+        {/* USER */}
+        <Route path="/" element={<Homepage />} />
+        <Route path="/home" element={<Homepage />} />
         <Route path="/kelas" element={<Class />} />
         <Route path="/detail" element={<Detail />} />
-        <Route path="/payment" element={<Payment />} />
-        <Route path="/berhasil" element={<Berhasil />} />
+
+        {/* ADMIN */}
+        <Route path="/admin" element={<DashboardAdmin />} />
+        <Route path="/kelolakelas" element={<ClassAdmin />} />
       </Routes>
     </BrowserRouter>
   );
