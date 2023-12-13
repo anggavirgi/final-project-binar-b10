@@ -4,7 +4,8 @@ const cookies = new Cookies();
 
 export const CookiesKeys = {
   AuthToken: "authToken",
-  JwtToken: "jwtToken"
+  JwtToken: "jwtToken",
+  User: "user",
   // RegisterToken: "registerToken",
   // GoogleCredentials: "googleCredentials"
 };
