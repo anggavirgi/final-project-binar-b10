@@ -2,15 +2,15 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import http from "../utils/http";
 import { API_ENDPOINT } from "../utils/api-endpoint";
-import { CookieKeys, CookieStorage } from "../utils/cookies";
 import { Navigate } from "react-router-dom";
+import { CookieStorage, CookiesKeys } from "../utils/cookies";
 
 const LoginUser = async (input) => {
-  console.log('input', input)
+  console.log("input", input);
   return await http
     .post(API_ENDPOINT.LOGIN_USER, input)
     .then((result) => {
-      CookieStorage.set(CookieKeys.AuthToken, result.data.data.token);
+      CookieStorage.set(CookiesKeys.AuthToken, result.data.data.token);
       // window.location.href = "/dashboard";
       // toast.success("anda berhasil login");
       // Navigate("/dashboard");

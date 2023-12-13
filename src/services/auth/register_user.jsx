@@ -2,10 +2,10 @@ import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { API_ENDPOINT } from "../../utils/api-endpoint";
 import { CookieStorage, CookiesKeys } from "../../utils/cookies";
-import { http2 } from "../../utils/http";
+import http from "../../utils/http";
 
 const registerUser = async (input) => {
-  return await http2
+  return await http
     .post(API_ENDPOINT.USER_REGISTER, input)
     .then((result) => {
       console.log(result.data.data.token);

@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { http2 } from "../../utils/http";
+import http from "../../utils/http";
 import { API_ENDPOINT } from "../../utils/api-endpoint";
 
 const fetchUserData = async ({ queryKey }) => {
   const [_key] = queryKey;
-  return await http2
+  return await http
     .get(_key)
     .then((result) => {
       const resultMe = result.data.data.user;

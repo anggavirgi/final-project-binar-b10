@@ -1,5 +1,5 @@
 import axios from "axios";
-import { CookieKeys, CookieStorage } from "./cookies";
+import { CookieStorage, CookiesKeys } from "./cookies";
 
 // const getToken = CookieStorage.get(CookiesKeys.JwtToken);
 
@@ -9,13 +9,14 @@ const http = axios.create({
   headers: {
     accept: "application/json",
     "Content-Type": "application/json",
+    Authorization: `Bearer ${CookieStorage.get(CookiesKeys.AuthToken) || ""}`,
   },
 });
 
 http.interceptors.request.use((config) => {
   config.headers = {
     ...config.headers,
-    Authorization: `Bearer ${CookieStorage.get(CookieKeys.AuthToken) ? CookieStorage.get(CookieKeys.AuthToken) : ""}`,
+    Authorization: `Bearer ${CookieStorage.get(CookiesKeys.AuthToken) ? CookieStorage.get(CookiesKeys.AuthToken) : ""}`,
   };
   return config;
 });
