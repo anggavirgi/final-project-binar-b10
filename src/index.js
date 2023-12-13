@@ -4,12 +4,12 @@ import "./assets/css/index.css";
 import App from "./App";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-const queryMovie = new QueryClient();
+const clientID = new QueryClient();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <QueryClientProvider client={queryMovie}>
+    <QueryClientProvider client={clientID}>
       <App />
     </QueryClientProvider>
   </React.StrictMode>

@@ -1,13 +1,46 @@
-import React, { useState } from "react";
-import BelajarImage from "../../assets/img/Belajar_white.png";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { useLoginUser } from "../services/login-user";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 
 export const LoginUser = () => {
   const [passwordShown, setPasswordShown] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { mutate: Login, isSuccess, isError, error } = useLoginUser();
+  const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
     setPasswordShown(!passwordShown);
   };
+
+  const handleInput = (e) => {
+    if (e) {
+      if (e.target.id === "email") {
+        setEmail(e.target.value);
+      }
+      if (e.target.id === "password") {
+        setPassword(e.target.value);
+      }
+    }
+  };
+
+  const loginUser = (e) => {
+    e.preventDefault();
+    console.log("login fired");
+    Login({ email, password });
+  };
+
+  // useEffect(() => {
+  //   if (isSuccess) {
+  //     toast.success("Anda berhasil login");
+  //   }
+
+  //   if (isError) {
+  //     toast.error(`Login gagal: ${error.message}`);
+  //   }
+  // }, [isSuccess, isError, error, navigate]);
 
   return (
     <div className="flex h-screen">
@@ -15,15 +48,16 @@ export const LoginUser = () => {
       <div className="w-1/2 bg-gray-100 flex justify-center items-center">
         <div className="p-8 w-3/4">
           <h1 className="text-2xl font-bold mb-4 text-indigo-600">Masuk</h1>
-          <form action="#" method="POST">
+          <form onSubmit={loginUser}>
             <div className="mb-4">
-              <label htmlFor="emailPhone" className="block text-black-600">
-                Email atau No Telepon
+              <label htmlFor="email" className="block text-black-600">
+                Email
               </label>
               <input
+                onChange={handleInput}
                 type="text"
-                id="emailPhone"
-                name="emailPhone"
+                id="email"
+                name="email"
                 className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 rounded-2xl"
                 autoComplete="off"
               />
@@ -34,6 +68,7 @@ export const LoginUser = () => {
               </label>
               <div className="relative">
                 <input
+                  onChange={handleInput}
                   type={passwordShown ? "text" : "password"}
                   id="password"
                   name="password"
@@ -47,9 +82,10 @@ export const LoginUser = () => {
                   {passwordShown ? <IoEyeOutline /> : <IoEyeOffOutline />}
                 </span>
               </div>
+              {/* Tautan untuk reset password, gantikan "#" dengan link yang sesuai */}
               <a
                 href="#"
-                className="text-right hover:underline text-indigo-600 "
+                className="text-right hover:underline text-indigo-600"
               >
                 Lupa Kata Sandi
               </a>
@@ -63,19 +99,19 @@ export const LoginUser = () => {
             </button>
           </form>
 
-          <div className="">
-            <p>
-              Belum punya akun?{" "}
-              <a href="#" className="hover:underline text-indigo-600">
-                Daftar disini
-              </a>
-            </p>
-          </div>
+          {/* Tautan untuk registrasi, gantikan "#" dengan link yang sesuai */}
+          <p>
+            Belum punya akun?{" "}
+            <a href="#" className="hover:underline text-indigo-600">
+              Daftar disini
+            </a>
+          </p>
         </div>
       </div>
 
       {/* Bagian Kanan */}
       <div className="w-1/2 bg-indigo-600">
+        {/* Pastikan path ke gambar sudah benar */}
         <img
           src="../assets/img/Belajar_white.png"
           alt="Belajar"
@@ -85,3 +121,5 @@ export const LoginUser = () => {
     </div>
   );
 };
+
+export default LoginUser;
