@@ -1,5 +1,5 @@
 import axios from "axios";
-// import { CookieStorage, CookiesKeys } from "./cookies";
+import { CookieKeys, CookieStorage } from "./cookies";
 
 // const getToken = CookieStorage.get(CookiesKeys.JwtToken);
 
@@ -8,16 +8,20 @@ const http = axios.create({
   timeout: 30000,
   headers: {
     accept: "application/json",
+    "Content-Type": "application/json",
   },
 });
 
-// http.interceptors.request.use((config) => {
-//   config.headers = {
-//     ...config.headers,
-//     Authorization: `Bearer ${getToken ? getToken : ""}`,
-//   };
+http.interceptors.request.use((config) => {
+  config.headers = {
+    ...config.headers,
+    Authorization: `Bearer ${
+      CookieStorage.get(CookieKeys.AuthToken)
+        ? CookieStorage.get(CookieKeys.AuthToken)
+        : ""
+    }`,
+  };
+  return config;
+});
 
-//   return config;
-// });
-
-export { http };
+export default http;
