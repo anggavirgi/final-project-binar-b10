@@ -5,24 +5,30 @@ import { BiLogOut } from "react-icons/bi";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { LayoutUser } from "../../../Layout/LayoutUser";
 import { SidebarProfil } from "../../../components/Sidebar/SidebarProfil";
+import { useGantiPassword } from "../../../services/User Profile/ganti_password";
 
 export const GantiPassword = () => {
-  const [name, setName] = useState("John Doe");
-  const [email, setEmail] = useState("johndoe@gmail.com");
-  const [phone, setPhone] = useState("+62 8121212121");
-  const [country, setCountry] = useState("");
-  const [city, setCity] = useState("");
+  const [passwordShown, setPasswordShown] = useState(false);
 
-  const handleInputChange = (setter) => (e) => {
-    setter(e.target.value);
+  const { mutate: gantiPassword } = useGantiPassword();
+
+  const [passwordData, setPasswordData] = useState({
+    password_lama: "",
+    password_baru: "",
+    Confirmationpassword_baru: "",
+  });
+
+  const handleInput = (e) => {
+    if (e) {
+      const { id, value } = e.target;
+      setPasswordData({ ...passwordData, [id]: value });
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("Profile saved!");
+    gantiPassword(passwordData);
   };
-
-  const [passwordShown, setPasswordShown] = useState(false);
 
   const togglePasswordVisibility = () => {
     setPasswordShown(!passwordShown);
@@ -54,15 +60,14 @@ export const GantiPassword = () => {
                   <div className="relative">
                     <input
                       type={passwordShown ? "text" : "password"}
-                      id="ulangpwbaru"
-                      name="ulangpwbaru"
+                      id="password_lama"
+                      name="password_lama"
+                      value={passwordData.password_lama}
+                      onChange={handleInput}
                       className="w-full border border-gray-300 rounded-lg py-2 px-3 focus:outline-none focus:border-blue-500"
                       autoComplete="off"
                     />
-                    <span
-                      className="absolute right-3 top-3 cursor-pointer"
-                      onClick={togglePasswordVisibility}
-                    >
+                    <span className="absolute right-3 top-3 cursor-pointer" onClick={togglePasswordVisibility}>
                       {passwordShown ? <IoEyeOutline /> : <IoEyeOffOutline />}
                     </span>
                   </div>
@@ -75,15 +80,14 @@ export const GantiPassword = () => {
                   <div className="relative">
                     <input
                       type={passwordShown ? "text" : "password"}
-                      id="ulangpwbaru"
-                      name="ulangpwbaru"
+                      id="password_baru"
+                      name="password_baru"
+                      value={passwordData.password_baru}
+                      onChange={handleInput}
                       className="w-full border border-gray-300 rounded-lg py-2 px-3 focus:outline-none focus:border-blue-500"
                       autoComplete="off"
                     />
-                    <span
-                      className="absolute right-3 top-3 cursor-pointer"
-                      onClick={togglePasswordVisibility}
-                    >
+                    <span className="absolute right-3 top-3 cursor-pointer" onClick={togglePasswordVisibility}>
                       {passwordShown ? <IoEyeOutline /> : <IoEyeOffOutline />}
                     </span>
                   </div>
@@ -96,25 +100,21 @@ export const GantiPassword = () => {
                   <div className="relative">
                     <input
                       type={passwordShown ? "text" : "password"}
-                      id="ulangpwbaru"
-                      name="ulangpwbaru"
+                      id="Confirmationpassword_baru"
+                      name="Confirmationpassword_baru"
+                      value={passwordData.Confirmationpassword_baru}
+                      onChange={handleInput}
                       className="w-full border border-gray-300 rounded-lg py-2 px-3 focus:outline-none focus:border-blue-500"
                       autoComplete="off"
                     />
-                    <span
-                      className="absolute right-3 top-3 cursor-pointer"
-                      onClick={togglePasswordVisibility}
-                    >
+                    <span className="absolute right-3 top-3 cursor-pointer" onClick={togglePasswordVisibility}>
                       {passwordShown ? <IoEyeOutline /> : <IoEyeOffOutline />}
                     </span>
                   </div>
                 </div>
                 <div className="flex justify-center mb-5">
                   <br></br>
-                  <button
-                    type="submit"
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline w-full rounded-lg"
-                  >
+                  <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline w-full rounded-lg">
                     Simpan Profil Saya
                   </button>
                 </div>
