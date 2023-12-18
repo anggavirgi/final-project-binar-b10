@@ -9,18 +9,26 @@ import {
 import { RiShieldStarLine } from "react-icons/ri";
 import { Modal } from "flowbite-react";
 import { FaArrowCircleRight } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { FaCirclePlay } from "react-icons/fa6";
 import { GiPadlock } from "react-icons/gi";
 import Onboarding from "../../assets/img/onboarding.png";
 import { LayoutUser } from "../../Layout/LayoutUser";
+import { useCourseDetail } from "../../services/user/GetCourseDetail";
 
 export const Detail = () => {
+  const navigate = useNavigate();
+  const { state } = useLocation();
+
+  const { data: getCourseDetail, isSuccess } = useCourseDetail({
+    course_id: state.courseId,
+  });
+
+  const dataCourseDetail = getCourseDetail?.data || [];
+
   const [openModal, setOpenModal] = useState(false);
   const [showTelegramModal, setShowTelegramModal] = useState(false);
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     // Ambil query parameter showTelegramModal dari URL
@@ -33,7 +41,7 @@ export const Detail = () => {
     }
   }, []);
   const handleClick = () => {
-    navigate("/payment");
+    navigate("/kelas/payment");
   };
 
   return (
@@ -49,64 +57,68 @@ export const Detail = () => {
               Kelas Premium
             </span>
           </div>
-          <div className="flex justify-center">
-            <div className="w-full shadow-xl rounded-3xl sm:w-full md:w-[47%] lg:w-[47%] xl:w-[80%] mb-4 overflow-hidden">
-              <div className="overflow-hidden">
-                <img
-                  className="w-full h-40 object-cover"
-                  src="https://via.placeholder.com/150"
-                  alt="Course thumbnail"
-                />
-              </div>
-              <div className="px-4 py-5 bg-white rounded-b-3xl shadow-lg">
-                <div className="flex justify-between items-center pt-2">
-                  <h4 className="text-lg font-bold text-[#6148FF]">
-                    UI/UX Design
-                  </h4>
-                  <div className="flex items-center">
-                    <FaStar className="text-yellow-500 mr-1" />
-                    <span className="text-purple-600 font-semibold">4.7</span>
-                  </div>
+          {isSuccess && (
+            <div className="flex justify-center">
+              <div className="w-full shadow-xl rounded-3xl sm:w-full md:w-[47%] lg:w-[47%] xl:w-[80%] mb-4 overflow-hidden">
+                <div className="overflow-hidden">
+                  <img
+                    className="w-full h-40 object-cover"
+                    src="https://via.placeholder.com/150"
+                    alt="Course thumbnail"
+                  />
                 </div>
-                <h1 className="font-bold text-lg">
-                  Belajar Web Designer dengan Figma
-                </h1>
-                <p className="text-sm mb-2">by Angela Doe</p>
-                <div className="text-sm text-gray-600 mb-4 flex justify-between">
-                  <div className="flex items-center">
-                    <RiShieldStarLine className="text-green-500 mr-2" />
-                    <span className="text-[#6148FF] text-sm font-semibold">
-                      Intermediate Level
-                    </span>
+                <div className="px-4 py-5 bg-white rounded-b-3xl shadow-lg">
+                  <div className="flex justify-between items-center pt-2">
+                    <h4 className="text-lg font-bold text-[#6148FF]">
+                      {dataCourseDetail.Kategori.title}
+                    </h4>
+                    <div className="flex items-center">
+                      <FaStar className="text-yellow-500 mr-1" />
+                      <span className="text-purple-600 font-semibold">4.7</span>
+                    </div>
                   </div>
-                  <div className="flex items-center">
-                    <FaBookOpen className="text-green-500 mr-2" />
-                    <span className="text-gray-700 text-sm font-semibold">
-                      10 Modul
-                    </span>
-                  </div>
-                  <div className="flex items-center">
-                    <FaRegClock className="text-green-500 mr-2" />
-                    <span className="text-gray-700 text-sm font-semibold">
-                      120 Menit
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-1/2 bg-gray-200 rounded-full dark:bg-gray-700">
-                    <div className="bg-[#6148FF] h-7 flex justify-between items-center rounded-full">
-                      <span className="ml-2 text-white font-semibold">
-                        Beli
+                  <h1 className="font-bold text-lg">
+                    {dataCourseDetail.title}
+                  </h1>
+                  <p className="text-sm mb-2">
+                    by {dataCourseDetail.Mentor.name}
+                  </p>
+                  <div className="text-sm text-gray-600 mb-4 flex justify-between">
+                    <div className="flex items-center">
+                      <RiShieldStarLine className="text-green-500 mr-2" />
+                      <span className="text-[#6148FF] text-sm font-semibold">
+                        {dataCourseDetail.level}
                       </span>
-                      <span className="text-white font-semibold mr-2">
-                        Rp.349.000
+                    </div>
+                    <div className="flex items-center">
+                      <FaBookOpen className="text-green-500 mr-2" />
+                      <span className="text-gray-700 text-sm font-semibold">
+                        10 Modul
                       </span>
+                    </div>
+                    <div className="flex items-center">
+                      <FaRegClock className="text-green-500 mr-2" />
+                      <span className="text-gray-700 text-sm font-semibold">
+                        120 Menit
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-1/2 bg-gray-200 rounded-full dark:bg-gray-700">
+                      <div className="bg-[#6148FF] h-7 flex justify-between items-center rounded-full">
+                        <span className="ml-2 text-white font-semibold">
+                          Beli
+                        </span>
+                        <span className="text-white font-semibold mr-2">
+                          Rp.{dataCourseDetail.harga}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
           <Modal.Footer className="flex justify-center">
             <button
               className="bg-[#6148FF] h-12 w-1/2 flex justify-center items-center rounded-full"
@@ -172,53 +184,57 @@ export const Detail = () => {
                   </div>
                 </Link>
 
-                <div className="flex flex-wrap lg:flex-nowrap justify-between items-start">
-                  <div className="flex-1">
-                    <h1 className="text-3xl font-bold text-[#6148FF] mb-2">
-                      UI/UX Design
-                    </h1>
-                    <p className="text-xl text-black mb-1">
-                      Intro to Basic of User Interaction Design
-                    </p>
-                    <p className="text-black mb-3">by Simon Doe</p>
-                    <div className="flex flex-wrap items-center mb-4">
-                      <div className="flex items-center mr-6">
-                        <RiShieldStarLine className="text-[#73CA5C]" />
-                        <span className="ml-1 text-[#6148FF]">
-                          Beginner Level
-                        </span>
+                {isSuccess && (
+                  <div className="flex flex-wrap lg:flex-nowrap justify-between items-start">
+                    <div className="flex-1">
+                      <h1 className="text-3xl font-bold text-[#6148FF] mb-2">
+                        {dataCourseDetail.Kategori.title}
+                      </h1>
+                      <p className="text-xl text-black mb-1">
+                        {dataCourseDetail.title}
+                      </p>
+                      <p className="text-black mb-3">
+                        by {dataCourseDetail.Mentor.name}
+                      </p>
+                      <div className="flex flex-wrap items-center mb-4">
+                        <div className="flex items-center mr-6">
+                          <RiShieldStarLine className="text-[#73CA5C]" />
+                          <span className="ml-1 text-[#6148FF]">
+                            {dataCourseDetail.level}
+                          </span>
+                        </div>
+                        <div className="flex items-center mr-6">
+                          <FaBookOpen className="text-[#73CA5C]" />
+                          <span className="ml-1">5 Modul</span>
+                        </div>
+                        <div className="flex items-center">
+                          <FaRegClock className="text-[#73CA5C]" />
+                          <span className="ml-1">45 Menit</span>
+                        </div>
                       </div>
-                      <div className="flex items-center mr-6">
-                        <FaBookOpen className="text-[#73CA5C]" />
-                        <span className="ml-1">5 Modul</span>
-                      </div>
-                      <div className="flex items-center">
-                        <FaRegClock className="text-[#73CA5C]" />
-                        <span className="ml-1">45 Menit</span>
-                      </div>
-                    </div>
-                    <div className="flex">
-                      <button
-                        className="flex items-center px-4 py-2 bg-[#73CA5C] text-white rounded-full mr-4"
-                        onClick={() => setShowTelegramModal(true)}
-                      >
-                        Join Grup Telegram
-                        <FaTelegramPlane className="ml-2" />
-                      </button>
+                      <div className="flex">
+                        <button
+                          className="flex items-center px-4 py-2 bg-[#73CA5C] text-white rounded-full mr-4"
+                          onClick={() => setShowTelegramModal(true)}
+                        >
+                          Join Grup Telegram
+                          <FaTelegramPlane className="ml-2" />
+                        </button>
 
-                      <button
-                        className="flex items-center px-4 py-2 bg-[#73CA5C] text-white rounded-full"
-                        onClick={() => setOpenModal(true)}
-                      >
-                        Gabung Kelas
-                      </button>
+                        <button
+                          className="flex items-center px-4 py-2 bg-[#73CA5C] text-white rounded-full"
+                          onClick={() => setOpenModal(true)}
+                        >
+                          Gabung Kelas
+                        </button>
+                      </div>
+                    </div>
+                    <div className="flex items-center ml-4 mt-4 lg:mt-0">
+                      <FaStar className="text-yellow-500" />
+                      <span className="text-black ml-1">5.0</span>
                     </div>
                   </div>
-                  <div className="flex items-center ml-4 mt-4 lg:mt-0">
-                    <FaStar className="text-yellow-500" />
-                    <span className="text-black ml-1">5.0</span>
-                  </div>
-                </div>
+                )}
               </div>
             </div>
 

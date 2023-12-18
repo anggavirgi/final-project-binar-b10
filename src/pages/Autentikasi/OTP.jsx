@@ -1,5 +1,6 @@
 import React from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
+import belajar from "../../assets/img/Belajar_white.png";
 
 export const OTP = () => {
   return (
@@ -63,11 +64,12 @@ export const OTP = () => {
         </div>
       </div>
 
-      <div className="w-1/2 bg-indigo-600">
+      <div className="w-1/2 bg-indigo-600 flex flex-col items-center justify-center">
+        {/* Pastikan path ke gambar sudah benar */}
         <img
-          src="../assets/img/Belajar_white.png"
+          src={belajar}
           alt="Belajar"
-          className="object-cover w-full h-screen"
+          className="object-cover w-1/2"
         />
       </div>
     </div>

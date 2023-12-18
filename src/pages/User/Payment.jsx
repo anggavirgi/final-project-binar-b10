@@ -8,7 +8,7 @@ export const Payment = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate("/berhasil");
+    navigate("/kelas/berhasil");
   };
   return (
     <>
@@ -30,149 +30,143 @@ export const Payment = () => {
 
         <div className="flex gap-4">
           <div className="w-full desktop:w-3/5 p-4">
-            <div className="mb-6">
-              <Accordion alwaysOpen={true} className="mb-3">
-                <Accordion.Panel>
-                  <Accordion.Title className="bg-[#3C3C3C] hover:bg-neutral-950 text-white font-semibold p-4 rounded-t-lg border-b border-gray-200">
-                    Bank Transfer
-                  </Accordion.Title>
-                  <Accordion.Content className="bg-white p-4 rounded-b-lg border-l border-r border-b border-gray-200">
-                    <div className="border rounded-lg p-6 shadow-md">
-                      <h2 className="text-xl font-semibold mb-4">
-                        Instruksi Bank Transfer
-                      </h2>
-                      <div className="text-gray-700 space-y-4">
-                        <p>
-                          Lakukan pembayaran ke salah satu rekening berikut:
-                        </p>
-                        <ul className="list-disc list-inside">
-                          <li>Bank ABC: XXXXXXXX</li>
-                          <li>Bank XYZ: YYYYYYYY</li>
-                        </ul>
-                        <p>
-                          Silakan cantumkan nomor pesanan saat melakukan
-                          transfer.
-                        </p>
-                        <p>
-                          Pastikan untuk menyelesaikan pembayaran sebelum batas
-                          waktu yang ditentukan.
-                        </p>
-                      </div>
+            <Accordion collapseAll className="mb-3">
+              <Accordion.Panel>
+                <Accordion.Title className="bg-[#3C3C3C] hover:bg-neutral-950 text-white font-semibold p-4 rounded-t-lg border-b border-gray-200">
+                  Bank Transfer
+                </Accordion.Title>
+                <Accordion.Content className="bg-white p-4 rounded-b-lg border-l border-r border-b border-gray-200">
+                  <div className="border rounded-lg p-6 shadow-md">
+                    <h2 className="text-xl font-semibold mb-4">
+                      Instruksi Bank Transfer
+                    </h2>
+                    <div className="text-gray-700 space-y-4">
+                      <p>Lakukan pembayaran ke salah satu rekening berikut:</p>
+                      <ul className="list-disc list-inside">
+                        <li>Bank ABC: XXXXXXXX</li>
+                        <li>Bank XYZ: YYYYYYYY</li>
+                      </ul>
+                      <p>
+                        Silakan cantumkan nomor pesanan saat melakukan transfer.
+                      </p>
+                      <p>
+                        Pastikan untuk menyelesaikan pembayaran sebelum batas
+                        waktu yang ditentukan.
+                      </p>
                     </div>
-                  </Accordion.Content>
-                </Accordion.Panel>
-              </Accordion>
+                  </div>
+                </Accordion.Content>
+              </Accordion.Panel>
+            </Accordion>
 
-              <Accordion>
-                <Accordion.Panel>
-                  <Accordion.Title className="bg-[#6148FF] text-white font-semibold hover:bg-blue-800">
-                    Credit Card
-                  </Accordion.Title>
-                  <Accordion.Content className="bg-white pb-8">
-                    {" "}
-                    {/* Credit Card Form */}
-                    <div className="flex justify-center w-full gap-2 mb-4">
-                      <img
-                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/100px-Mastercard-logo.svg.png"
-                        alt="gambar mastercard"
-                        style={{
-                          width: "60px",
-                          height: "45px",
-                          objectFit: "contain",
-                        }}
-                      />
-                      <img
-                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Visa.svg/200px-Visa.svg.png"
-                        alt="gambar visa"
-                        style={{
-                          width: "60px",
-                          height: "45px",
-                          objectFit: "contain",
-                        }}
-                      />
-                      <img
-                        src="https://upload.wikimedia.org/wikipedia/commons/f/fa/American_Express_logo_%282018%29.svg"
-                        alt="american express"
-                        style={{
-                          width: "60px",
-                          height: "45px",
-                          objectFit: "contain",
-                        }}
-                      />
-                      <img
-                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/PayPal_logo.svg/2560px-PayPal_logo.svg.png"
-                        alt="paypal"
-                        style={{
-                          width: "60px",
-                          height: "45px",
-                          objectFit: "contain",
-                        }}
+            <Accordion collapseAll>
+              <Accordion.Panel>
+                <Accordion.Title className="bg-[#6148FF] text-white font-semibold hover:bg-blue-800">
+                  Credit Card
+                </Accordion.Title>
+                <Accordion.Content className="bg-white pb-8">
+                  {/* Credit Card Form */}
+                  <div className="flex justify-center w-full gap-2 mb-4">
+                    <img
+                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/100px-Mastercard-logo.svg.png"
+                      alt="gambar mastercard"
+                      style={{
+                        width: "60px",
+                        height: "45px",
+                        objectFit: "contain",
+                      }}
+                    />
+                    <img
+                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Visa.svg/200px-Visa.svg.png"
+                      alt="gambar visa"
+                      style={{
+                        width: "60px",
+                        height: "45px",
+                        objectFit: "contain",
+                      }}
+                    />
+                    <img
+                      src="https://upload.wikimedia.org/wikipedia/commons/f/fa/American_Express_logo_%282018%29.svg"
+                      alt="american express"
+                      style={{
+                        width: "60px",
+                        height: "45px",
+                        objectFit: "contain",
+                      }}
+                    />
+                    <img
+                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/PayPal_logo.svg/2560px-PayPal_logo.svg.png"
+                      alt="paypal"
+                      style={{
+                        width: "60px",
+                        height: "45px",
+                        objectFit: "contain",
+                      }}
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label
+                      htmlFor="cardNumber"
+                      className="text-sm font-semibold"
+                    >
+                      Card number
+                    </label>
+                    <div className="flex items-center mt-1">
+                      <input
+                        type="text"
+                        id="cardNumber"
+                        placeholder="4480 0000 0000 0000"
+                        className="w-full p-2 border rounded"
                       />
                     </div>
-                    <div className="mb-4">
+                  </div>
+                  <div className="">
+                    <label
+                      htmlFor="cardHolder"
+                      className="text-sm font-semibold"
+                    >
+                      Card holder name
+                    </label>
+                    <input
+                      type="text"
+                      id="cardHolder"
+                      placeholder="John Doe"
+                      className="w-full p-2 border rounded mt-1"
+                    />
+                  </div>
+                  <div className="flex justify-between mt-4">
+                    <div>
                       <label
-                        htmlFor="cardNumber"
+                        htmlFor="cardCvv"
                         className="text-sm font-semibold"
                       >
-                        Card number
-                      </label>
-                      <div className="flex items-center mt-1">
-                        <input
-                          type="text"
-                          id="cardNumber"
-                          placeholder="4480 0000 0000 0000"
-                          className="w-full p-2 border rounded"
-                        />
-                      </div>
-                    </div>
-                    <div className="">
-                      <label
-                        htmlFor="cardHolder"
-                        className="text-sm font-semibold"
-                      >
-                        Card holder name
+                        CVV
                       </label>
                       <input
                         type="text"
-                        id="cardHolder"
-                        placeholder="John Doe"
+                        id="cardCvv"
+                        placeholder="000"
                         className="w-full p-2 border rounded mt-1"
                       />
                     </div>
-                    <div className="flex justify-between mt-4">
-                      <div>
-                        <label
-                          htmlFor="cardCvv"
-                          className="text-sm font-semibold"
-                        >
-                          CVV
-                        </label>
-                        <input
-                          type="text"
-                          id="cardCvv"
-                          placeholder="000"
-                          className="w-full p-2 border rounded mt-1"
-                        />
-                      </div>
-                      <div>
-                        <label
-                          htmlFor="expiryDate"
-                          className="text-sm font-semibold"
-                        >
-                          Expiry date
-                        </label>
-                        <input
-                          type="text"
-                          id="expiryDate"
-                          placeholder="07/24"
-                          className="w-full p-2 border rounded mt-1"
-                        />
-                      </div>
+                    <div>
+                      <label
+                        htmlFor="expiryDate"
+                        className="text-sm font-semibold"
+                      >
+                        Expiry date
+                      </label>
+                      <input
+                        type="text"
+                        id="expiryDate"
+                        placeholder="07/24"
+                        className="w-full p-2 border rounded mt-1"
+                      />
                     </div>
-                  </Accordion.Content>
-                </Accordion.Panel>
-              </Accordion>
-            </div>
+                  </div>
+                </Accordion.Content>
+              </Accordion.Panel>
+            </Accordion>
           </div>
 
           <div className="w-full desktop:w-2/5 p-4">

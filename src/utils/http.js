@@ -1,5 +1,5 @@
 import axios from "axios";
-import { CookieKeys, CookieStorage } from "./cookies";
+import { CookiesKeys, CookieStorage } from "./cookies";
 
 // const getToken = CookieStorage.get(CookiesKeys.JwtToken);
 
@@ -16,8 +16,8 @@ http.interceptors.request.use((config) => {
   config.headers = {
     ...config.headers,
     Authorization: `Bearer ${
-      CookieStorage.get(CookieKeys.AuthToken)
-        ? CookieStorage.get(CookieKeys.AuthToken)
+      CookieStorage.get(CookiesKeys.AuthToken)
+        ? CookieStorage.get(CookiesKeys.AuthToken)
         : ""
     }`,
   };
