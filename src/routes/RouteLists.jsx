@@ -21,27 +21,30 @@ export const RouteLists = () => {
   return (
     <BrowserRouter>
       <Routes>
+        {/* AUTH */}
         <Route path="/" element={<LoginUser />} />
         <Route path="/login" element={<LoginUser />} />
-        <Route path="/otp" element={<OTP />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/reset" element={<ResetPassword />} />
-        <Route path="/profil" element={<UserProfile />} />
-        <Route path="/notifikasi" element={<Notifikasi />} />
-        <Route path="/gantipassword" element={<GantiPassword />} />
-        <Route path="/history" element={<RiwayatUser />} />
+        <Route path="/otp" element={<OTP />} />
         <Route path="/sendemail" element={<SendEmail />} />
+        <Route path="/reset" element={<ResetPassword />} />
 
         {/* USER */}
         <Route path="/home" element={<Homepage />} />
         <Route path="/kelas" element={<Class />} />
-        <Route path="/detail" element={<Detail />} />
-        <Route path="/payment" element={<Payment />} />
-        <Route path="/berhasil" element={<Berhasil />} />
+        <Route path="/notifikasi" element={<Notifikasi />} />
+        <Route path="/kelas/detail" element={<Detail />} />
+        <Route path="/kelas/payment" element={<Payment />} />
+        <Route path="/kelas/payment/berhasil" element={<Berhasil />} />
+
+        {/* USER PROFILE */}
+        <Route path="/profil" element={<UserProfile />} />
+        <Route path="/profil/gantipassword" element={<GantiPassword />} />
+        <Route path="/profil/riwayat" element={<RiwayatUser />} />
 
         {/* ADMIN */}
         <Route path="/admin" element={<DashboardAdmin />} />
-        <Route path="/kelolakelas" element={<ClassAdmin />} />
+        <Route path="/admin/kelolakelas" element={<ClassAdmin />} />
       </Routes>
     </BrowserRouter>
   );

@@ -3,6 +3,7 @@ import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { useResetPassword } from "../../services/auth/PutResetPassword.";
 import { useLocation } from "react-router-dom";
 import { CookieStorage, CookiesKeys } from "../../utils/cookies";
+import belajar from "../../assets/img/Belajar_white.png";
 
 export const ResetPassword = () => {
   const location = useLocation();
@@ -95,11 +96,12 @@ export const ResetPassword = () => {
       </div>
 
       {/* Bagian Kanan */}
-      <div className="w-1/2 bg-indigo-600">
+      <div className="w-1/2 bg-indigo-600 flex flex-col items-center justify-center">
+        {/* Pastikan path ke gambar sudah benar */}
         <img
-          src="../assets/img/Belajar_white.png"
+          src={belajar}
           alt="Belajar"
-          className="object-cover w-full h-screen"
+          className="object-cover w-1/2"
         />
       </div>
     </div>

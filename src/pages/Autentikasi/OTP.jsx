@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
+import belajar from "../../assets/img/Belajar_white.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useSendOTP } from "../../services/auth/otp_user";
 import { useReSendOTP } from "../../services/auth/resendOtp_user";
@@ -119,8 +120,13 @@ export const OTP = () => {
         </div>
       </div>
 
-      <div className="w-1/2 bg-indigo-600">
-        <img src="../assets/img/Belajar_white.png" alt="Belajar" className="object-cover w-full h-screen" />
+      <div className="w-1/2 bg-indigo-600 flex flex-col items-center justify-center">
+        {/* Pastikan path ke gambar sudah benar */}
+        <img
+          src={belajar}
+          alt="Belajar"
+          className="object-cover w-1/2"
+        />
       </div>
     </div>
   );

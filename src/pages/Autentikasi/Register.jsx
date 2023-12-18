@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import BelajarImage from "../../assets/img/Belajar_white.png";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
+import belajar from "../../assets/img/Belajar_white.png";
 import { useRegisterUser } from "../../services/auth/register_user";
 
 export const Register = () => {
@@ -136,8 +137,13 @@ export const Register = () => {
       </div>
 
       {/* Bagian Kanan */}
-      <div className="w-1/2 bg-indigo-600">
-        <img src="../assets/img/Belajar_white.png" alt="Belajar" className="object-cover w-full h-screen" />
+      <div className="w-1/2 bg-indigo-600 flex flex-col items-center justify-center">
+        {/* Pastikan path ke gambar sudah benar */}
+        <img
+          src={belajar}
+          alt="Belajar"
+          className="object-cover w-1/2"
+        />
       </div>
     </div>
   );
