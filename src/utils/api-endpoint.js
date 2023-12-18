@@ -12,4 +12,11 @@ export const API_ENDPOINT = {
   GET_COURSE_ID: "/course/",
   POST_PAYMENT: "/payment",
   POST_PAYMENT_CHECKOUT: "/payment/checkout",
+  USER_REGISTER: "/auth/register",
+  VERIFY_OTP: "/auth/verify-otp",
+  RESEND_OTP: "/auth/resend-otp",
+  GET_USER: "/profile/account",
+  UPDATE_USER: "/profile/updateProfile",
+  GANTI_PASSWORD_USER: "/profile/changePassword",
+  RIWAYAT_PEMBAYARAN_USER: "/profile/paymentHistory",
 };
