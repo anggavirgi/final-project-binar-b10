@@ -4,7 +4,7 @@ import http from "../utils/http";
 
 const getCategories = async (limit) => {
   const { data } = await http
-  .get(`${API_ENDPOINT.CATEGORY}?limit=${limit}`)
+  .get(`${API_ENDPOINT.GET_CATEGORY}?limit=${limit}`)
     .then((result) => {
       return result;
     })

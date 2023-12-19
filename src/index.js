@@ -8,14 +8,14 @@ import { ToastContainer } from "react-toastify";
 import { Provider } from "react-redux";
 import store from "./redux/store/store";
 
-const clientId = new QueryClient();
+const clientID = new QueryClient();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
       <GoogleOAuthProvider clientId={process.env.REACT_APP_SERVER}>
-        <QueryClientProvider client={clientId}>
+        <QueryClientProvider client={clientID}>
           <App />
         </QueryClientProvider>
         <ToastContainer />

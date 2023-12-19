@@ -7,7 +7,7 @@ const getCoursesAll = async (search, limit, categoryIds, levels) => {
   const levelParams = levels.map((level) => `level=${level}`).join("&");
   
   const { data } = await http
-  .get(`${API_ENDPOINT.COURSE}?search=${search}&limit=${limit}&${categoryParams}&${levelParams}`)
+  .get(`${API_ENDPOINT.GET_COURSE}?search=${search}&limit=${limit}&${categoryParams}&${levelParams}`)
     .then((result) => {
       return result;
     })

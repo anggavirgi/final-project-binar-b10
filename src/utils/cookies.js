@@ -2,9 +2,12 @@ import Cookies from "universal-cookie";
 
 const cookies = new Cookies();
 
-export const CookieKeys = {
-  AuthToken: "TokenKu",
+export const CookiesKeys = {
+  AuthToken: "authToken",
+  JwtToken: "jwtToken",
   User: "user",
+  // RegisterToken: "registerToken",
+  // GoogleCredentials: "googleCredentials"
 };
 
 const CookieOptions = {

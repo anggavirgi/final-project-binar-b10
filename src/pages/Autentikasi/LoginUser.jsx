@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
-import { useLoginUser } from "../services/login-user";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
+import { useLoginUser } from "../../services/auth/PostLogin";
+import belajar from "../../assets/img/Belajar_white.png";
 
 export const LoginUser = () => {
+  const navigate = useNavigate();
+
   const [passwordShown, setPasswordShown] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { mutate: Login, isSuccess, isError, error } = useLoginUser();
-  const navigate = useNavigate();
+
+  const { mutate: Login, data } = useLoginUser();
 
   const togglePasswordVisibility = () => {
     setPasswordShown(!passwordShown);
@@ -28,19 +30,12 @@ export const LoginUser = () => {
 
   const loginUser = (e) => {
     e.preventDefault();
-    console.log("login fired");
-    Login({ email, password });
+
+    Login({
+      email: email,
+      password: password,
+    });
   };
-
-  // useEffect(() => {
-  //   if (isSuccess) {
-  //     toast.success("Anda berhasil login");
-  //   }
-
-  //   if (isError) {
-  //     toast.error(`Login gagal: ${error.message}`);
-  //   }
-  // }, [isSuccess, isError, error, navigate]);
 
   return (
     <div className="flex h-screen">
@@ -83,12 +78,12 @@ export const LoginUser = () => {
                 </span>
               </div>
               {/* Tautan untuk reset password, gantikan "#" dengan link yang sesuai */}
-              <a
-                href="#"
-                className="text-right hover:underline text-indigo-600"
+              <Link
+                className="text-right hover:underline text-indigo-600 cursor-pointer"
+                to={"/sendemail"}
               >
                 Lupa Kata Sandi
-              </a>
+              </Link>
             </div>
 
             <button
@@ -102,21 +97,17 @@ export const LoginUser = () => {
           {/* Tautan untuk registrasi, gantikan "#" dengan link yang sesuai */}
           <p>
             Belum punya akun?{" "}
-            <a href="#" className="hover:underline text-indigo-600">
+            <Link className="hover:underline text-indigo-600" to={"/register"}>
               Daftar disini
-            </a>
+            </Link>
           </p>
         </div>
       </div>
 
       {/* Bagian Kanan */}
-      <div className="w-1/2 bg-indigo-600">
+      <div className="w-1/2 bg-indigo-600 flex flex-col items-center justify-center">
         {/* Pastikan path ke gambar sudah benar */}
-        <img
-          src="../assets/img/Belajar_white.png"
-          alt="Belajar Image"
-          className="object-cover w-full h-screen"
-        />
+        <img src={belajar} alt="Belajar" className="object-cover w-1/2" />
       </div>
     </div>
   );

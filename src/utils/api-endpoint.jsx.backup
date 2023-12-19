@@ -1,5 +1,5 @@
 export const API_ENDPOINT = {
   LOGIN_USER: "/auth/login",
-  COURSE: "/course",
-  CATEGORY: "/category"
+  GET_COURSE: "/course",
+  GET_CATEGORY: "/category"
 };
