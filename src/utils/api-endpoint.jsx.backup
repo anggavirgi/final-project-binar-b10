@@ -1,5 +1,0 @@
-export const API_ENDPOINT = {
-  LOGIN_USER: "/auth/login",
-  GET_COURSE: "/course",
-  GET_CATEGORY: "/category"
-};

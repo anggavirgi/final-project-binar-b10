@@ -11,7 +11,6 @@ const http = axios.create({
   headers: {
     accept: "application/json",
     "Content-Type": "application/json",
-    Authorization: `Bearer ${CookieStorage.get(CookiesKeys.AuthToken) || ""}`,
   },
 });
 

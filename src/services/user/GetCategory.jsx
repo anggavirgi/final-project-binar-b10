@@ -2,17 +2,21 @@ import { useQuery } from "@tanstack/react-query";
 import http from "../../utils/http";
 import { API_ENDPOINT } from "../../utils/api-endpoint";
 
-export const fetchCategory = async () => {
-  return await http
-    .get(API_ENDPOINT.GET_CATEGORY)
+export const fetchCategory = async (limit) => {
+  const { data } = await http
+    .get(`${API_ENDPOINT.GET_CATEGORY}?limit=${limit}`)
     .then((result) => {
       return result;
     })
     .catch((err) => {
-      throw err;
+      return err;
     });
+  return data;
 };
 
-export const useCategory = () => {
-  return useQuery([API_ENDPOINT.GET_CATEGORY], fetchCategory);
+export const useCategory = (limit, options) => {
+  return useQuery({
+    queryKey: ["category", { limit, ...options }],
+    queryFn: () => fetchCategory(limit),
+  });
 };

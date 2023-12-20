@@ -1,5 +1,4 @@
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 import http from "../../utils/http";
 import { API_ENDPOINT } from "../../utils/api-endpoint";
 import { CookiesKeys, CookieStorage } from "../../utils/cookies";
