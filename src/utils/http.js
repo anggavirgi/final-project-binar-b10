@@ -2,9 +2,11 @@ import axios from "axios";
 import { CookiesKeys, CookieStorage } from "./cookies";
 
 // const getToken = CookieStorage.get(CookiesKeys.JwtToken);
+const url = process.env.REACT_APP_SERVER;
 
+// baseURL: process.env.REACT_APP_SERVER,
 const http = axios.create({
-  baseURL: process.env.REACT_APP_SERVER,
+  baseURL: url,
   timeout: 30000,
   headers: {
     accept: "application/json",
