@@ -2,9 +2,9 @@ import axios from "axios";
 import { CookiesKeys, CookieStorage } from "./cookies";
 
 // const getToken = CookieStorage.get(CookiesKeys.JwtToken);
-const url = "https://binar-academy-final-project.vercel.app"
+const url = process.env.REACT_APP_SERVER;
 
-  // baseURL: process.env.REACT_APP_SERVER,
+// baseURL: process.env.REACT_APP_SERVER,
 const http = axios.create({
   baseURL: url,
   timeout: 30000,
