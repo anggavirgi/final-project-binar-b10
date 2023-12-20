@@ -1,15 +1,37 @@
 import React from "react";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Accordion } from "flowbite-react";
 import { LayoutUser } from "../../Layout/LayoutUser";
+import { useCourseDetail } from "../../services/user/GetCourseDetail";
+import { usePutPayment } from "../../services/user/PutPayment";
 
 export const Payment = () => {
   const navigate = useNavigate();
+  const { state } = useLocation();
 
-  const handleClick = () => {
-    navigate("/kelas/berhasil");
+  // GET DETAIL COURSE
+  const { data: getCourseDetail } = useCourseDetail({
+    course_id: state.courseId,
+  });
+
+  const dataCourseDetail = getCourseDetail?.data || [];
+
+  // PUT PAYMENT
+  const {mutate: getPutPayment, isSuccess} = usePutPayment()
+
+  const handleCheckout = () => {
+    getPutPayment({
+      course_id: dataCourseDetail.course_id,
+      metode_pembayaran: "BNI"
+    })
   };
+  if(isSuccess){
+    navigate("/kelas/payment/berhasil")
+  }
+
+  const ppn = (dataCourseDetail.harga * 11) / 100;
+
   return (
     <>
       <LayoutUser>
@@ -186,13 +208,11 @@ export const Payment = () => {
                   <div className="px-4 pt-1 pb-3 bg-white rounded-b-3xl shadow-lg">
                     <div className="flex justify-between items-center pt-2">
                       <h4 className="text-base font-bold text-[#6148FF]">
-                        UI/UX Design
+                        {dataCourseDetail.Kategori.title}
                       </h4>
                     </div>
-                    <h1 className="font-bold text-base">
-                      Belajar Web Designer dengan Figma
-                    </h1>
-                    <p className="text-sm mb-2">by Angela Doe</p>
+                    <h1 className="font-bold text-base">{dataCourseDetail.title}</h1>
+                    <p className="text-sm mb-2">by {dataCourseDetail.Mentor.name}</p>
                   </div>
                 </div>
               </div>
@@ -200,22 +220,24 @@ export const Payment = () => {
               <div className="flex justify-between items-center px-5">
                 <div className="flex flex-col gap-1.5">
                   <div className="font-semibold">Harga</div>
-                  <div>Rp 349.000</div>
+                  <div>Rp {dataCourseDetail.harga}</div>
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <div className="font-semibold">PPN 11%</div>
-                  <div>Rp 38.390</div>
+                  <div>Rp {ppn}</div>
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <div className="font-semibold">Total Bayar</div>
-                  <div className="font-semibold text-primary">Rp 378.930</div>
+                  <div className="font-semibold text-primary">
+                    Rp {dataCourseDetail.harga + ppn}
+                  </div>
                 </div>
               </div>
 
               <div className="w-full flex justify-center">
                 <button
                   className="w-4/5 mt-4 h-12 bg-[#FF0000] text-white font-semibold rounded-full flex items-center justify-center hover:bg-red-600"
-                  onClick={handleClick}
+                  onClick={handleCheckout}
                 >
                   Bayar dan Ikuti Kelas Selamanya
                   <FaArrowRight className="ml-2" />

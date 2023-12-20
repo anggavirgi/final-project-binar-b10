@@ -1,20 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FiLogIn } from "react-icons/fi";
 import { BiSearchAlt } from "react-icons/bi";
 import { FiUser } from "react-icons/fi";
 import { LuBell } from "react-icons/lu";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { CookieStorage, CookiesKeys } from "../../utils/cookies";
-import { useMe } from "../../services/auth/GetMe";
+import { useDispatch, useSelector } from "react-redux";
+import { getDataMe } from "../../redux/actions/meAction";
 
 export const HeaderUser = () => {
   const navigate = useNavigate();
   // const { pathname } = useLocation();
   const token = CookieStorage.get(CookiesKeys.AuthToken);
 
-  const { data: getMe } = useMe();
-
-  console.log(getMe);
+  useEffect(() => {
+    getDataMe();
+  }, []);
 
   // const subpage = pathname.split("/")?.[1];
   // const activePage = (page = null) => {

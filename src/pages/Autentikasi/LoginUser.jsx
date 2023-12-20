@@ -53,7 +53,7 @@ export const LoginUser = () => {
                 type="text"
                 id="email"
                 name="email"
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 rounded-2xl"
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
                 autoComplete="off"
               />
             </div>
@@ -67,7 +67,7 @@ export const LoginUser = () => {
                   type={passwordShown ? "text" : "password"}
                   id="password"
                   name="password"
-                  className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 rounded-2xl"
+                  className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
                   autoComplete="off"
                 />
                 <span

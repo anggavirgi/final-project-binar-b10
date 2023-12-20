@@ -3,9 +3,46 @@ import { LayoutAdmin } from "../../Layout/LayoutAdmin";
 import { CardAdmin } from "../../components/Card/CardAdmin";
 import { CiFilter } from "react-icons/ci";
 import { FaSearch } from "react-icons/fa";
+import { usePayment } from "../../services/admin/GetPayment";
 
 export const DashboardAdmin = () => {
   const [getModalFilter, setModalFilter] = useState(false);
+
+  // GET PAYMENT
+  const { data: getPayment } = usePayment();
+
+  const dataPayment = getPayment?.data.data.payment || [];
+
+  console.log(dataPayment);
+
+  const dateFormat = (date) => {
+    const dateTime = new Date(date);
+
+    const months = [
+      "Januari",
+      "Februari",
+      "Maret",
+      "April",
+      "Mei",
+      "Juni",
+      "Juli",
+      "Agustus",
+      "September",
+      "Oktober",
+      "November",
+      "Desember",
+    ];
+
+    const day = dateTime.getDate();
+    const monthIndex = dateTime.getMonth();
+    const year = dateTime.getFullYear();
+    const hours = dateTime.getHours();
+    const minutes = dateTime.getMinutes();
+
+    const formattedDateTime = `${day} ${months[monthIndex]} ${year}, ${hours}.${minutes}`;
+
+    return formattedDateTime;
+  };
 
   const modalFilter = () => {
     return (
@@ -79,8 +116,12 @@ export const DashboardAdmin = () => {
                   {getModalFilter ? modalFilter() : ""}
                 </div>
                 <div className="relative flex items-center">
-                  <input type="text" placeholder="cari.." className="border border-primary rounded-lg ps-8 pe-3 py-[0.275rem] w-[15rem]"/>
-                  <FaSearch className="w-3.5 h-3.5 absolute left-2.5"/>
+                  <input
+                    type="text"
+                    placeholder="cari.."
+                    className="border border-primary rounded-lg ps-8 pe-3 py-[0.275rem] w-[15rem]"
+                  />
+                  <FaSearch className="w-3.5 h-3.5 absolute left-2.5" />
                 </div>
               </div>
             </div>
@@ -96,102 +137,20 @@ export const DashboardAdmin = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="ps-2 py-3">Johndoe123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">SUDAH BAYAR</td>
-                  <td className="py-3">Credit Card</td>
-                  <td className="py-3">20 Sep, 2023 at 2:00 AM</td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">Johndoe123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">SUDAH BAYAR</td>
-                  <td className="py-3">Credit Card</td>
-                  <td className="py-3">20 Sep, 2023 at 2:00 AM</td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">Johndoe123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">SUDAH BAYAR</td>
-                  <td className="py-3">Credit Card</td>
-                  <td className="py-3">20 Sep, 2023 at 2:00 AM</td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">Johndoe123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">SUDAH BAYAR</td>
-                  <td className="py-3">Credit Card</td>
-                  <td className="py-3">20 Sep, 2023 at 2:00 AM</td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">Johndoe123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">SUDAH BAYAR</td>
-                  <td className="py-3">Credit Card</td>
-                  <td className="py-3">20 Sep, 2023 at 2:00 AM</td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">Johndoe123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">SUDAH BAYAR</td>
-                  <td className="py-3">Credit Card</td>
-                  <td className="py-3">20 Sep, 2023 at 2:00 AM</td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">Johndoe123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">SUDAH BAYAR</td>
-                  <td className="py-3">Credit Card</td>
-                  <td className="py-3">20 Sep, 2023 at 2:00 AM</td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">Johndoe123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">SUDAH BAYAR</td>
-                  <td className="py-3">Credit Card</td>
-                  <td className="py-3">20 Sep, 2023 at 2:00 AM</td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">Johndoe123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">SUDAH BAYAR</td>
-                  <td className="py-3">Credit Card</td>
-                  <td className="py-3">20 Sep, 2023 at 2:00 AM</td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">Johndoe123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">SUDAH BAYAR</td>
-                  <td className="py-3">Credit Card</td>
-                  <td className="py-3">20 Sep, 2023 at 2:00 AM</td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">Johndoe123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">SUDAH BAYAR</td>
-                  <td className="py-3">Credit Card</td>
-                  <td className="py-3">20 Sep, 2023 at 2:00 AM</td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">Johndoe123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">SUDAH BAYAR</td>
-                  <td className="py-3">Credit Card</td>
-                  <td className="py-3">20 Sep, 2023 at 2:00 AM</td>
-                </tr>
+                {dataPayment.map((value, index) => {
+                  return (
+                    <tr key={index}>
+                      <td className="ps-2 py-3">
+                        {value.riwayat_transaksi_id}
+                      </td>
+                      <td className="py-3">{value.Course.Kategori.title}</td>
+                      <td className="py-3">{value.Course.title}</td>
+                      <td className="py-3 font-bold">{value.status}</td>
+                      <td className="py-3">Credit Card</td>
+                      <td className="py-3">{dateFormat(value.tanggal_pembayaran)}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

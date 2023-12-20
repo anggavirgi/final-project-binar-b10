@@ -16,16 +16,36 @@ import { GiPadlock } from "react-icons/gi";
 import Onboarding from "../../assets/img/onboarding.png";
 import { LayoutUser } from "../../Layout/LayoutUser";
 import { useCourseDetail } from "../../services/user/GetCourseDetail";
+import { usePostPayment } from "../../services/user/PostPayment";
 
 export const Detail = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
 
-  const { data: getCourseDetail, isSuccess } = useCourseDetail({
+  // FETCH DETAIL
+  const { data: getCourseDetail, isSuccess: detailSuccess } = useCourseDetail({
     course_id: state.courseId,
   });
 
   const dataCourseDetail = getCourseDetail?.data || [];
+
+  // POST PAYMENT
+  const { mutate: getPostPayment, isSuccess: postPaymentSuccess } =
+    usePostPayment();
+
+  const handleCheckout = () => {
+    getPostPayment({
+      course_id: dataCourseDetail.course_id,
+      metode_pembayaran: "BNI",
+    });
+  };
+  if (postPaymentSuccess) {
+    navigate("/kelas/payment", {
+      state: {
+        courseId: dataCourseDetail.course_id
+      }
+    });
+  }
 
   const [openModal, setOpenModal] = useState(false);
   const [showTelegramModal, setShowTelegramModal] = useState(false);
@@ -40,9 +60,6 @@ export const Detail = () => {
       setShowTelegramModal(true);
     }
   }, []);
-  const handleClick = () => {
-    navigate("/kelas/payment");
-  };
 
   return (
     <>
@@ -57,7 +74,7 @@ export const Detail = () => {
               Kelas Premium
             </span>
           </div>
-          {isSuccess && (
+          {detailSuccess && (
             <div className="flex justify-center">
               <div className="w-full shadow-xl rounded-3xl sm:w-full md:w-[47%] lg:w-[47%] xl:w-[80%] mb-4 overflow-hidden">
                 <div className="overflow-hidden">
@@ -122,7 +139,7 @@ export const Detail = () => {
           <Modal.Footer className="flex justify-center">
             <button
               className="bg-[#6148FF] h-12 w-1/2 flex justify-center items-center rounded-full"
-              onClick={handleClick}
+              onClick={handleCheckout}
             >
               <span className="text-white font-semibold">Beli Sekarang</span>
               <FaArrowCircleRight className="text-[#EBF3FC] ml-2" />
@@ -184,7 +201,7 @@ export const Detail = () => {
                   </div>
                 </Link>
 
-                {isSuccess && (
+                {detailSuccess && (
                   <div className="flex flex-wrap lg:flex-nowrap justify-between items-start">
                     <div className="flex-1">
                       <h1 className="text-3xl font-bold text-[#6148FF] mb-2">
