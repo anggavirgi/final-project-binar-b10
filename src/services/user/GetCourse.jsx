@@ -3,15 +3,11 @@ import { API_ENDPOINT } from "../../utils/api-endpoint";
 import http from "../../utils/http";
 
 export const fetchCourse = async (search, limit, categoryIds, levels) => {
-  const categoryParams = categoryIds
-    .map((categoryId) => `category_ids=${categoryId}`)
-    .join("&");
+  const categoryParams = categoryIds.map((categoryId) => `category_ids=${categoryId}`).join("&");
   const levelParams = levels.map((level) => `level=${level}`).join("&");
 
   const { data } = await http
-    .get(
-      `${API_ENDPOINT.GET_COURSE}?search=${search}&limit=${limit}&${categoryParams}&${levelParams}`
-    )
+    .get(`${API_ENDPOINT.GET_COURSE}?search=${search}&limit=${limit}&${categoryParams}&${levelParams}`)
     .then((result) => {
       return result;
     })

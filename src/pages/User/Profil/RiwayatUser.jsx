@@ -13,10 +13,11 @@ import { useRiwayatPembayaran } from "../../../services/User Profile/riwayat_pem
 export const RiwayatUser = () => {
   const [riwayatPembayaran, setRiwayatPembayaran] = useState([]);
   const { data, isLoading, isError } = useRiwayatPembayaran();
+  console.log(data);
 
   useEffect(() => {
-    if (data) {
-      setRiwayatPembayaran(data);
+    if (data && data.status) {
+      setRiwayatPembayaran(data.data.listCourse);
     }
   }, [data]);
 
@@ -46,44 +47,39 @@ export const RiwayatUser = () => {
                 <p className="text-black text-2xl font-bold">Riwayat Pembayaran</p>
               </div>
 
-              <div className="w-full  shadow-xl rounded-3xl sm:w-full md:w-[90%] lg:w-[90%] xl:w-[90%] mb-4 overflow-hidden">
-                <div className="overflow-hidden w-full">
-                  <img className="w-full h-40 object-cover" src="https://via.placeholder.com/150" alt="Course thumbnail" />
-                </div>
-                <div className="px-4 py-5 rounded-b-3xl shadow-lg w-full">
-                  <div className="flex justify-between items-center pt-2">
-                    <h4 className="text-lg font-bold text-[#6148FF]">UI/UX Design</h4>
-                    <div className="flex items-center">
-                      <FaStar className="text-yellow-500 mr-1" />
-                      <span className="text-purple-600 font-semibold">4.7</span>
-                    </div>
-                  </div>
-                  <h1 className="font-bold text-lg">Belajar Web Designer dengan Figma</h1>
-                  <p className="text-sm mb-2">by Angela Doe</p>
-                  <div className="text-sm text-gray-600 mb-4 flex justify-between">
-                    <div className="flex items-center">
-                      <RiShieldStarLine className="text-green-500 mr-2" />
-                      <span className="text-[#6148FF] text-sm font-semibold">Intermediate Level</span>
-                    </div>
-                    <div className="flex items-center">
-                      <FaBookOpen className="text-green-500 mr-2" />
-                      <span className="text-gray-700 text-sm font-semibold">10 Modul</span>
-                    </div>
-                    <div className="flex items-center">
-                      <FaRegClock className="text-green-500 mr-2" />
-                      <span className="text-gray-700 text-sm font-semibold">120 Menit</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center">
-                    <FaRegCheckCircle className="text-green-500 mr-2" />
-                    <div className="w-1/2 bg-gray-200 rounded-full dark:bg-gray-700">
-                      <div className="bg-[#6148FF] h-7 flex items-center rounded-full" style={{ width: "70%" }}>
-                        <span className="ml-2 text-white font-semibold">70% complete</span>
+              {riwayatPembayaran.map((course) => (
+                <div className="w-full shadow-xl rounded-3xl sm:w-full md:w-[90%] lg:w-[90%] xl:w-[90%] mb-4 overflow-hidden" key={course.course_id}>
+                  {/* Course Thumbnail Placeholder */}
+                  <img className="w-full h-40 object-cover" src="https://via.placeholder.com/150" alt={course.title} />
+
+                  <div className="px-4 py-5 rounded-b-3xl shadow-lg w-full">
+                    {/* Course Details */}
+                    <div className="flex justify-between items-center">
+                      <h4 className="text-lg font-bold text-[#6148FF]">{course.Kategori.title}</h4>
+                      <div className="flex items-center">
+                        <FaStar className="text-yellow-500 mr-1" />
+                        <span className="text-purple-600 font-semibold">{course.avgRating !== 0 ? Math.floor(course.avgRating * 10) / 10 : "-"}</span>
                       </div>
                     </div>
+                    <h1 className="font-bold text-lg">{course.title}</h1>
+                    <p className="text-sm mb-2">by {course.Mentor.name}</p>
+
+                    {/* Course Meta */}
+                    <div className="text-sm text-gray-600 mb-4 flex justify-between">
+                      <div className="flex items-center">
+                        <RiShieldStarLine className="text-green-500 mr-2" />
+                        <span className="text-[#6148FF] text-sm font-semibold">{course.level}</span>
+                      </div>
+                    </div>
+
+                    {/* Course Progress and Status */}
+                    <div className="flex items-center">
+                      <FaRegCheckCircle className="text-green-500 mr-2" />
+                      <span className="text-gray-700">{course.Riwayat_Transaksi[course.Riwayat_Transaksi.length - 1].status}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
