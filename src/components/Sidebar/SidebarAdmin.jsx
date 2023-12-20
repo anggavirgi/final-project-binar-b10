@@ -2,6 +2,7 @@ import React from "react";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { IoBookOutline } from "react-icons/io5";
 import { TbLogout } from "react-icons/tb";
+import { Link } from "react-router-dom";
 
 export const SidebarAdmin = () => {
   return (
@@ -10,27 +11,28 @@ export const SidebarAdmin = () => {
         LOGO
       </div>
       <div className="flex flex-col text-white font-semibold">
-        <a
-          href="/admin"
+        <Link
+          to={"/admin"}
           className="ps-10 py-3.5 hover:bg-[#489CFF] flex gap-3 items-center"
         >
           <LuLayoutDashboard />
           <span>Dashboard</span>
-        </a>
-        <a
-          href="/kelolakelas"
+        </Link>
+        <Link
+          to={"/admin/kelolakelas"}
           className="ps-10 py-3.5 hover:bg-[#489CFF] flex gap-3 items-center"
         >
           <IoBookOutline />
           <span>Kelola Kelas</span>
-        </a>
-        <a
-          href="/logout"
+        </Link>
+
+        <Link
+          to={"/logout"}
           className="ps-10 py-3.5 hover:bg-[#489CFF] flex gap-3 items-center"
         >
           <TbLogout />
           <span>Keluar</span>
-        </a>
+        </Link>
       </div>
     </div>
   );

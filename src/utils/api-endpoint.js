@@ -10,7 +10,7 @@ export const API_ENDPOINT = {
   GET_CATEGORY: "/category",
   GET_COURSE: "/course",
   GET_COURSE_ID: "/course/",
-  POST_PAYMENT: "/payment",
+  GET_PAYMENT: "/payment/checkout",
   POST_PAYMENT_CHECKOUT: "/payment/checkout",
   USER_REGISTER: "/auth/register",
   VERIFY_OTP: "/auth/verify-otp",
