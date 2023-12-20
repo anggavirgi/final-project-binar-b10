@@ -2,17 +2,29 @@ import { useQuery } from "@tanstack/react-query";
 import { API_ENDPOINT } from "../../utils/api-endpoint";
 import http from "../../utils/http";
 
-export const fetchCourse = async () => {
-  return await http
-    .get(API_ENDPOINT.GET_COURSE)
+export const fetchCourse = async (search, limit, categoryIds, levels) => {
+  const categoryParams = categoryIds
+    .map((categoryId) => `category_ids=${categoryId}`)
+    .join("&");
+  const levelParams = levels.map((level) => `level=${level}`).join("&");
+
+  const { data } = await http
+    .get(
+      `${API_ENDPOINT.GET_COURSE}?search=${search}&limit=${limit}&${categoryParams}&${levelParams}`
+    )
     .then((result) => {
       return result;
     })
     .catch((err) => {
-      throw err;
+      return err;
     });
+
+  return data;
 };
 
-export const useCourse = () => {
-  return useQuery([API_ENDPOINT.GET_COURSE], fetchCourse);
+export const useCourse = (search, limit, categoryIds, levels, options) => {
+  return useQuery({
+    queryKey: ["course", { search, limit, categoryIds, levels, ...options }],
+    queryFn: () => fetchCourse(search, limit, categoryIds, levels),
+  });
 };
