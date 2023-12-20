@@ -18,9 +18,10 @@ import { useCategory } from "../../services/user/GetCategory";
 
 export const Homepage = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [categories, setCategories] = useState([]);
-  const [courses, setCourses] = useState([]);
-  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+  const [dataCourses, setDataCourses] = useState([]);
+  const [dataCategories, setDataCategories] = useState([]);
+  const [dataLevels, setDataLevels] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedLevels, setSelectedLevels] = useState([]);
   const [showAllCategories, setShowAllCategories] = useState(false);
   const [showAllCourse, setShowAllCourse] = useState(false);
@@ -28,29 +29,31 @@ export const Homepage = () => {
   const [slideEnd, setSlideEnd] = useState(false);
   const divRef = useRef(null);
 
-  const { data: fetchedCourses, isLoading } = useCourse(searchQuery, 100, selectedCategoryId, selectedLevels);
-  console.log(fetchedCourses);
-  const { data: fetchedCategories } = useCategory(10);
+  const { data: coursesAll, isLoading } = useCourse(searchQuery, 100, selectedCategories, selectedLevels);
+  const { data: levelsAll } = useCourse("", 1000, [], []);
+  const { data: categoryAll } = useCategory(10);
 
-  const handleCategorySelect = (categoryId) => {
-    if (selectedCategoryId === categoryId) {
-      setSelectedCategoryId(null);
-    } else {
-      setSelectedCategoryId(categoryId);
+  useEffect(() => {
+    if (coursesAll?.data && coursesAll?.data?.course) {
+      setDataCourses(coursesAll.data.course);
     }
+    if (categoryAll?.data && categoryAll?.data?.category) {
+      setDataCategories(categoryAll.data.category);
+    }
+    if (levelsAll?.data && levelsAll?.data?.course) {
+      setDataLevels([...new Set(levelsAll.data.course.map((course) => course.level))]);
+    }
+  }, [coursesAll, categoryAll, levelsAll]);
+
+  const handleCategoryChange = (categoryId) => {
+    setSelectedCategories((prevCategories) => {
+      if (prevCategories.includes(categoryId)) {
+        return prevCategories.filter((id) => id !== categoryId);
+      } else {
+        return [...prevCategories, categoryId];
+      }
+    });
   };
-
-  useEffect(() => {
-    if (fetchedCourses) {
-      setCourses(fetchedCourses?.data?.course);
-    }
-  }, [fetchedCourses]);
-
-  useEffect(() => {
-    if (fetchedCategories) {
-      setCategories(fetchedCategories.data.category);
-    }
-  }, [fetchedCategories]);
 
   const slideLeft = () => {
     console.log(divRef);
@@ -86,7 +89,7 @@ export const Homepage = () => {
           </button>
         </div>
         <div className="grid grid-cols-6 gap-6 mt-4 text-sm desktopfull:text-base">
-          {categories?.slice(0, showAllCategories ? categories.length : 6).map((category, index) => (
+          {dataCategories?.slice(0, showAllCategories ? dataCategories.length : 6).map((category, index) => (
             <div key={index} className="flex flex-col items-center gap-1">
               <img src={category.url_img_preview || img1} alt={category.title} className="rounded-3xl" />
               <div className="font-bold">{category.title}</div>
@@ -129,11 +132,11 @@ export const Homepage = () => {
             <RiArrowDropRightLine onClick={slideRight} className="w-5 h-5 stroke-1" />
           </div>
           <div ref={divRef} className="flex justify-between gap-1 px-1 text-black font-bold whitespace-nowrap overflow-x-hidden scroll-smooth rounded-full">
-            {categories.map((category, index) => (
+            {dataCategories.map((category, index) => (
               <div
                 key={index}
-                className={`bg-[#EBF3FC] text-center px-3.5 py-1 rounded-full w-fit cursor-pointer hover:bg-primary hover:text-white ${selectedCategoryId === category.kategori_id ? "text-white bg-primary" : "text-black"}`}
-                onClick={() => handleCategorySelect(category.kategori_id)}
+                className={`bg-[#EBF3FC] text-center px-3.5 py-1 rounded-full w-fit cursor-pointer hover:bg-primary hover:text-white ${selectedCategories.includes(category.kategori_id) ? "text-white bg-primary" : "text-black"}`}
+                onClick={() => handleCategoryChange(category.kategori_id)}
               >
                 {category.title}
               </div>
@@ -230,7 +233,7 @@ export const Homepage = () => {
         </div>
       </div> */}
         <div className="grid grid-cols-3 gap-6 mt-4 text-sm desktopfull:text-base">
-          {courses.slice(0, showAllCourse ? courses.length : 3).map((course, index) => (
+          {dataCourses.slice(0, showAllCourse ? dataCourses.length : 3).map((course, index) => (
             <div key={index} className="rounded-3xl shadow-lg">
               <img src={course.url_img_preview || img1} alt={course.title} className="w-full h-[9rem] object-cover rounded-3xl" />
               <div className="px-3 pt-1.5 pb-3">
