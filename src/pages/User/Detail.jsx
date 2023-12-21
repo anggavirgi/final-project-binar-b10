@@ -149,7 +149,7 @@ export const Detail = () => {
             <div className="text-center">
               <h1 className="text-3xl font-bold text-[#6148FF] mb-4">OnBoarding...</h1>
               {/* Atur gambar menjadi 50% lebar modal dan tinggi sama dengan lebar */}
-              {/* <img
+        {/* <img
                 className="mx-auto" // Center the image
                 style={{ width: "50%", height: "auto", aspectRatio: "1 / 1" }} // Set width to 50% and height automatically to maintain the aspect ratio
                 src={Onboarding}
@@ -166,7 +166,7 @@ export const Detail = () => {
               </div>
             </div>
           </Modal.Body>
-        </Modal> */} 
+        </Modal> */}
 
         <div className="flex gap-10">
           <div className="desktop:w-3/5 desktopfull:w-2/3">
