@@ -5,10 +5,15 @@ import { CiCirclePlus } from "react-icons/ci";
 import { CiFilter } from "react-icons/ci";
 import { FaSearch } from "react-icons/fa";
 import { Button, Modal } from "flowbite-react";
+import { useCourseAdmin } from "../../services/admin/GetCourseAdmin";
 
 export const ClassAdmin = () => {
   const [getModalFilter, setModalFilter] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+
+  const { data: getCourse } = useCourseAdmin();
+
+  const dataCourse = getCourse?.data.course || [];
 
   const modalFilter = () => {
     return (
@@ -203,186 +208,28 @@ export const ClassAdmin = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="ps-2 py-3">WD1123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">GRATIS</td>
-                  <td className="py-3">Beginner</td>
-                  <td className="py-3">Rp 349,000</td>
-                  <td>
-                    <div className="flex items-center gap-2 text-white">
-                      <button className="bg-primary font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Ubah
-                      </button>
-                      <button className="bg-red-500 font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Hapus
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">WD1123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">GRATIS</td>
-                  <td className="py-3">Beginner</td>
-                  <td className="py-3">Rp 349,000</td>
-                  <td>
-                    <div className="flex items-center gap-2 text-white">
-                      <button className="bg-primary font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Ubah
-                      </button>
-                      <button className="bg-red-500 font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Hapus
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">WD1123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">GRATIS</td>
-                  <td className="py-3">Beginner</td>
-                  <td className="py-3">Rp 349,000</td>
-                  <td>
-                    <div className="flex items-center gap-2 text-white">
-                      <button className="bg-primary font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Ubah
-                      </button>
-                      <button className="bg-red-500 font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Hapus
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">WD1123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">GRATIS</td>
-                  <td className="py-3">Beginner</td>
-                  <td className="py-3">Rp 349,000</td>
-                  <td>
-                    <div className="flex items-center gap-2 text-white">
-                      <button className="bg-primary font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Ubah
-                      </button>
-                      <button className="bg-red-500 font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Hapus
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">WD1123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">GRATIS</td>
-                  <td className="py-3">Beginner</td>
-                  <td className="py-3">Rp 349,000</td>
-                  <td>
-                    <div className="flex items-center gap-2 text-white">
-                      <button className="bg-primary font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Ubah
-                      </button>
-                      <button className="bg-red-500 font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Hapus
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">WD1123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">GRATIS</td>
-                  <td className="py-3">Beginner</td>
-                  <td className="py-3">Rp 349,000</td>
-                  <td>
-                    <div className="flex items-center gap-2 text-white">
-                      <button className="bg-primary font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Ubah
-                      </button>
-                      <button className="bg-red-500 font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Hapus
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">WD1123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">GRATIS</td>
-                  <td className="py-3">Beginner</td>
-                  <td className="py-3">Rp 349,000</td>
-                  <td>
-                    <div className="flex items-center gap-2 text-white">
-                      <button className="bg-primary font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Ubah
-                      </button>
-                      <button className="bg-red-500 font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Hapus
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">WD1123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">GRATIS</td>
-                  <td className="py-3">Beginner</td>
-                  <td className="py-3">Rp 349,000</td>
-                  <td>
-                    <div className="flex items-center gap-2 text-white">
-                      <button className="bg-primary font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Ubah
-                      </button>
-                      <button className="bg-red-500 font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Hapus
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">WD1123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">GRATIS</td>
-                  <td className="py-3">Beginner</td>
-                  <td className="py-3">Rp 349,000</td>
-                  <td>
-                    <div className="flex items-center gap-2 text-white">
-                      <button className="bg-primary font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Ubah
-                      </button>
-                      <button className="bg-red-500 font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Hapus
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">WD1123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">GRATIS</td>
-                  <td className="py-3">Beginner</td>
-                  <td className="py-3">Rp 349,000</td>
-                  <td>
-                    <div className="flex items-center gap-2 text-white">
-                      <button className="bg-primary font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Ubah
-                      </button>
-                      <button className="bg-red-500 font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Hapus
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                {dataCourse.map((value, index) => {
+                  return (
+                    <tr key={index}>
+                      <td className="ps-2 py-3">{value.course_id}</td>
+                      <td className="py-3">{value.Kategori.title}</td>
+                      <td className="py-3">{value. title}</td>
+                      <td className="py-3 font-bold">{value.premium ? "PREMIUM" : "GRATIS"}</td>
+                      <td className="py-3">{value.level}</td>
+                      <td className="py-3">Rp {value.harga}</td>
+                      <td>
+                        <div className="flex items-center gap-2 text-white">
+                          <button className="bg-primary font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
+                            Ubah
+                          </button>
+                          <button className="bg-red-500 font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
+                            Hapus
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
