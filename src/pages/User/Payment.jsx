@@ -18,16 +18,20 @@ export const Payment = () => {
   const dataCourseDetail = getCourseDetail?.data || [];
 
   // PUT PAYMENT
-  const {mutate: getPutPayment, isSuccess} = usePutPayment()
+  const { mutate: getPutPayment, isSuccess } = usePutPayment();
 
   const handleCheckout = () => {
     getPutPayment({
       course_id: dataCourseDetail.course_id,
-      metode_pembayaran: "BNI"
-    })
+      metode_pembayaran: "BNI",
+    });
   };
-  if(isSuccess){
-    navigate("/kelas/payment/berhasil")
+  if (isSuccess) {
+    navigate("/kelas/payment/berhasil", {
+      state: {
+        courseId: dataCourseDetail.course_id,
+      },
+    });
   }
 
   const ppn = (dataCourseDetail.harga * 11) / 100;
@@ -36,17 +40,12 @@ export const Payment = () => {
     <>
       <LayoutUser>
         <div>
-          <Link
-            to="/detail"
-            className="flex items-center text-black hover:underline"
-          >
+          <Link to="/detail" className="flex items-center text-black hover:underline">
             <FaArrowLeft className="mr-2" />
             <h2 className="font-bold">Kembali</h2>
           </Link>
           <div className="flex justify-center mt-4 mb-6">
-            <h3 className="text-base font-semibold mb-5 bg-[#FF0000] text-white w-2/3 h-12 rounded-xl flex items-center justify-center">
-              Selesaikan Pembayaran sampai 10 Maret 2023 12:00
-            </h3>
+            <h3 className="text-base font-semibold mb-5 bg-[#FF0000] text-white w-2/3 h-12 rounded-xl flex items-center justify-center">Selesaikan Pembayaran sampai 10 Maret 2023 12:00</h3>
           </div>
         </div>
 
@@ -54,27 +53,18 @@ export const Payment = () => {
           <div className="w-full desktop:w-3/5 p-4">
             <Accordion collapseAll className="mb-3">
               <Accordion.Panel>
-                <Accordion.Title className="bg-[#3C3C3C] hover:bg-neutral-950 text-white font-semibold p-4 rounded-t-lg border-b border-gray-200">
-                  Bank Transfer
-                </Accordion.Title>
+                <Accordion.Title className="bg-[#3C3C3C] hover:bg-neutral-950 text-white font-semibold p-4 rounded-t-lg border-b border-gray-200">Bank Transfer</Accordion.Title>
                 <Accordion.Content className="bg-white p-4 rounded-b-lg border-l border-r border-b border-gray-200">
                   <div className="border rounded-lg p-6 shadow-md">
-                    <h2 className="text-xl font-semibold mb-4">
-                      Instruksi Bank Transfer
-                    </h2>
+                    <h2 className="text-xl font-semibold mb-4">Instruksi Bank Transfer</h2>
                     <div className="text-gray-700 space-y-4">
                       <p>Lakukan pembayaran ke salah satu rekening berikut:</p>
                       <ul className="list-disc list-inside">
                         <li>Bank ABC: XXXXXXXX</li>
                         <li>Bank XYZ: YYYYYYYY</li>
                       </ul>
-                      <p>
-                        Silakan cantumkan nomor pesanan saat melakukan transfer.
-                      </p>
-                      <p>
-                        Pastikan untuk menyelesaikan pembayaran sebelum batas
-                        waktu yang ditentukan.
-                      </p>
+                      <p>Silakan cantumkan nomor pesanan saat melakukan transfer.</p>
+                      <p>Pastikan untuk menyelesaikan pembayaran sebelum batas waktu yang ditentukan.</p>
                     </div>
                   </div>
                 </Accordion.Content>
@@ -83,9 +73,7 @@ export const Payment = () => {
 
             <Accordion collapseAll>
               <Accordion.Panel>
-                <Accordion.Title className="bg-[#6148FF] text-white font-semibold hover:bg-blue-800">
-                  Credit Card
-                </Accordion.Title>
+                <Accordion.Title className="bg-[#6148FF] text-white font-semibold hover:bg-blue-800">Credit Card</Accordion.Title>
                 <Accordion.Content className="bg-white pb-8">
                   {/* Credit Card Form */}
                   <div className="flex justify-center w-full gap-2 mb-4">
@@ -127,63 +115,31 @@ export const Payment = () => {
                     />
                   </div>
                   <div className="mb-4">
-                    <label
-                      htmlFor="cardNumber"
-                      className="text-sm font-semibold"
-                    >
+                    <label htmlFor="cardNumber" className="text-sm font-semibold">
                       Card number
                     </label>
                     <div className="flex items-center mt-1">
-                      <input
-                        type="text"
-                        id="cardNumber"
-                        placeholder="4480 0000 0000 0000"
-                        className="w-full p-2 border rounded"
-                      />
+                      <input type="text" id="cardNumber" placeholder="4480 0000 0000 0000" className="w-full p-2 border rounded" />
                     </div>
                   </div>
                   <div className="">
-                    <label
-                      htmlFor="cardHolder"
-                      className="text-sm font-semibold"
-                    >
+                    <label htmlFor="cardHolder" className="text-sm font-semibold">
                       Card holder name
                     </label>
-                    <input
-                      type="text"
-                      id="cardHolder"
-                      placeholder="John Doe"
-                      className="w-full p-2 border rounded mt-1"
-                    />
+                    <input type="text" id="cardHolder" placeholder="John Doe" className="w-full p-2 border rounded mt-1" />
                   </div>
                   <div className="flex justify-between mt-4">
                     <div>
-                      <label
-                        htmlFor="cardCvv"
-                        className="text-sm font-semibold"
-                      >
+                      <label htmlFor="cardCvv" className="text-sm font-semibold">
                         CVV
                       </label>
-                      <input
-                        type="text"
-                        id="cardCvv"
-                        placeholder="000"
-                        className="w-full p-2 border rounded mt-1"
-                      />
+                      <input type="text" id="cardCvv" placeholder="000" className="w-full p-2 border rounded mt-1" />
                     </div>
                     <div>
-                      <label
-                        htmlFor="expiryDate"
-                        className="text-sm font-semibold"
-                      >
+                      <label htmlFor="expiryDate" className="text-sm font-semibold">
                         Expiry date
                       </label>
-                      <input
-                        type="text"
-                        id="expiryDate"
-                        placeholder="07/24"
-                        className="w-full p-2 border rounded mt-1"
-                      />
+                      <input type="text" id="expiryDate" placeholder="07/24" className="w-full p-2 border rounded mt-1" />
                     </div>
                   </div>
                 </Accordion.Content>
@@ -200,16 +156,10 @@ export const Payment = () => {
               </div>
               <div className="flex justify-center px-4 mb-5">
                 <div className="w-full shadow-xl rounded-3xl overflow-hidden">
-                  <img
-                    className="w-full h-40 object-cover"
-                    src="https://via.placeholder.com/150"
-                    alt="Course thumbnail"
-                  />
+                  <img className="w-full h-40 object-cover" src="https://via.placeholder.com/150" alt="Course thumbnail" />
                   <div className="px-4 pt-1 pb-3 bg-white rounded-b-3xl shadow-lg">
                     <div className="flex justify-between items-center pt-2">
-                      <h4 className="text-base font-bold text-[#6148FF]">
-                        {dataCourseDetail.Kategori.title}
-                      </h4>
+                      <h4 className="text-base font-bold text-[#6148FF]">{dataCourseDetail.Kategori.title}</h4>
                     </div>
                     <h1 className="font-bold text-base">{dataCourseDetail.title}</h1>
                     <p className="text-sm mb-2">by {dataCourseDetail.Mentor.name}</p>
@@ -228,17 +178,12 @@ export const Payment = () => {
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <div className="font-semibold">Total Bayar</div>
-                  <div className="font-semibold text-primary">
-                    Rp {dataCourseDetail.harga + ppn}
-                  </div>
+                  <div className="font-semibold text-primary">Rp {dataCourseDetail.harga + ppn}</div>
                 </div>
               </div>
 
               <div className="w-full flex justify-center">
-                <button
-                  className="w-4/5 mt-4 h-12 bg-[#FF0000] text-white font-semibold rounded-full flex items-center justify-center hover:bg-red-600"
-                  onClick={handleCheckout}
-                >
+                <button className="w-4/5 mt-4 h-12 bg-[#FF0000] text-white font-semibold rounded-full flex items-center justify-center hover:bg-red-600" onClick={handleCheckout}>
                   Bayar dan Ikuti Kelas Selamanya
                   <FaArrowRight className="ml-2" />
                 </button>

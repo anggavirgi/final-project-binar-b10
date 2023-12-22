@@ -59,14 +59,14 @@ export const Detail = () => {
 
   const handleJoinTelegram = () => {
     // Membuka link Telegram pada tab baru
-    const telegramUrl = dataCourseDetail?.url_gc_tele;
+    const telegramUrl = dataCourseDetail?.course.url_gc_tele;
     if (telegramUrl) {
       window.open(telegramUrl, "_blank");
     }
   };
 
   const handleVideoClick = (video) => {
-    if (video.is_preview === false) {
+    if (video.is_preview === false && !dataCourseDetail.sudahBeli) {
       alert("Anda belum membeli kelas ini.");
       return;
     }
@@ -101,14 +101,14 @@ export const Detail = () => {
                 </div>
                 <div className="px-4 py-5 bg-white rounded-b-3xl shadow-lg">
                   <div className="flex justify-between items-center pt-2">
-                    <h4 className="text-lg font-bold text-[#6148FF]">{dataCourseDetail.Kategori.title}</h4>
+                    <h4 className="text-lg font-bold text-[#6148FF]">{dataCourseDetail.Kategori?.title}</h4>
                     <div className="flex items-center">
                       <FaStar className="text-yellow-500 mr-1" />
                       <span className="text-purple-600 font-semibold">4.7</span>
                     </div>
                   </div>
-                  <h1 className="font-bold text-lg">{dataCourseDetail.title}</h1>
-                  <p className="text-sm mb-2">by {dataCourseDetail.Mentor.name}</p>
+                  <h1 className="font-bold text-lg">{dataCourseDetail?.sudahBeli}</h1>
+                  <p className="text-sm mb-2">by {dataCourseDetail.Mentor?.name}</p>
                   <div className="text-sm text-gray-600 mb-4 flex justify-between">
                     <div className="flex items-center">
                       <RiShieldStarLine className="text-green-500 mr-2" />
@@ -183,13 +183,13 @@ export const Detail = () => {
                 {detailSuccess && (
                   <div className="flex flex-wrap lg:flex-nowrap justify-between items-start">
                     <div className="flex-1">
-                      <h1 className="text-3xl font-bold text-[#6148FF] mb-2">{dataCourseDetail.Kategori.title}</h1>
-                      <p className="text-xl text-black mb-1">{dataCourseDetail.title}</p>
-                      <p className="text-black mb-3">by {dataCourseDetail.Mentor.name}</p>
+                      <h1 className="text-3xl font-bold text-[#6148FF] mb-2">{dataCourseDetail.course?.Kategori?.title}</h1>
+                      <p className="text-xl text-black mb-1">{dataCourseDetail.course?.title}</p>
+                      <p className="text-black mb-3">by {dataCourseDetail.course.Mentor?.name}</p>
                       <div className="flex flex-wrap items-center mb-4">
                         <div className="flex items-center mr-6">
                           <RiShieldStarLine className="text-[#73CA5C]" />
-                          <span className="ml-1 text-[#6148FF]">{dataCourseDetail.level}</span>
+                          <span className="ml-1 text-[#6148FF]">{dataCourseDetail.course.level}</span>
                         </div>
                         <div className="flex items-center mr-6">
                           <FaBookOpen className="text-[#73CA5C]" />
@@ -213,7 +213,7 @@ export const Detail = () => {
                     </div>
                     <div className="flex items-center ml-4 mt-4 lg:mt-0">
                       <FaStar className="text-yellow-500" />
-                      <span className="text-black ml-1">5.0</span>
+                      <span className="text-black ml-1">{dataCourseDetail.course.avgRating}</span>
                     </div>
                   </div>
                 )}
@@ -243,11 +243,7 @@ export const Detail = () => {
             {/* Content Section */}
             <div className="">
               <h2 className="text-2xl font-bold mb-4">Tentang Kelas</h2>
-              <p className="text-gray-700 mb-6">
-                Design system adalah kumpulan komponen design, code, ataupun dokumentasi yang dapat digunakan sebagai panduan utama yang memungkinkan designer serta developer memiliki lebih banyak kontrol atas berbagai platform. Dengan
-                hadirnya design system, dapat menjaga konsistensi tampilan user interface dan meningkatkan user experience menjadi lebih baik. Disisi bisnis, design system sangat berguna dalam menghemat waktu dan biaya ketika mengembangkan
-                suatu produk.
-              </p>
+              <p className="text-gray-700 mb-6">{dataCourseDetail.course?.deskripsi}</p>
 
               <h2 className="text-2xl font-bold mb-4">Kelas Ini Ditujukan Untuk</h2>
               <ul className="list-disc pl-5 mb-6 text-gray-700">{/* List items here */}</ul>
@@ -257,23 +253,24 @@ export const Detail = () => {
           {detailSuccess && (
             <div className="desktop:w-2/5 desktopfull:w-1/3 px-4 overflow-auto">
               <div className="bg-white rounded-lg p-4 shadow-md mb-6">
-                {getCourseDetail.data.Chapter.map((chapter, index) => (
-                  <div key={chapter.title}>
-                    {index > 0 && <hr className="my-4" />} {/* Tambahkan pemisah hanya jika bukan bab pertama */}
-                    <h2 className="text-xl font-bold mb-4">{chapter.title}</h2>
-                    <ol className="list-decimal list-inside">
-                      {chapter.Video.map((video) => (
-                        <li key={video.video_id} className="mb-2 mt-2 flex items-center justify-between" onClick={() => handleVideoClick(video)}>
-                          <div className="flex items-center">
-                            <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">{video.video_id}</span>
-                            {video.title}
-                          </div>
-                          {video.is_preview ? <FaCirclePlay className="text-xl text-[#73CA5C]" /> : <GiPadlock className="text-xl text-gray-500" />}
-                        </li>
-                      ))}
-                    </ol>
-                  </div>
-                ))}
+                {getCourseDetail?.data?.course.Chapter &&
+                  getCourseDetail?.data?.course.Chapter.map((chapter, index) => (
+                    <div key={chapter?.title}>
+                      {index > 0 && <hr className="my-4" />}
+                      <h2 className="text-xl font-bold mb-4">{chapter.title}</h2>
+                      <ol className="list-decimal list-inside">
+                        {chapter.Video.map((video) => (
+                          <li key={video.video_id} className="mb-2 mt-2 flex items-center justify-between" onClick={() => handleVideoClick(video)}>
+                            <div className="flex items-center">
+                              <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">{video.video_id}</span>
+                              {video.title}
+                            </div>
+                            {video.is_preview || dataCourseDetail.sudahBeli === true ? <FaCirclePlay className="text-xl text-[#73CA5C]" /> : <GiPadlock className="text-xl text-gray-500" />}
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  ))}
               </div>
             </div>
           )}
