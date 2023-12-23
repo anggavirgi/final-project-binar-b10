@@ -4,12 +4,12 @@ import berhasil from "../../assets/img/🦆 illustration _Cart shopping list_.pn
 import { LayoutUser } from "../../Layout/LayoutUser";
 
 export const Berhasil = () => {
-  const handleMulaiBelajarClick = () => {
-    // Menetapkan query parameter showTelegramModal=true saat tombol diklik
-    const url = new URL("/detail", window.location.origin);
-    url.searchParams.set("showTelegramModal", "true");
-    window.location.href = url.toString();
-  };
+  // const handleMulaiBelajarClick = () => {
+  //   // Menetapkan query parameter showTelegramModal=true saat tombol diklik
+  //   const url = new URL("/detail", window.location.origin);
+  //   url.searchParams.set("showTelegramModal", "true");
+  //   window.location.href = url.toString();
+  // };
   return (
     <>
       <LayoutUser>
@@ -36,7 +36,7 @@ export const Berhasil = () => {
             <Link
               to="/detail"
               className="text-center bg-[#6148FF] text-white font-bold py-2 px-4 rounded-full mt-6 mb-2 w-full"
-              onClick={handleMulaiBelajarClick}
+              // onClick={handleMulaiBelajarClick}
             >
               Mulai Belajar
             </Link>

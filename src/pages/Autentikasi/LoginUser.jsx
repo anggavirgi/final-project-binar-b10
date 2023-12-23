@@ -48,14 +48,7 @@ export const LoginUser = () => {
               <label htmlFor="email" className="block text-black-600">
                 Email
               </label>
-              <input
-                onChange={handleInput}
-                type="text"
-                id="email"
-                name="email"
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
-                autoComplete="off"
-              />
+              <input onChange={handleInput} type="text" id="email" name="email" className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" autoComplete="off" />
             </div>
             <div className="mb-4">
               <label htmlFor="password" className="block text-black-600">
@@ -70,26 +63,17 @@ export const LoginUser = () => {
                   className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
                   autoComplete="off"
                 />
-                <span
-                  className="absolute right-3 top-3 cursor-pointer"
-                  onClick={togglePasswordVisibility}
-                >
+                <span className="absolute right-3 top-3 cursor-pointer" onClick={togglePasswordVisibility}>
                   {passwordShown ? <IoEyeOutline /> : <IoEyeOffOutline />}
                 </span>
               </div>
               {/* Tautan untuk reset password, gantikan "#" dengan link yang sesuai */}
-              <Link
-                className="text-right hover:underline text-indigo-600 cursor-pointer"
-                to={"/sendemail"}
-              >
+              <Link className="text-right hover:underline text-indigo-600 cursor-pointer" to={"/sendemail"}>
                 Lupa Kata Sandi
               </Link>
             </div>
 
-            <button
-              type="submit"
-              className="bg-indigo-600 hover:bg-blue-600 text-white font-semibold rounded-2xl py-2 px-4 w-full mb-4"
-            >
+            <button type="submit" className="bg-indigo-600 hover:bg-blue-600 text-white font-semibold rounded-2xl py-2 px-4 w-full mb-4">
               Masuk
             </button>
           </form>
