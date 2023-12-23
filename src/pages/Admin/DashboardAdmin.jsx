@@ -146,7 +146,7 @@ export const DashboardAdmin = () => {
                 {dataPayment.map((value, index) => {
                   return (
                     <tr key={index}>
-                      <td className="ps-2 py-3">
+                      <td className="py-3 text-center">
                         {value.riwayat_transaksi_id}
                       </td>
                       <td className="py-3">{value.Course.Kategori.title}</td>
