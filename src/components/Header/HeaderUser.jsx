@@ -10,6 +10,7 @@ import { getDataMe } from "../../redux/actions/meAction";
 
 export const HeaderUser = ({ setSearchQuery }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [searchQueryLocal, setSearchQueryLocal] = useState("");
 
   const handleSearch = (e) => {
@@ -25,7 +26,7 @@ export const HeaderUser = ({ setSearchQuery }) => {
   const token = CookieStorage.get(CookiesKeys.AuthToken);
 
   useEffect(() => {
-    getDataMe();
+    dispatch(getDataMe());
   }, []);
 
   // const subpage = pathname.split("/")?.[1];
@@ -43,19 +44,35 @@ export const HeaderUser = ({ setSearchQuery }) => {
   return (
     <div className="flex justify-between items-center px-36 py-5 bg-primary text-white">
       <div className="flex items-center gap-16 w-1/2">
-        <div className="font-bold text-center text-2xl cursor-pointer" onClick={() => navigate("/home")}>
+        <div
+          className="font-bold text-center text-2xl cursor-pointer"
+          onClick={() => navigate("/home")}
+        >
           LOGO
         </div>
         <div className="relative flex items-center w-full">
-          <input type="text" placeholder="cari kursus.." className="border-gray-300 rounded-xl text-sm ps-6 pe-16 py-4 text-black w-full" value={searchQueryLocal} onChange={handleChange} onKeyDown={handleSearch} />
-          <button className="absolute p-2 rounded-xl bg-primary hover:bg-purple-800 right-4" onClick={() => setSearchQuery(searchQueryLocal)}>
+          <input
+            type="text"
+            placeholder="cari kursus.."
+            className="border-gray-300 rounded-xl text-sm ps-6 pe-16 py-4 text-black w-full"
+            value={searchQueryLocal}
+            onChange={handleChange}
+            onKeyDown={handleSearch}
+          />
+          <button
+            className="absolute p-2 rounded-xl bg-primary hover:bg-purple-800 right-4"
+            onClick={() => setSearchQuery(searchQueryLocal)}
+          >
             <BiSearchAlt className="w-4 h-4" />
           </button>
         </div>
       </div>
       {token ? (
         <div className="relative flex items-center gap-8 font-medium">
-          <Link className="px-6 py-1 bg-[#489CFF] rounded-xl cursor-pointer hover:bg-white hover:text-[#489CFF]" to={"/kelas"}>
+          <Link
+            className="px-6 py-1 bg-[#489CFF] rounded-xl cursor-pointer hover:bg-white hover:text-[#489CFF]"
+            to={"/kelas"}
+          >
             Kelas
           </Link>
           {/* <Link className={activePage("notifikasi")} to={"/notifikasi"}> */}
@@ -67,7 +84,10 @@ export const HeaderUser = ({ setSearchQuery }) => {
           </Link>
         </div>
       ) : (
-        <Link className="flex items-center gap-1.5 cursor-pointer" to={"/login"}>
+        <Link
+          className="flex items-center gap-1.5 cursor-pointer"
+          to={"/login"}
+        >
           <FiLogIn />
           <span className="font-medium">Masuk</span>
         </Link>
