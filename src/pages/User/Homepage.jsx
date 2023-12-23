@@ -91,7 +91,7 @@ export const Homepage = () => {
         <div className="grid grid-cols-6 gap-6 mt-4 text-sm desktopfull:text-base">
           {dataCategories?.slice(0, showAllCategories ? dataCategories.length : 6).map((category, index) => (
             <div key={index} className="flex flex-col items-center gap-1">
-              <img src={category.url_img_preview || img1} alt={category.title} className="rounded-3xl" />
+              <img src={category.url_img_preview || img1} alt={category.title} className="w-40 rounded-3xl" />
               <div className="font-bold">{category.title}</div>
             </div>
           ))}
