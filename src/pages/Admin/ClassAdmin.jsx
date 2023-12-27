@@ -5,10 +5,61 @@ import { CiCirclePlus } from "react-icons/ci";
 import { CiFilter } from "react-icons/ci";
 import { FaSearch } from "react-icons/fa";
 import { Button, Modal } from "flowbite-react";
+import { useCourseAdmin } from "../../services/admin/GetCourseAdmin";
+import { usePostCourse } from "../../services/admin/PostCourseAdmin";
+import { useMentor } from "../../services/admin/GetMentor";
+import { useCategory } from "../../services/user/GetCategory";
 
 export const ClassAdmin = () => {
   const [getModalFilter, setModalFilter] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+
+  // GET COURSE
+  const { data: getCourse } = useCourseAdmin();
+
+  const dataCourse = getCourse?.data.course || [];
+
+  // POST COURSE
+  const [getTitle, setTitle] = useState();
+  const [getDeskripsi, setDeskripsi] = useState();
+  const [getKodeKelas, setKodeKelas] = useState();
+  const [getKategori, setKategori] = useState();
+  const [getHarga, setHarga] = useState();
+  const [getPremium, setPremium] = useState();
+  const [getMentor, setMentor] = useState();
+  const [getLevel, setLevel] = useState();
+
+  const { mutate: postCourse, data } = usePostCourse();
+
+  const handleSimpan = () => {
+    postCourse({
+      title: getTitle,
+      deskripsi: getDeskripsi,
+      kode_kelas: getKodeKelas,
+      kategori_id: getKategori,
+      harga: getHarga,
+      premium: getPremium,
+      mentor_id: getMentor,
+      level: getLevel,
+      url_image_preview: "",
+    });
+  };
+
+  //GET CATEGORY
+  const { data: getDataCategory } = useCategory(10);
+
+  const dataCategory = getDataCategory?.data.category || [];
+
+  //GET MENTOR
+  const [getLimitMentor, setLimitMentor] = useState(10);
+  const [getPageMentor, setPageMentor] = useState(1);
+
+  const { data: getDataMentor } = useMentor({
+    limit: getLimitMentor,
+    page: getPageMentor,
+  });
+
+  const dataMentor = getDataMentor?.data.mentor || [];
 
   const modalFilter = () => {
     return (
@@ -83,24 +134,53 @@ export const ClassAdmin = () => {
                         <input
                           type="text"
                           id="namakelas"
+                          onChange={(e) => setTitle(e.target.value)}
                           placeholder="Front-end with ReactJS"
                           className="text-sm border-gray-300 rounded-lg"
                         />
                       </div>
                       <div className="flex flex-col gap-1">
-                        <label htmlFor="kategori">Kategori</label>
-                        <input
-                          type="text"
-                          id="kategori"
-                          placeholder="Web Development"
+                        <label htmlFor="Kategori">Kategori</label>
+                        <select
+                          name="Kategori"
+                          id="Kategori"
+                          onChange={(e) => setKategori(e.target.value)}
                           className="text-sm border-gray-300 rounded-lg"
-                        />
+                        >
+                          <option value="">-- Pilih Kategori --</option>
+                          {dataCategory.map((value, index) => {
+                            return (
+                              <option key={index} value={value.kategori_id}>
+                                {value.title}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <label htmlFor="mentor">Mentor</label>
+                        <select
+                          name="mentor"
+                          id="mentor"
+                          onChange={(e) => setMentor(e.target.value)}
+                          className="text-sm border-gray-300 rounded-lg"
+                        >
+                          <option value="">-- Pilih Mentor --</option>
+                          {dataMentor.map((value, index) => {
+                            return (
+                              <option key={index} value={value.mentor_id}>
+                                {value.name}
+                              </option>
+                            );
+                          })}
+                        </select>
                       </div>
                       <div className="flex flex-col gap-1">
                         <label htmlFor="kodekelas">Kode Kelas</label>
                         <input
                           type="text"
                           id="kodekelas"
+                          onChange={(e) => setKodeKelas(e.target.value)}
                           placeholder="WD1101"
                           className="text-sm border-gray-300 rounded-lg"
                         />
@@ -110,11 +190,12 @@ export const ClassAdmin = () => {
                         <select
                           name="tipekelas"
                           id="tipekelas"
+                          onChange={(e) => setPremium(e.target.value)}
                           className="text-sm border-gray-300 rounded-lg"
                         >
                           <option value="">-- Pilih Tipe Kelas --</option>
-                          <option value="">Gratis</option>
-                          <option value="">Premium</option>
+                          <option value="false">Gratis</option>
+                          <option value="true">Premium</option>
                         </select>
                       </div>
                       <div className="flex flex-col gap-1">
@@ -122,12 +203,13 @@ export const ClassAdmin = () => {
                         <select
                           name="level"
                           id="level"
+                          onChange={(e) => setLevel(e.target.value)}
                           className="text-sm border-gray-300 rounded-lg"
                         >
                           <option value="">-- Pilih Level --</option>
-                          <option value="">Beginner</option>
-                          <option value="">Intermediate</option>
-                          <option value="">Advanced</option>
+                          <option value="pemula">Pemula</option>
+                          <option value="menengah">Menengah</option>
+                          <option value="lanjutan">Lanjutan</option>
                         </select>
                       </div>
                       <div className="flex flex-col gap-1">
@@ -135,6 +217,7 @@ export const ClassAdmin = () => {
                         <input
                           type="text"
                           id="harga"
+                          onChange={(e) => setHarga(e.target.value)}
                           placeholder="300000"
                           className="text-sm border-gray-300 rounded-lg"
                         />
@@ -144,6 +227,7 @@ export const ClassAdmin = () => {
                         <textarea
                           name="deskripsi"
                           id="deskripsi"
+                          onChange={(e) => setDeskripsi(e.target.value)}
                           placeholder="ReactJS saat ini .."
                           className="text-sm border-gray-300 rounded-lg w-full h-28"
                         ></textarea>
@@ -159,7 +243,7 @@ export const ClassAdmin = () => {
                     </Button>
                     <Button
                       color="gray"
-                      onClick={() => setOpenModal(false)}
+                      onClick={() => handleSimpan()}
                       className="bg-primary hover:!bg-purple-800 text-white hover:!text-white"
                     >
                       Simpan
@@ -203,186 +287,32 @@ export const ClassAdmin = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="ps-2 py-3">WD1123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">GRATIS</td>
-                  <td className="py-3">Beginner</td>
-                  <td className="py-3">Rp 349,000</td>
-                  <td>
-                    <div className="flex items-center gap-2 text-white">
-                      <button className="bg-primary font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Ubah
-                      </button>
-                      <button className="bg-red-500 font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Hapus
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">WD1123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">GRATIS</td>
-                  <td className="py-3">Beginner</td>
-                  <td className="py-3">Rp 349,000</td>
-                  <td>
-                    <div className="flex items-center gap-2 text-white">
-                      <button className="bg-primary font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Ubah
-                      </button>
-                      <button className="bg-red-500 font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Hapus
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">WD1123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">GRATIS</td>
-                  <td className="py-3">Beginner</td>
-                  <td className="py-3">Rp 349,000</td>
-                  <td>
-                    <div className="flex items-center gap-2 text-white">
-                      <button className="bg-primary font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Ubah
-                      </button>
-                      <button className="bg-red-500 font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Hapus
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">WD1123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">GRATIS</td>
-                  <td className="py-3">Beginner</td>
-                  <td className="py-3">Rp 349,000</td>
-                  <td>
-                    <div className="flex items-center gap-2 text-white">
-                      <button className="bg-primary font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Ubah
-                      </button>
-                      <button className="bg-red-500 font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Hapus
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">WD1123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">GRATIS</td>
-                  <td className="py-3">Beginner</td>
-                  <td className="py-3">Rp 349,000</td>
-                  <td>
-                    <div className="flex items-center gap-2 text-white">
-                      <button className="bg-primary font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Ubah
-                      </button>
-                      <button className="bg-red-500 font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Hapus
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">WD1123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">GRATIS</td>
-                  <td className="py-3">Beginner</td>
-                  <td className="py-3">Rp 349,000</td>
-                  <td>
-                    <div className="flex items-center gap-2 text-white">
-                      <button className="bg-primary font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Ubah
-                      </button>
-                      <button className="bg-red-500 font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Hapus
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">WD1123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">GRATIS</td>
-                  <td className="py-3">Beginner</td>
-                  <td className="py-3">Rp 349,000</td>
-                  <td>
-                    <div className="flex items-center gap-2 text-white">
-                      <button className="bg-primary font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Ubah
-                      </button>
-                      <button className="bg-red-500 font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Hapus
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">WD1123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">GRATIS</td>
-                  <td className="py-3">Beginner</td>
-                  <td className="py-3">Rp 349,000</td>
-                  <td>
-                    <div className="flex items-center gap-2 text-white">
-                      <button className="bg-primary font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Ubah
-                      </button>
-                      <button className="bg-red-500 font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Hapus
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">WD1123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">GRATIS</td>
-                  <td className="py-3">Beginner</td>
-                  <td className="py-3">Rp 349,000</td>
-                  <td>
-                    <div className="flex items-center gap-2 text-white">
-                      <button className="bg-primary font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Ubah
-                      </button>
-                      <button className="bg-red-500 font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Hapus
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="ps-2 py-3">WD1123</td>
-                  <td className="py-3">Web Development</td>
-                  <td className="py-3">HTML dan CSS dalam seminggu</td>
-                  <td className="py-3 font-bold">GRATIS</td>
-                  <td className="py-3">Beginner</td>
-                  <td className="py-3">Rp 349,000</td>
-                  <td>
-                    <div className="flex items-center gap-2 text-white">
-                      <button className="bg-primary font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Ubah
-                      </button>
-                      <button className="bg-red-500 font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
-                        Hapus
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                {dataCourse.map((value, index) => {
+                  return (
+                    <tr key={index}>
+                      <td className="ps-2 py-3 text-center">
+                        {value.course_id}
+                      </td>
+                      <td className="py-3">{value.Kategori.title}</td>
+                      <td className="py-3">{value.title}</td>
+                      <td className="py-3 font-bold">
+                        {value.premium ? "PREMIUM" : "GRATIS"}
+                      </td>
+                      <td className="py-3">{value.level}</td>
+                      <td className="py-3">Rp {value.harga}</td>
+                      <td>
+                        <div className="flex items-center gap-2 text-white">
+                          <button className="bg-primary font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
+                            Ubah
+                          </button>
+                          <button className="bg-red-500 font-medium rounded-2xl py-0.5 px-2.5 cursor-pointer">
+                            Hapus
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

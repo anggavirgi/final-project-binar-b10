@@ -8,10 +8,12 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { CookieStorage, CookiesKeys } from "../../utils/cookies";
 import { getDataMe } from "../../redux/actions/meAction";
 import { Sidebar } from "../Sidebar/SidebarUser";
+import { useDispatch } from "react-redux";
 
 export const HeaderUser = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const dispatch = useDispatch();
   const [showSearchBar, setShowSearchBar] = useState(false);
 
   const navigate = useNavigate();
@@ -23,8 +25,10 @@ export const HeaderUser = () => {
   const isMobile = window.innerWidth <= 768;
 
   useEffect(() => {
-    getDataMe();
-  }, []);
+    if (token) {
+      dispatch(getDataMe());
+    }
+  }, [token]);
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);

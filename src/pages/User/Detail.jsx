@@ -19,6 +19,8 @@ import { useCourseDetail } from "../../services/user/GetCourseDetail";
 import { usePostPayment } from "../../services/user/PostPayment";
 
 export const Detail = () => {
+  const [activeVideoUrl, setActiveVideoUrl] = useState("");
+
   const navigate = useNavigate();
   const { state } = useLocation();
 
@@ -27,12 +29,11 @@ export const Detail = () => {
     course_id: state.courseId,
   });
 
-  const dataCourseDetail = getCourseDetail?.data.course || [];
-  console.log(dataCourseDetail)
-
   // POST PAYMENT
-  const { mutate: getPostPayment, isSuccess: postPaymentSuccess } =
-    usePostPayment();
+  const { mutate: getPostPayment, isSuccess: postPaymentSuccess } = usePostPayment();
+
+  const dataCourseDetail = getCourseDetail?.data || [];
+  console.log(dataCourseDetail, "detailcourse");
 
   const handleCheckout = () => {
     getPostPayment({
@@ -63,6 +64,33 @@ export const Detail = () => {
   }, []);
 
   const isMobile = window.innerWidth <= 768;
+
+  const handleJoinTelegram = () => {
+    // Membuka link Telegram pada tab baru
+    const telegramUrl = dataCourseDetail?.course.url_gc_tele;
+    if (telegramUrl) {
+      window.open(telegramUrl, "_blank");
+    }
+  };
+
+  const handleVideoClick = (video) => {
+    if (video.is_preview === false && !dataCourseDetail.sudahBeli) {
+      alert("Anda belum membeli kelas ini.");
+      return;
+    }
+
+    const videoId = video.url_video.split("/").pop();
+    const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+    setActiveVideoUrl(embedUrl);
+  };
+
+  useEffect(() => {
+    if (detailSuccess && getCourseDetail?.data.Chapter?.length > 0) {
+      const firstVideoId = getCourseDetail?.data?.Chapter[0]?.Video[0]?.url_video.split("/").pop();
+      const firstVideoEmbedUrl = `https://www.youtube.com/embed/${firstVideoId}`;
+      setActiveVideoUrl(firstVideoEmbedUrl);
+    }
+  }, [detailSuccess, getCourseDetail?.data?.Chapter]);
 
   return (
     <>
@@ -97,41 +125,27 @@ export const Detail = () => {
                       <span className="text-purple-600 font-semibold">4.7</span>
                     </div>
                   </div>
-                  <h1 className="font-bold text-lg">
-                    {dataCourseDetail.title}
-                  </h1>
-                  <p className="text-sm mb-2">
-                    by {dataCourseDetail.Mentor.name}
-                  </p>
+                  <h1 className="font-bold text-lg">{dataCourseDetail?.sudahBeli}</h1>
+                  <p className="text-sm mb-2">by {dataCourseDetail.Mentor?.name}</p>
                   <div className="text-sm text-gray-600 mb-4 flex justify-between">
                     <div className="flex items-center">
                       <RiShieldStarLine className="text-green-500 mr-2" />
-                      <span className="text-[#6148FF] text-sm font-semibold">
-                        {dataCourseDetail.level}
-                      </span>
+                      <span className="text-[#6148FF] text-sm font-semibold">{dataCourseDetail.level}</span>
                     </div>
                     <div className="flex items-center">
                       <FaBookOpen className="text-green-500 mr-2" />
-                      <span className="text-gray-700 text-sm font-semibold">
-                        10 Modul
-                      </span>
+                      <span className="text-gray-700 text-sm font-semibold">10 Modul</span>
                     </div>
                     <div className="flex items-center">
                       <FaRegClock className="text-green-500 mr-2" />
-                      <span className="text-gray-700 text-sm font-semibold">
-                        120 Menit
-                      </span>
+                      <span className="text-gray-700 text-sm font-semibold">120 Menit</span>
                     </div>
                   </div>
                   <div className="flex items-center">
                     <div className="w-1/2 bg-gray-200 rounded-full dark:bg-gray-700">
                       <div className="bg-[#6148FF] h-7 flex justify-between items-center rounded-full">
-                        <span className="ml-2 text-white font-semibold">
-                          Beli
-                        </span>
-                        <span className="text-white font-semibold mr-2">
-                          Rp.{dataCourseDetail.harga}
-                        </span>
+                        <span className="ml-2 text-white font-semibold">Beli</span>
+                        <span className="text-white font-semibold mr-2">Rp.{dataCourseDetail.harga}</span>
                       </div>
                     </div>
                   </div>
@@ -140,10 +154,7 @@ export const Detail = () => {
             </div>
           )}
           <Modal.Footer className="flex justify-center">
-            <button
-              className="bg-[#6148FF] h-12 w-1/2 flex justify-center items-center rounded-full"
-              onClick={handleCheckout}
-            >
+            <button className="bg-[#6148FF] h-12 w-1/2 flex justify-center items-center rounded-full" onClick={handleCheckout}>
               <span className="text-white font-semibold">Beli Sekarang</span>
               <FaArrowCircleRight className="text-[#EBF3FC] ml-2" />
             </button>
@@ -207,21 +218,13 @@ export const Detail = () => {
                 {detailSuccess && (
                   <div className="flex flex-wrap lg:flex-nowrap justify-between items-start">
                     <div className="flex-1">
-                      <h1 className="text-3xl font-bold text-[#6148FF] mb-2">
-                        {dataCourseDetail.Kategori.title}
-                      </h1>
-                      <p className="text-xl text-black mb-1">
-                        {dataCourseDetail.title}
-                      </p>
-                      <p className="text-black mb-3">
-                        by {dataCourseDetail.Mentor.name}
-                      </p>
+                      <h1 className="text-3xl font-bold text-[#6148FF] mb-2">{dataCourseDetail.course?.Kategori?.title}</h1>
+                      <p className="text-xl text-black mb-1">{dataCourseDetail.course?.title}</p>
+                      <p className="text-black mb-3">by {dataCourseDetail.course.Mentor?.name}</p>
                       <div className="flex flex-wrap items-center mb-4">
                         <div className="flex items-center mr-6">
                           <RiShieldStarLine className="text-[#73CA5C]" />
-                          <span className="ml-1 text-[#6148FF]">
-                            {dataCourseDetail.level}
-                          </span>
+                          <span className="ml-1 text-[#6148FF]">{dataCourseDetail.course.level}</span>
                         </div>
                         <div className="flex items-center mr-6">
                           <FaBookOpen className="text-[#73CA5C]" />
@@ -251,7 +254,7 @@ export const Detail = () => {
                     </div>
                     <div className="flex items-center ml-4 mt-4 lg:mt-0">
                       <FaStar className="text-yellow-500" />
-                      <span className="text-black ml-1">5.0</span>
+                      <span className="text-black ml-1">{dataCourseDetail.course.avgRating}</span>
                     </div>
                   </div>
                 )}
@@ -263,6 +266,7 @@ export const Detail = () => {
               <iframe
                 className="w-full aspect-video rounded-3xl" // This line controls the width at different breakpoints
                 src="https://www.youtube.com/embed/pI4ELkxxMGM?si=KM2w3EAICG6GZpVD"
+                src={activeVideoUrl}
                 title="YouTube video player"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -285,166 +289,39 @@ export const Detail = () => {
             </div>
 
             {/* Content Section */}
-            <div className={`${isMobile ? 'mx-5':''}`}>
+            <div className="">
               <h2 className="text-2xl font-bold mb-4">Tentang Kelas</h2>
-              <p className="text-gray-700 mb-6">
-                Design system adalah kumpulan komponen design, code, ataupun
-                dokumentasi yang dapat digunakan sebagai panduan utama yang
-                memungkinkan designer serta developer memiliki lebih banyak
-                kontrol atas berbagai platform. Dengan hadirnya design system,
-                dapat menjaga konsistensi tampilan user interface dan
-                meningkatkan user experience menjadi lebih baik. Disisi bisnis,
-                design system sangat berguna dalam menghemat waktu dan biaya
-                ketika mengembangkan suatu produk.
-              </p>
+              <p className="text-gray-700 mb-6">{dataCourseDetail.course?.deskripsi}</p>
 
-              <h2 className="text-2xl font-bold mb-4">
-                Kelas Ini Ditujukan Untuk
-              </h2>
-              <ul className="list-disc pl-5 mb-6 text-gray-700">
-                {/* List items here */}
-              </ul>
+              <h2 className="text-2xl font-bold mb-4">Kelas Ini Ditujukan Untuk</h2>
+              <ul className="list-disc pl-5 mb-6 text-gray-700">{/* List items here */}</ul>
             </div>
           </div>
           {/* Materi Belajar Section */}
-          <div className="desktop:w-2/5 desktopfull:w-1/3 px-4 overflow-auto">
-            <div className="bg-white rounded-lg p-4 shadow-md">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold ">Materi Belajar</h2>
-                <div className="flex items-center w-3/5">
-                  <FaRegCheckCircle className="text-green-500 mr-2" />
-                  <div className="w-full bg-gray-200 rounded-full dark:bg-gray-700">
-                    <div
-                      className="bg-[#6148FF] h-7 flex items-center rounded-full"
-                      style={{ width: "70%" }}
-                    >
-                      <span className="ml-2 text-white font-semibold">
-                        70% complete
-                      </span>
+          {detailSuccess && (
+            <div className="desktop:w-2/5 desktopfull:w-1/3 px-4 overflow-auto">
+              <div className="bg-white rounded-lg p-4 shadow-md mb-6">
+                {getCourseDetail?.data?.course.Chapter &&
+                  getCourseDetail?.data?.course.Chapter.map((chapter, index) => (
+                    <div key={chapter?.title}>
+                      {index > 0 && <hr className="my-4" />}
+                      <h2 className="text-xl font-bold mb-4">{chapter.title}</h2>
+                      <ol className="list-decimal list-inside">
+                        {chapter.Video.map((video) => (
+                          <li key={video.video_id} className="mb-2 mt-2 flex items-center justify-between" onClick={() => handleVideoClick(video)}>
+                            <div className="flex items-center">
+                              <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">{video.video_id}</span>
+                              {video.title}
+                            </div>
+                            {video.is_preview || dataCourseDetail.sudahBeli === true ? <FaCirclePlay className="text-xl text-[#73CA5C]" /> : <GiPadlock className="text-xl text-gray-500" />}
+                          </li>
+                        ))}
+                      </ol>
                     </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Chapter 1 */}
-              <div className="mb-8">
-                <div className="flex justify-between items-center mb-2">
-                  <p className="text-[#6148FF] font-bold">
-                    Chapter 1 - Pendahuluan
-                  </p>
-                  <span className="text-sm font-bold text-[#489CFF] py-1 px-3 rounded-full">
-                    60 Menit
-                  </span>
-                </div>
-                <ol className="list-decimal list-inside">
-                  <li className="mb-2 mt-2 flex items-center justify-between">
-                    <div className="flex items-center">
-                      <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">
-                        1
-                      </span>
-                      Tujuan Mengikuti Kelas Design System
-                    </div>
-                    <FaCirclePlay className="text-xl text-[#73CA5C]" />
-                  </li>
-                  <hr />
-                  <li className="mb-2 mt-2 flex items-center justify-between">
-                    <div className="flex items-center">
-                      <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">
-                        1
-                      </span>
-                      Tujuan Mengikuti Kelas Design System
-                    </div>
-                    <FaCirclePlay className="text-xl text-[#73CA5C]" />
-                  </li>
-                  <hr />
-                  <li className="mb-2 mt-2 flex items-center justify-between">
-                    <div className="flex items-center">
-                      <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">
-                        1
-                      </span>
-                      Tujuan Mengikuti Kelas Design System
-                    </div>
-                    <FaCirclePlay className="text-xl text-[#73CA5C]" />
-                  </li>
-                  <hr />
-                </ol>
-              </div>
-
-              {/* Chapter 2 */}
-              <div className="mb-6">
-                <div className="flex justify-between items-center mb-2">
-                  <p className="text-[#6148FF] font-bold">
-                    Chapter 2 - Memulai Desain
-                  </p>
-                  <span className="text-sm font-bold text-[#489CFF] py-1 px-3 rounded-full">
-                    120 Menit
-                  </span>
-                </div>
-                <ol className="list-decimal list-inside">
-                  <li className="mb-2 mt-2 flex items-center justify-between">
-                    <div className="flex items-center">
-                      <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">
-                        1
-                      </span>
-                      Tujuan Mengikuti Kelas Design System
-                    </div>
-                    <GiPadlock className="text-xl text-gray-500" />
-                  </li>
-                  <hr />
-                  <li className="mb-2 mt-2 flex items-center justify-between">
-                    <div className="flex items-center">
-                      <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">
-                        1
-                      </span>
-                      Tujuan Mengikuti Kelas Design System
-                    </div>
-                    <GiPadlock className="text-xl text-gray-500" />
-                  </li>
-                  <hr />
-                  <li className="mb-2 mt-2 flex items-center justify-between">
-                    <div className="flex items-center">
-                      <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">
-                        1
-                      </span>
-                      Tujuan Mengikuti Kelas Design System
-                    </div>
-                    <GiPadlock className="text-xl text-gray-500" />
-                  </li>
-                  <hr />
-                  <li className="mb-2 mt-2 flex items-center justify-between">
-                    <div className="flex items-center">
-                      <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">
-                        1
-                      </span>
-                      Tujuan Mengikuti Kelas Design System
-                    </div>
-                    <GiPadlock className="text-xl text-gray-500" />
-                  </li>
-                  <hr />
-                  <li className="mb-2 mt-2 flex items-center justify-between">
-                    <div className="flex items-center">
-                      <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">
-                        1
-                      </span>
-                      Tujuan Mengikuti Kelas Design System
-                    </div>
-                    <GiPadlock className="text-xl text-gray-500" />
-                  </li>
-                  <hr />
-                  <li className="mb-2 mt-2 flex items-center justify-between">
-                    <div className="flex items-center">
-                      <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">
-                        1
-                      </span>
-                      Tujuan Mengikuti Kelas Design System
-                    </div>
-                    <GiPadlock className="text-xl text-gray-500" />
-                  </li>
-                  <hr />
-                </ol>
+                  ))}
               </div>
             </div>
-          </div>
+          )}
         </div>
       </LayoutUser>
     </>

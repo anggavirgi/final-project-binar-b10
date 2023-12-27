@@ -41,8 +41,6 @@ export const RouteLists = () => {
         <Route path="/profil" element={<UserProfile />} />
         <Route path="/profil/gantipassword" element={<GantiPassword />} />
         <Route path="/profil/riwayat" element={<RiwayatUser />} />
-`
-`
         {/* ADMIN */}
         <Route path="/admin" element={<DashboardAdmin />} />
         <Route path="/admin/kelolakelas" element={<ClassAdmin />} />

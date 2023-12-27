@@ -9,11 +9,17 @@ export const DashboardAdmin = () => {
   const [getModalFilter, setModalFilter] = useState(false);
 
   // GET PAYMENT
-  const { data: getPayment } = usePayment();
+  const [getLimit, setLimit] = useState(10);
+  const [getPage, setPage] = useState(1);
 
-  const dataPayment = getPayment?.data.data.payment || [];
+  const { data: getPayment } = usePayment({
+    limit: getLimit,
+    page: getPage,
+  });
 
-  console.log(dataPayment);
+  const dataPayment = getPayment?.data.payment || [];
+
+  console.log(getPayment);
 
   const dateFormat = (date) => {
     const dateTime = new Date(date);
@@ -140,14 +146,16 @@ export const DashboardAdmin = () => {
                 {dataPayment.map((value, index) => {
                   return (
                     <tr key={index}>
-                      <td className="ps-2 py-3">
+                      <td className="py-3 text-center">
                         {value.riwayat_transaksi_id}
                       </td>
                       <td className="py-3">{value.Course.Kategori.title}</td>
                       <td className="py-3">{value.Course.title}</td>
                       <td className="py-3 font-bold">{value.status}</td>
                       <td className="py-3">Credit Card</td>
-                      <td className="py-3">{dateFormat(value.tanggal_pembayaran)}</td>
+                      <td className="py-3">
+                        {dateFormat(value.tanggal_pembayaran)}
+                      </td>
                     </tr>
                   );
                 })}
