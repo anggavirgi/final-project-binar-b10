@@ -11,20 +11,51 @@ import Onboarding from "../../assets/img/onboarding.png";
 import { LayoutUser } from "../../Layout/LayoutUser";
 import { useCourseDetail } from "../../services/user/GetCourseDetail";
 import { usePostPayment } from "../../services/user/PostPayment";
+import { useSelector } from "react-redux";
+import { usePutVideo } from "../../services/user/PutVideo";
+import { useGetProgress } from "../../services/user/GetProgressCourses";
+import { useGetRating } from "../../services/user/GetRating";
 
 export const Detail = () => {
   const [activeVideoUrl, setActiveVideoUrl] = useState("");
+  const [activeVideoIndex, setActiveVideoIndex] = useState(0);
+  const [currentChapterIndex, setCurrentChapterIndex] = useState(0);
+  const [completedChapters, setCompletedChapters] = useState([]);
+  const [PageNow, setPageNow] = useState(1);
+  const [SelctedScore, setSelctedScore] = useState("");
 
   const navigate = useNavigate();
   const { state } = useLocation();
 
+  const userData = useSelector((state) => state.user);
+  console.log(userData, "user dari reduxxxxx");
+
+  const { mutate: putVideo } = usePutVideo();
+
   // FETCH DETAIL
   const { data: getCourseDetail, isSuccess: detailSuccess } = useCourseDetail({
     course_id: state.courseId,
+    account_id: userData.id_user,
   });
 
   // POST PAYMENT
   const { mutate: getPostPayment, isSuccess: postPaymentSuccess } = usePostPayment();
+
+  // GET PROGRESS COURSE USER
+  const { data: progressCourse } = useGetProgress();
+
+  const progress = progressCourse?.data?.data?.result;
+  console.log(progress, "progressnyaa");
+
+  // mencari progress dari courseid
+  const progressForCurrentCourse = progress?.find((progress) => progress.course_id === state.courseId);
+  const completionPercentage = progressForCurrentCourse ? progressForCurrentCourse.percentage : 0;
+
+  //fetch rating
+  const { data: ratingCourse } = useGetRating({}, state.courseId, SelctedScore, 10, PageNow);
+  console.log(ratingCourse, "rating courseeee");
+
+
 
   const dataCourseDetail = getCourseDetail?.data || [];
   console.log(dataCourseDetail, "detailcourse");
@@ -44,18 +75,6 @@ export const Detail = () => {
   }
 
   const [openModal, setOpenModal] = useState(false);
-  // const [showTelegramModal, setShowTelegramModal] = useState(false);
-
-  // useEffect(() => {
-  //   // Ambil query parameter showTelegramModal dari URL
-  //   const urlParams = new URLSearchParams(window.location.search);
-  //   const showTelegramModalParam = urlParams.get("showTelegramModal");
-
-  //   // Jika showTelegramModalParam bernilai "true", maka tampilkan modal Telegram
-  //   if (showTelegramModalParam === "true") {
-  //     setShowTelegramModal(true);
-  //   }
-  // }, []);
 
   const handleJoinTelegram = () => {
     // Membuka link Telegram pada tab baru
@@ -77,12 +96,85 @@ export const Detail = () => {
   };
 
   useEffect(() => {
-    if (detailSuccess && getCourseDetail?.data.Chapter?.length > 0) {
-      const firstVideoId = getCourseDetail?.data?.Chapter[0]?.Video[0]?.url_video.split("/").pop();
-      const firstVideoEmbedUrl = `https://www.youtube.com/embed/${firstVideoId}`;
-      setActiveVideoUrl(firstVideoEmbedUrl);
+    if (detailSuccess && getCourseDetail?.data?.course?.Chapter?.length > 0) {
+      const firstChapter = getCourseDetail?.data?.course?.Chapter[0];
+      if (firstChapter?.Video?.length > 0) {
+        const firstVideo = firstChapter.Video[0];
+        const firstVideoId = firstVideo.url_video.split("/").pop();
+        const firstVideoEmbedUrl = `https://www.youtube.com/embed/${firstVideoId}`;
+        setActiveVideoUrl(firstVideoEmbedUrl);
+      }
     }
   }, [detailSuccess, getCourseDetail?.data?.Chapter]);
+
+  const isVideoDone = (videoId) => {
+    const account_id = userData.id_user;
+    return dataCourseDetail?.progress?.some((p) => p.video_id === videoId && p.account_id === account_id && p.is_done);
+  };
+
+  const handleSelectVideo = (selectedVideo) => {
+    const selectedVideoId = selectedVideo.video_id; // Mendapatkan ID dari video yang diklik
+    let selectedChapterIndex = -1;
+    let selectedVideoIndex = -1;
+
+    // Loop melalui semua bab dan video untuk mencari video yang sesuai dengan ID yang diklik
+    dataCourseDetail.course.Chapter.forEach((chapter, chapterIndex) => {
+      const videoIndex = chapter.Video.findIndex((video) => video.video_id === selectedVideoId);
+      if (videoIndex !== -1) {
+        // Jika video ditemukan, set index bab dan index video yang sesuai
+        selectedChapterIndex = chapterIndex;
+        selectedVideoIndex = videoIndex;
+      }
+    });
+
+    if (selectedChapterIndex !== -1 && selectedVideoIndex !== -1) {
+      // Jika bab dan video yang sesuai ditemukan, atur indeks video aktif dan panggil fungsi handleVideoClick
+      setCurrentChapterIndex(selectedChapterIndex);
+      setActiveVideoIndex(selectedVideoIndex);
+      handleVideoClick(selectedVideo);
+    }
+  };
+
+  const handleNextVideo = () => {
+    const currentChapter = dataCourseDetail.course.Chapter[currentChapterIndex];
+    const currentVideo = currentChapter.Video[activeVideoIndex];
+    const currentVideoId = currentVideo.video_id;
+
+    putVideo(
+      { video_id: currentVideoId },
+      {
+        onSuccess: () => {
+          // Hanya pindah ke video berikutnya jika update berhasil
+          if (activeVideoIndex < currentChapter.Video.length - 1) {
+            setActiveVideoIndex(activeVideoIndex + 1);
+            const nextVideo = currentChapter.Video[activeVideoIndex + 1];
+            handleVideoClick(nextVideo);
+          } else {
+            // Jika sudah mencapai video terakhir di chapter yang sama, periksa apakah chapter ini sudah selesai
+            if (!completedChapters.includes(currentChapterIndex)) {
+              // Jika chapter belum diselesaikan, tandai chapter ini sebagai selesai
+              setCompletedChapters([...completedChapters, currentChapterIndex]);
+            }
+
+            // Pindah ke chapter selanjutnya jika ada
+            if (currentChapterIndex < dataCourseDetail.course.Chapter.length - 1) {
+              setCurrentChapterIndex(currentChapterIndex + 1);
+              const nextChapterFirstVideo = dataCourseDetail.course.Chapter[currentChapterIndex + 1].Video[0];
+              setActiveVideoIndex(0);
+              handleVideoClick(nextChapterFirstVideo);
+            }
+          }
+        },
+        onError: (error) => {
+          console.error("Error updating video status", error);
+        },
+      }
+    );
+  };
+
+  const handleFilterByScore = (score) => {
+    setSelctedScore(score);
+  };
 
   return (
     <>
@@ -108,11 +200,11 @@ export const Detail = () => {
                     </div>
                   </div>
                   <h1 className="font-bold text-lg">{dataCourseDetail?.sudahBeli}</h1>
-                  <p className="text-sm mb-2">by {dataCourseDetail.Mentor?.name}</p>
+                  <p className="text-sm mb-2">by {dataCourseDetail?.Mentor?.name}</p>
                   <div className="text-sm text-gray-600 mb-4 flex justify-between">
                     <div className="flex items-center">
                       <RiShieldStarLine className="text-green-500 mr-2" />
-                      <span className="text-[#6148FF] text-sm font-semibold">{dataCourseDetail.level}</span>
+                      <span className="text-[#6148FF] text-sm font-semibold">{dataCourseDetail?.level}</span>
                     </div>
                     <div className="flex items-center">
                       <FaBookOpen className="text-green-500 mr-2" />
@@ -185,11 +277,11 @@ export const Detail = () => {
                     <div className="flex-1">
                       <h1 className="text-3xl font-bold text-[#6148FF] mb-2">{dataCourseDetail.course?.Kategori?.title}</h1>
                       <p className="text-xl text-black mb-1">{dataCourseDetail.course?.title}</p>
-                      <p className="text-black mb-3">by {dataCourseDetail.course.Mentor?.name}</p>
+                      <p className="text-black mb-3">by {dataCourseDetail.course?.Mentor?.name}</p>
                       <div className="flex flex-wrap items-center mb-4">
                         <div className="flex items-center mr-6">
                           <RiShieldStarLine className="text-[#73CA5C]" />
-                          <span className="ml-1 text-[#6148FF]">{dataCourseDetail.course.level}</span>
+                          <span className="ml-1 text-[#6148FF]">{dataCourseDetail.course?.level}</span>
                         </div>
                         <div className="flex items-center mr-6">
                           <FaBookOpen className="text-[#73CA5C]" />
@@ -201,19 +293,23 @@ export const Detail = () => {
                         </div>
                       </div>
                       <div className="flex">
-                        <button className="flex items-center px-4 py-2 bg-[#73CA5C] text-white rounded-full mr-4" onClick={handleJoinTelegram}>
-                          Join Grup Telegram
-                          <FaTelegramPlane className="ml-2" />
-                        </button>
+                        {dataCourseDetail.sudahBeli && (
+                          <button className="flex items-center px-4 py-2 bg-[#73CA5C] text-white rounded-full mr-4" onClick={handleJoinTelegram}>
+                            Join Grup Telegram
+                            <FaTelegramPlane className="ml-2" />
+                          </button>
+                        )}
 
-                        <button className="flex items-center px-4 py-2 bg-[#73CA5C] text-white rounded-full" onClick={() => setOpenModal(true)}>
-                          Gabung Kelas
-                        </button>
+                        {!dataCourseDetail.sudahBeli && (
+                          <button className="flex items-center px-4 py-2 bg-[#73CA5C] text-white rounded-full" onClick={() => setOpenModal(true)}>
+                            Gabung Kelas
+                          </button>
+                        )}
                       </div>
                     </div>
                     <div className="flex items-center ml-4 mt-4 lg:mt-0">
                       <FaStar className="text-yellow-500" />
-                      <span className="text-black ml-1">{dataCourseDetail.course.avgRating}</span>
+                      <span className="text-black ml-1">{dataCourseDetail.course?.avgRating}</span>
                     </div>
                   </div>
                 )}
@@ -234,38 +330,125 @@ export const Detail = () => {
                 <Link to="/kelas" className="bg-[#EBF3FC] text-[#6148FF] py-2 px-4 rounded-full shadow-lg w-1/5 text-center">
                   Kelas Lainnya
                 </Link>
-                <Link to="/detail" className="bg-[#6148FF] text-white py-2 px-4 rounded-full shadow-lg w-1/5 text-center">
+                <button
+                  className="bg-[#6148FF] text-white py-2 px-4 rounded-full shadow-lg w-1/5 text-center"
+                  onClick={handleNextVideo} // Menggunakan fungsi handleNextVideo saat tombol "Next" diklik
+                >
                   Next
-                </Link>
+                </button>
               </div>
             </div>
 
             {/* Content Section */}
             <div className="">
               <h2 className="text-2xl font-bold mb-4">Tentang Kelas</h2>
-              <p className="text-gray-700 mb-6">{dataCourseDetail.course?.deskripsi}</p>
+              <p className="mb-6 text-lg">{dataCourseDetail.course?.deskripsi}</p>
 
               <h2 className="text-2xl font-bold mb-4">Kelas Ini Ditujukan Untuk</h2>
               <ul className="list-disc pl-5 mb-6 text-gray-700">{/* List items here */}</ul>
+            </div>
+
+            <div>
+              <h1 className="text-2xl font-bold mb-4">Review Dari Manusia Yang Sudah Berlangganan</h1>
+              <div className="flex gap-5 items-center mb-4">
+                <button className={`w-[10%] bg-slate-300 text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${SelctedScore === "" ? "bg-[#070707] text-white" : ""}`} onClick={() => handleFilterByScore("")}>
+                  All
+                </button>
+                <button
+                  className={`w-[10%] bg-slate-300 text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${SelctedScore === "1" ? "bg-[#070707] text-white" : ""}`}
+                  onClick={() => handleFilterByScore("1")}
+                >
+                  <FaStar className="text-yellow-400 mr-1" />1
+                </button>
+                <button
+                  className={`w-[10%] bg-slate-300 text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${SelctedScore === "2" ? "bg-[#070707] text-white" : ""}`}
+                  onClick={() => handleFilterByScore("2")}
+                >
+                  <FaStar className="text-yellow-400 mr-1" />2
+                </button>
+                <button
+                  className={`w-[10%] bg-slate-300 text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${SelctedScore === "3" ? "bg-[#070707] text-white" : ""}`}
+                  onClick={() => handleFilterByScore("3")}
+                >
+                  <FaStar className="text-yellow-400 mr-1" />3
+                </button>
+                <button
+                  className={`w-[10%] bg-slate-300 text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${SelctedScore === "4" ? "bg-[#070707] text-white" : ""}`}
+                  onClick={() => handleFilterByScore("4")}
+                >
+                  <FaStar className="text-yellow-400 mr-1" />4
+                </button>
+                <button
+                  className={`w-[10%] bg-slate-300 text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${SelctedScore === "5" ? "bg-[#070707] text-white" : ""}`}
+                  onClick={() => handleFilterByScore("5")}
+                >
+                  <FaStar className="text-yellow-400 mr-1" />5
+                </button>
+              </div>
+
+              <div className="flex justify-between flex-wrap gap-5 w-[90%]">
+                {ratingCourse?.data?.rating.length > 0 ? (
+                  (() => {
+                    const filteredRating = ratingCourse?.data?.rating.filter((rating) => (SelctedScore === "" ? true : rating.skor === parseInt(SelctedScore)));
+                    return filteredRating.length > 0 ? (
+                      filteredRating.map((rating) => (
+                        <div key={rating.rating_id} className="bg-white w-[45%] gap-5 flex flex-col rounded-xl">
+                          <h1 className="font-bold text-lg m-3">{rating.Account?.nama}</h1>
+                          <span className="text-lg m-3">{rating.comment}</span>
+                          <div className="flex items-center m-3">
+                            {Array.from({ length: rating.skor }, (_, index) => (
+                              <FaStar key={index} className="text-yellow-400 mr-1" />
+                            ))}
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="w-[100%] gap-5 flex flex-col rounded-xl">
+                        <h1 className="font-bold text-lg">Belum ada review dengan skor {SelctedScore}</h1>
+                      </div>
+                    );
+                  })()
+                ) : (
+                  <div className="w-[100%] gap-5 flex flex-col rounded-xl">
+                    <h1 className="font-bold text-lg">Belum ada review sejauh ini</h1>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           {/* Materi Belajar Section */}
           {detailSuccess && (
             <div className="desktop:w-2/5 desktopfull:w-1/3 px-4 overflow-auto">
               <div className="bg-white rounded-lg p-4 shadow-md mb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-2xl font-bold ">Materi Belajar</h2>
+                  <div className="flex items-center w-3/5">
+                    <FaRegCheckCircle className="text-green-500 mr-2" />
+                    <div className="w-full bg-black rounded-full dark:bg-gray-700">
+                      <div className="bg-[#6148FF] h-7 flex items-center rounded-full" style={{ width: `${completionPercentage}%` }}>
+                        <span className="ml-2 text-white font-semibold">{`${completionPercentage}% complete`}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 {getCourseDetail?.data?.course.Chapter &&
                   getCourseDetail?.data?.course.Chapter.map((chapter, index) => (
                     <div key={chapter?.title}>
                       {index > 0 && <hr className="my-4" />}
-                      <h2 className="text-xl font-bold mb-4">{chapter.title}</h2>
+                      <h2 className="text-lg font-bold mb-4 text-[#6148FF]">{chapter.title}</h2>
                       <ol className="list-decimal list-inside">
                         {chapter.Video.map((video) => (
-                          <li key={video.video_id} className="mb-2 mt-2 flex items-center justify-between" onClick={() => handleVideoClick(video)}>
+                          <li key={video.video_id} className="mb-2 mt-2 flex items-center justify-between" onClick={() => handleSelectVideo(video)}>
                             <div className="flex items-center">
                               <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">{video.video_id}</span>
                               {video.title}
                             </div>
-                            {video.is_preview || dataCourseDetail.sudahBeli === true ? <FaCirclePlay className="text-xl text-[#73CA5C]" /> : <GiPadlock className="text-xl text-gray-500" />}
+                            {video.is_preview || dataCourseDetail.sudahBeli === true ? (
+                              <FaCirclePlay className={`text-xl ${isVideoDone(video.video_id) ? "text-[#73CA5C]" : "text-[#6148FF]"}`} />
+                            ) : (
+                              <GiPadlock className="text-xl text-gray-500" />
+                            )}
                           </li>
                         ))}
                       </ol>

@@ -22,4 +22,7 @@ export const API_ENDPOINT = {
   GANTI_PASSWORD_USER: "/profile/changePassword",
   RIWAYAT_PEMBAYARAN_USER: "/profile/paymentHistory",
   NOTIFIKASI_USER: "/notification/myNotifications",
+  PUT_VIDEO: "/course-progress/progress",
+  PROGRESS_COURSE: "/course-progress/myProgress",
+  GET_RATING: "/rating",
 };
