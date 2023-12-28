@@ -14,6 +14,8 @@ export const OTP = () => {
   const { mutate: sendOTP } = useSendOTP();
   const { mutate: resendOTP } = useReSendOTP();
 
+  const isMobile = window.innerWidth <= 768;
+
   useEffect(() => {
     if (inputRefs.current[0]) {
       inputRefs.current[0].focus();
@@ -81,7 +83,7 @@ export const OTP = () => {
 
   return (
     <div className="flex flex-wrap h-screen">
-      <div className="w-full md:w-1/2 flex items-center justify-center">
+      <div className={`w-full md:w-1/2 flex ${isMobile ? 'mt-5':'items-center justify-center'}`}>
         <div className="bg-white rounded-lg p-8 flex flex-col items-center shadow-lg w-full max-w-md">
           <div className="flex items-center justify-between w-full mb-8">
             <Link to="/register" className="text-black hover:text-indigo-600">
@@ -119,7 +121,7 @@ export const OTP = () => {
           </button>
         </div>
       </div>
-
+      {!isMobile && (
       <div className="w-1/2 bg-indigo-600 flex flex-col items-center justify-center">
         {/* Pastikan path ke gambar sudah benar */}
         <img
@@ -128,6 +130,7 @@ export const OTP = () => {
           className="object-cover w-1/2"
         />
       </div>
+      )}
     </div>
   );
 };

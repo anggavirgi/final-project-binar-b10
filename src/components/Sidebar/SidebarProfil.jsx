@@ -2,15 +2,23 @@ import React from "react";
 import { GoPencil, GoGear } from "react-icons/go";
 import { BsCart3 } from "react-icons/bs";
 import { BiLogOut } from "react-icons/bi";
+import { Link } from "react-router-dom";
 
 export const SidebarProfil = () => {
+  const isMobile = window.innerWidth <= 768;
+
   return (
-    <div className="w-1/3 p-4 flex flex-col">
+    <div className={`p-4 flex flex-col ${isMobile ? 'w-full' : 'w-1/3'}`}>
       <div className="text-primary">
         <div className="flex gap-2.5 items-center cursor-pointer">
           <GoPencil className="text-lg" />
           <span className="text-black font-semibold hover:text-primary">
-            Profil Saya
+            <Link
+              className="block cursor-pointer"
+              to={"/profil?edit=true"}
+            >
+              Profil Saya
+            </Link>
           </span>
         </div>
         <hr className="my-4" />
@@ -18,7 +26,12 @@ export const SidebarProfil = () => {
         <div className="flex gap-2 items-center cursor-pointer">
           <GoGear className="text-lg" />
           <span className="text-black font-semibold hover:text-primary">
-            Ubah Password
+            <Link
+              className="block cursor-pointer"
+              to={"/profil/gantipassword"}
+            >
+              Ubah Password
+            </Link>
           </span>
         </div>
         <hr className="my-4" />
@@ -26,7 +39,12 @@ export const SidebarProfil = () => {
         <div className="flex gap-2 items-center cursor-pointer">
           <BsCart3 className="text-lg" />
           <span className="text-black font-semibold hover:text-primary">
-            Riwayat Pembayaran
+          <Link
+              className="block cursor-pointer"
+              to={"/profil/riwayat"}
+            >
+              Riwayat Pembayaran
+            </Link>
           </span>
         </div>
         <hr className="my-4" />
