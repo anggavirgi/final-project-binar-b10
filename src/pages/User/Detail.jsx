@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { FaTelegramPlane, FaStar, FaRegClock, FaBookOpen, FaArrowLeft } from "react-icons/fa";
+import {
+  FaTelegramPlane,
+  FaStar,
+  FaRegClock,
+  FaBookOpen,
+  FaArrowLeft,
+} from "react-icons/fa";
 import { RiShieldStarLine } from "react-icons/ri";
 import { Modal } from "flowbite-react";
 import { FaArrowCircleRight } from "react-icons/fa";
@@ -83,11 +89,27 @@ export const Detail = () => {
   if (postPaymentSuccess) {
     navigate("/kelas/payment", {
       state: {
-        courseId: dataCourseDetail.course_id,
-      },
+        courseId: dataCourseDetail.course_id
+      }
     });
   }
 
+  const [openModal, setOpenModal] = useState(false);
+  const [showTelegramModal, setShowTelegramModal] = useState(false);
+
+  useEffect(() => {
+    // Ambil query parameter showTelegramModal dari URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const showTelegramModalParam = urlParams.get("showTelegramModal");
+
+    // Jika showTelegramModalParam bernilai "true", maka tampilkan modal Telegram
+    if (showTelegramModalParam === "true") {
+      setShowTelegramModal(true);
+    }
+  }, []);
+
+  const isMobile = window.innerWidth <= 768;
+  
   const handleJoinTelegram = () => {
     // Membuka link Telegram pada tab baru
     const telegramUrl = dataCourseDetail?.course.url_gc_tele;
@@ -289,34 +311,51 @@ export const Detail = () => {
           </div>
         )}
 
-        {/* Modal Telegram
-        <Modal dismissible show={showTelegramModal} onClose={() => setShowTelegramModal(false)}>
+        {/* Modal Telegram */}
+        <Modal
+          dismissible
+          show={showTelegramModal}
+          onClose={() => setShowTelegramModal(false)}
+        >
           <Modal.Body>
             <div className="text-center">
-              <h1 className="text-3xl font-bold text-[#6148FF] mb-4">OnBoarding...</h1>
+              <h1 className="text-3xl font-bold text-[#6148FF] mb-4">
+                OnBoarding...
+              </h1>
               {/* Atur gambar menjadi 50% lebar modal dan tinggi sama dengan lebar */}
-        {/* <img
+              <img
                 className="mx-auto" // Center the image
                 style={{ width: "50%", height: "auto", aspectRatio: "1 / 1" }} // Set width to 50% and height automatically to maintain the aspect ratio
                 src={Onboarding}
                 alt="Deskripsi Gambar"
               />
-              <h2 className="text-sm font-bold text-black mb-4 mt-4">Persiapkan hal berikut untuk belajar yang maksimal:</h2>
-              <h2 className="text-sm text-black">Mempunyai akun Figma atau Install Adobe XD</h2>
-              <h2 className="text-sm text-black">Menggunakan internet minimal kecepatan 2Mbps</h2>
-              <h2 className="text-sm text-black mb-7">Belajar di tempat yang nyaman</h2>
+              <h2 className="text-sm font-bold text-black mb-4 mt-4">
+                Persiapkan hal berikut untuk belajar yang maksimal:
+              </h2>
+              <h2 className="text-sm text-black">
+                Mempunyai akun Figma atau Install Adobe XD
+              </h2>
+              <h2 className="text-sm text-black">
+                Menggunakan internet minimal kecepatan 2Mbps
+              </h2>
+              <h2 className="text-sm text-black mb-7">
+                Belajar di tempat yang nyaman
+              </h2>
               <div className="flex justify-center w-full">
-                <button className="bg-[#6148FF] w-1/2 text-white rounded-full px-5 py-2.5 text-center mb-2" onClick={() => setShowTelegramModal(false)}>
+                <button
+                  className="bg-[#6148FF] w-1/2 text-white rounded-full px-5 py-2.5 text-center mb-2"
+                  onClick={() => setShowTelegramModal(false)}
+                >
                   Ikuti Kelas
                 </button>
               </div>
             </div>
           </Modal.Body>
-        </Modal> */}
+        </Modal>
 
-        <div className="flex gap-10">
+        <div className={`flex gap-10 ${isMobile ? 'flex-col':''}`}>
           <div className="desktop:w-3/5 desktopfull:w-2/3">
-            <div className="mb-6">
+            <div className={`${isMobile ? 'mx-5 mb-6':'mb-6'}`}>
               {/* Isi dari bagian dengan latar belakang #EBF3FC */}
               <div className="pt-4">
                 <Link to="/kelas" className="hover:underline">
@@ -367,9 +406,10 @@ export const Detail = () => {
             </div>
 
             {/* Video Section - Adjusted size */}
-            <div className="justify-start mb-6">
+            <div className={`${isMobile ? 'mx-5':'justify-start mb-6'}`}>
               <iframe
-                className="w-full aspect-video rounded-3xl"
+                className="w-full aspect-video rounded-3xl" // This line controls the width at different breakpoints
+                src="https://www.youtube.com/embed/pI4ELkxxMGM?si=KM2w3EAICG6GZpVD"
                 src={activeVideoUrl}
                 title="YouTube video player"
                 frameBorder="0"
@@ -377,7 +417,10 @@ export const Detail = () => {
                 allowFullScreen
               ></iframe>
               <div className="flex justify-end mt-5 gap-5">
-                <Link to="/kelas" className="bg-[#EBF3FC] text-[#6148FF] py-2 px-4 rounded-full shadow-lg w-1/5 text-center">
+                <Link
+                  to="/kelas"
+                  className="bg-[#EBF3FC] text-[#6148FF] py-2 px-4 rounded-full shadow-lg w-1/5 text-center"
+                >
                   Kelas Lainnya
                 </Link>
                 {dataCourseDetail.sudahBeli && (

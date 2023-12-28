@@ -19,10 +19,18 @@ export const Class = () => {
   const [selectedLevels, setSelectedLevels] = useState([]);
   const [isPremium, setIsPremium] = useState(false);
   const [isFree, setIsFree] = useState(false);
-
-  const { data: coursesAll, isLoading } = useCourse(searchQuery, 100, selectedCategories, selectedLevels);
+  
+  const { data: coursesAll, isLoading } = useCourse(
+    searchQuery,
+    100,
+    selectedCategories,
+    selectedLevels
+  );
   const { data: levelsAll } = useCourse("", 1000, [], []);
   const { data: categoryAll } = useCategory(10);
+
+  const isMobile = window.innerWidth <= 768;
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (coursesAll?.data && coursesAll?.data?.course) {
@@ -32,7 +40,9 @@ export const Class = () => {
       setDataCategories(categoryAll.data.category);
     }
     if (levelsAll?.data && levelsAll?.data?.course) {
-      setDataLevels([...new Set(levelsAll.data.course.map((course) => course.level))]);
+      setDataLevels([
+        ...new Set(levelsAll.data.course.map((course) => course.level)),
+      ]);
     }
   }, [coursesAll, categoryAll, levelsAll]);
 

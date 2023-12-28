@@ -6,6 +6,9 @@ import { LayoutUser } from "../../../Layout/LayoutUser";
 import { SidebarProfil } from "../../../components/Sidebar/SidebarProfil";
 import { useGetDataUser } from "../../../services/User Profile/get_user";
 import { useUpdateUser } from "../../../services/User Profile/update_user";
+import { useLocation } from 'react-router-dom';
+import { FaArrowLeft } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export const UserProfile = () => {
   const [name, setName] = useState("");
@@ -19,6 +22,11 @@ export const UserProfile = () => {
   console.log(dataUser);
 
   const updateUserMutation = useUpdateUser();
+  
+  const isMobile = window.innerWidth <= 768;  
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const isEdit = searchParams.get('edit') === 'true';
 
   useEffect(() => {
     if (dataUser) {
@@ -60,18 +68,30 @@ export const UserProfile = () => {
   return (
     <>
       <LayoutUser>
-        <div className="w-4/5 mx-auto bg-primary rounded-xl border border-primary">
-          <div className="flex flex-col items-center mt-5 mb-6">
-            <div className="text-white text-xl font-bold">Akun</div>
-          </div>
-          <div className="flex shadow-md bg-white">
+        <div className={`mx-auto ${(isMobile && isEdit) ? 'w-full' : 'w-4/5 bg-primary rounded-xl border border-primary'} ${(isMobile && !isEdit) && 'w-4/5 bg-white rounded-xl border border-primary mt-20'}`}>
+          {!isMobile && (
+            <div className="flex flex-col items-center mt-5 mb-6">
+              <div className="text-white text-xl font-bold">Akun</div>
+            </div>
+          )}
+          {(isMobile && isEdit) && (
+            <Link
+              className="block py-2 px-4 cursor-pointer"
+              to={"/profil"}
+            >
+              <FaArrowLeft className="w-6 h-6 inline-block" />
+            </Link>
+          )}
+        
+          <div className={`flex ${isMobile ? 'rounded-xl' : 'bg-white shadow-md'}`}>
             {/* Left Side - Menu */}
-
-            <SidebarProfil />
+            {(!isEdit || !isMobile ) && (
+              <SidebarProfil />
+            )}
 
             {/* Right Side - Profile Form */}
-
-            <div className="w-2/3 p-4">
+            {(!isMobile || (isMobile && isEdit)) && (
+            <div className={`p-4 ${isMobile ? 'w-full':'w-2/3'}`}>
               <div className="flex flex-col items-center mb-6">
                 <label htmlFor="upload" className="w-24 h-24 bg-gray-300 rounded-full flex items-center justify-center mb-2" style={{ backgroundImage: `url(${imageUrl})`, backgroundSize: "cover", backgroundPosition: "center" }}>
                   <input
@@ -156,6 +176,7 @@ export const UserProfile = () => {
                 </div>
               </form>
             </div>
+            )}
           </div>
         </div>
       </LayoutUser>

@@ -51,11 +51,13 @@ export const Register = () => {
     setPasswordShown(!passwordShown);
   };
 
+  const isMobile = window.innerWidth <= 768;
+
   return (
-    <div className="flex h-screen">
+    <div className={`flex ${isMobile ? 'flex-col h-screen items-center' : 'h-screen'}`}>
       {/* Bagian Kiri */}
-      <div className="w-1/2 bg-gray-100 flex justify-center items-center">
-        <div className="p-8 w-3/4">
+      <div className={`w-full bg-gray-100 ${isMobile ? 'h-full flex-grow flex items-center' : ' flex justify-center items-center'}`}>
+        <div className={`p-8 ${isMobile ? 'w-full' : 'w-3/4'}`}>
           <h1 className="text-2xl font-bold mb-4 text-indigo-600">Daftar</h1>
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
@@ -156,7 +158,7 @@ export const Register = () => {
           </form>
 
           <div>
-            <p>
+            <p className={`mb-5 ${isMobile ? 'mt-auto text-center absolute inset-x-0 bottom-0' : ''}`}>
               Sudah punya akun?{" "}
               <Link to={"/login"} className="hover:underline text-indigo-600">
                 Masuk disini
@@ -167,10 +169,12 @@ export const Register = () => {
       </div>
 
       {/* Bagian Kanan */}
-      <div className="w-1/2 bg-indigo-600 flex flex-col items-center justify-center">
+      {!isMobile && (
+      <div className="w-1/2 bg-indigo-600 hidden md:flex flex flex-col items-center justify-center">
         {/* Pastikan path ke gambar sudah benar */}
         <img src={belajar} alt="Belajar" className="object-cover w-1/2" />
       </div>
+      )}
     </div>
   );
 };
