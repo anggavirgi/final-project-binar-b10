@@ -3,11 +3,13 @@ import { API_ENDPOINT } from "../../utils/api-endpoint";
 import http from "../../utils/http";
 
 export const fetchCourseDetail = async ({ queryKey }) => {
-  const [_key, _params] = queryKey;
+  const [_key, options] = queryKey;
+  const { course_id, account_id } = options;
 
-  const { data } = await http.get(_key + _params.course_id);
+  const url = `${_key}${course_id}?account_id=${account_id}`;
+  const { data } = await http.get(url);
 
-  return data
+  return data;
 };
 
 export const useCourseDetail = (options) => {
