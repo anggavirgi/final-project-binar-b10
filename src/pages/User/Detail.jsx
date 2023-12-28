@@ -15,6 +15,7 @@ import { useSelector } from "react-redux";
 import { usePutVideo } from "../../services/user/PutVideo";
 import { useGetProgress } from "../../services/user/GetProgressCourses";
 import { useGetRating } from "../../services/user/GetRating";
+import { usePostRating } from "../../services/user/PostRating";
 
 export const Detail = () => {
   const [activeVideoUrl, setActiveVideoUrl] = useState("");
@@ -23,6 +24,14 @@ export const Detail = () => {
   const [completedChapters, setCompletedChapters] = useState([]);
   const [PageNow, setPageNow] = useState(1);
   const [SelctedScore, setSelctedScore] = useState("");
+  const [selectedScore, setSelectedScore] = useState(0);
+  const [skor, setskor] = useState("");
+  const [comment, setcomment] = useState("");
+  const [openModal, setOpenModal] = useState(false);
+
+  const closeModal = () => {
+    setOpenModal(false);
+  };
 
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -33,7 +42,11 @@ export const Detail = () => {
   const { mutate: putVideo } = usePutVideo();
 
   // FETCH DETAIL
-  const { data: getCourseDetail, isSuccess: detailSuccess } = useCourseDetail({
+  const {
+    data: getCourseDetail,
+    isSuccess: detailSuccess,
+    mutate: refetchCourseDetail,
+  } = useCourseDetail({
     course_id: state.courseId,
     account_id: userData.id_user,
   });
@@ -55,7 +68,8 @@ export const Detail = () => {
   const { data: ratingCourse } = useGetRating({}, state.courseId, SelctedScore, 10, PageNow);
   console.log(ratingCourse, "rating courseeee");
 
-
+  //POST RATING
+  const { mutate: getPostRating } = usePostRating();
 
   const dataCourseDetail = getCourseDetail?.data || [];
   console.log(dataCourseDetail, "detailcourse");
@@ -73,8 +87,6 @@ export const Detail = () => {
       },
     });
   }
-
-  const [openModal, setOpenModal] = useState(false);
 
   const handleJoinTelegram = () => {
     // Membuka link Telegram pada tab baru
@@ -106,6 +118,10 @@ export const Detail = () => {
       }
     }
   }, [detailSuccess, getCourseDetail?.data?.Chapter]);
+
+  // useEffect(() => {
+  //   refetchCourseDetail();
+  // }, []);
 
   const isVideoDone = (videoId) => {
     const account_id = userData.id_user;
@@ -164,6 +180,7 @@ export const Detail = () => {
               handleVideoClick(nextChapterFirstVideo);
             }
           }
+          refetchCourseDetail();
         },
         onError: (error) => {
           console.error("Error updating video status", error);
@@ -176,64 +193,101 @@ export const Detail = () => {
     setSelctedScore(score);
   };
 
+  const handleStarClick = (score) => {
+    setSelectedScore(score);
+  };
+
+  const handleRatingSubmit = (e) => {
+    e.preventDefault();
+
+    // Pastikan skor dan komentar telah diisi sebelum mengirim rating
+    if (selectedScore === 0 || comment.trim() === "") {
+      alert("Harap isi skor dan komentar sebelum mengirim rating.");
+      return;
+    }
+
+    getPostRating({
+      course_id: state.courseId,
+      skor: selectedScore,
+      comment: comment,
+    });
+
+    setSelectedScore(0);
+    setcomment("");
+  };
+
+  const renderStars = () => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <span key={i} className={`cursor-pointer text-5xl ${selectedScore >= i ? "text-yellow-400" : "text-gray-300"}`} onClick={() => handleStarClick(i)}>
+          {selectedScore >= i ? <FaStar /> : <FaStar />}
+        </span>
+      );
+    }
+    return stars;
+  };
+
   return (
     <>
       <LayoutUser>
         {/* Modal */}
-        <Modal dismissible show={openModal} onClose={() => setOpenModal(false)}>
-          <div className="flex items-center flex-col m-4">
-            <span className="text-black font-bold text-2xl">Selangkah lagi menuju</span>
-            <span className="text-[#6148FF] font-bold text-2xl">Kelas Premium</span>
-          </div>
-          {detailSuccess && (
-            <div className="flex justify-center">
-              <div className="w-full shadow-xl rounded-3xl sm:w-full md:w-[47%] lg:w-[47%] xl:w-[80%] mb-4 overflow-hidden">
-                <div className="overflow-hidden">
-                  <img className="w-full h-40 object-cover" src="https://via.placeholder.com/150" alt="Course thumbnail" />
-                </div>
-                <div className="px-4 py-5 bg-white rounded-b-3xl shadow-lg">
-                  <div className="flex justify-between items-center pt-2">
-                    <h4 className="text-lg font-bold text-[#6148FF]">{dataCourseDetail.Kategori?.title}</h4>
-                    <div className="flex items-center">
-                      <FaStar className="text-yellow-500 mr-1" />
-                      <span className="text-purple-600 font-semibold">4.7</span>
+        {openModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center" onClick={closeModal}>
+            <div className="bg-white p-8 rounded shadow-lg mobile:w-1/2 desktop:w-[45%] desktopfull:w-[40%]" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center flex-col mb-4">
+                <span className="text-black font-bold text-2xl">Selangkah lagi menuju</span>
+                <span className="text-[#6148FF] font-bold text-2xl">Kelas Premium</span>
+              </div>
+              {detailSuccess && (
+                <div className="flex justify-center">
+                  <div className="w-full shadow-xl rounded-3xl sm:w-full md:w-[47%] lg:w-[47%] xl:w-[80%] mb-4 overflow-hidden">
+                    <div className="overflow-hidden">
+                      <img className="w-full h-40 object-cover" src={dataCourseDetail?.course?.url_image_preview} alt="Course thumbnail" />
                     </div>
-                  </div>
-                  <h1 className="font-bold text-lg">{dataCourseDetail?.sudahBeli}</h1>
-                  <p className="text-sm mb-2">by {dataCourseDetail?.Mentor?.name}</p>
-                  <div className="text-sm text-gray-600 mb-4 flex justify-between">
-                    <div className="flex items-center">
-                      <RiShieldStarLine className="text-green-500 mr-2" />
-                      <span className="text-[#6148FF] text-sm font-semibold">{dataCourseDetail?.level}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <FaBookOpen className="text-green-500 mr-2" />
-                      <span className="text-gray-700 text-sm font-semibold">10 Modul</span>
-                    </div>
-                    <div className="flex items-center">
-                      <FaRegClock className="text-green-500 mr-2" />
-                      <span className="text-gray-700 text-sm font-semibold">120 Menit</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center">
-                    <div className="w-1/2 bg-gray-200 rounded-full dark:bg-gray-700">
-                      <div className="bg-[#6148FF] h-7 flex justify-between items-center rounded-full">
-                        <span className="ml-2 text-white font-semibold">Beli</span>
-                        <span className="text-white font-semibold mr-2">Rp.{dataCourseDetail.harga}</span>
+                    <div className="px-4 py-5 bg-white rounded-b-3xl shadow-lg">
+                      <div className="flex justify-between items-center pt-2">
+                        <h4 className="text-xl font-bold text-[#6148FF]">{dataCourseDetail?.course.Kategori?.title}</h4>
+                        <div className="flex items-center">
+                          <FaStar className="text-yellow-400 mr-1" />
+                          <span className=" font-semibold">{dataCourseDetail?.course?.avgRating !== 0 ? Math.floor(dataCourseDetail?.course?.avgRating * 10) / 10 : "-"}</span>
+                        </div>
+                      </div>
+                      <h1 className="font-bold text-lg">{dataCourseDetail?.sudahBeli}</h1>
+                      <h4 className="text-lg font-bold">{dataCourseDetail?.course?.title}</h4>
+                      <p className="text-md mb-2 font-semibold">by {dataCourseDetail?.course?.Mentor?.name}</p>
+                      <div className="text-sm text-gray-600 mb-4 flex gap-10">
+                        <div className="flex items-center">
+                          <RiShieldStarLine className="text-green-500 mr-2" />
+                          <span className="text-[#6148FF] text-sm font-semibold">{dataCourseDetail?.course?.level}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <FaBookOpen className="text-green-500 mr-2" />
+                          <span className="text-gray-700 text-sm font-semibold">{dataCourseDetail?.course?.module} Modul</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center">
+                        <div className="w-1/2 bg-gray-200 rounded-full dark:bg-gray-700">
+                          <div className="bg-[#489CFF] h-7 flex justify-between items-center rounded-full">
+                            <span className="ml-5 text-white font-semibold">Beli</span>
+                            <span className="text-white font-semibold mr-5">Rp.{dataCourseDetail?.course.harga}</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
+              )}
+              <div className="flex justify-center">{/* Isi modal di sini sesuai kebutuhan */}</div>
+              <div className="flex justify-center mt-4">
+                <button className="bg-[#6148FF] h-12 w-1/2 flex justify-center items-center rounded-full" onClick={handleCheckout}>
+                  <span className="text-white font-semibold">Beli Sekarang</span>
+                  <FaArrowCircleRight className="text-[#EBF3FC] ml-2" />
+                </button>
               </div>
             </div>
-          )}
-          <Modal.Footer className="flex justify-center">
-            <button className="bg-[#6148FF] h-12 w-1/2 flex justify-center items-center rounded-full" onClick={handleCheckout}>
-              <span className="text-white font-semibold">Beli Sekarang</span>
-              <FaArrowCircleRight className="text-[#EBF3FC] ml-2" />
-            </button>
-          </Modal.Footer>
-        </Modal>
+          </div>
+        )}
 
         {/* Modal Telegram
         <Modal dismissible show={showTelegramModal} onClose={() => setShowTelegramModal(false)}>
@@ -281,15 +335,11 @@ export const Detail = () => {
                       <div className="flex flex-wrap items-center mb-4">
                         <div className="flex items-center mr-6">
                           <RiShieldStarLine className="text-[#73CA5C]" />
-                          <span className="ml-1 text-[#6148FF]">{dataCourseDetail.course?.level}</span>
+                          <span className="ml-1 text-[#6148FF] font-semibold">{dataCourseDetail.course?.level}</span>
                         </div>
                         <div className="flex items-center mr-6">
                           <FaBookOpen className="text-[#73CA5C]" />
-                          <span className="ml-1">5 Modul</span>
-                        </div>
-                        <div className="flex items-center">
-                          <FaRegClock className="text-[#73CA5C]" />
-                          <span className="ml-1">45 Menit</span>
+                          <span className="ml-1 font-semibold">{dataCourseDetail.course?.module} Modul</span>
                         </div>
                       </div>
                       <div className="flex">
@@ -309,7 +359,7 @@ export const Detail = () => {
                     </div>
                     <div className="flex items-center ml-4 mt-4 lg:mt-0">
                       <FaStar className="text-yellow-500" />
-                      <span className="text-black ml-1">{dataCourseDetail.course?.avgRating}</span>
+                      <span className="text-black ml-1">{dataCourseDetail?.course?.avgRating !== 0 ? Math.floor(dataCourseDetail?.course?.avgRating * 10) / 10 : "-"}</span>
                     </div>
                   </div>
                 )}
@@ -330,12 +380,11 @@ export const Detail = () => {
                 <Link to="/kelas" className="bg-[#EBF3FC] text-[#6148FF] py-2 px-4 rounded-full shadow-lg w-1/5 text-center">
                   Kelas Lainnya
                 </Link>
-                <button
-                  className="bg-[#6148FF] text-white py-2 px-4 rounded-full shadow-lg w-1/5 text-center"
-                  onClick={handleNextVideo} // Menggunakan fungsi handleNextVideo saat tombol "Next" diklik
-                >
-                  Next
-                </button>
+                {dataCourseDetail.sudahBeli && (
+                  <button className="bg-[#6148FF] text-white py-2 px-4 rounded-full shadow-lg w-1/5 text-center" onClick={handleNextVideo}>
+                    Next
+                  </button>
+                )}
               </div>
             </div>
 
@@ -347,39 +396,71 @@ export const Detail = () => {
               <h2 className="text-2xl font-bold mb-4">Kelas Ini Ditujukan Untuk</h2>
               <ul className="list-disc pl-5 mb-6 text-gray-700">{/* List items here */}</ul>
             </div>
-
+            {completionPercentage === 100 && (
+              <form onSubmit={handleRatingSubmit} className="w-full max-w-lg">
+                <div className="mb-4">
+                  <p className="font-bold text-2xl mb-4">Beri Rating Course</p>
+                  <div className="flex items-center" aria-label="Beri Rating Course">
+                    {renderStars()}
+                  </div>
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="comment" className="text-black-300 text-xl font-semibold mb-2 block">
+                    Komentar
+                  </label>
+                  <input
+                    id="comment"
+                    value={comment}
+                    onChange={(e) => setcomment(e.target.value)}
+                    placeholder="Tulis komentar..."
+                    className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
+                </div>
+                <div className="flex justify-center mb-5">
+                  <button
+                    type="submit"
+                    className="bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full rounded-3xl transition duration-300 ease-in-out"
+                  >
+                    Kirim Rating
+                  </button>
+                </div>
+              </form>
+            )}
             <div>
               <h1 className="text-2xl font-bold mb-4">Review Dari Manusia Yang Sudah Berlangganan</h1>
               <div className="flex gap-5 items-center mb-4">
-                <button className={`w-[10%] bg-slate-300 text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${SelctedScore === "" ? "bg-[#070707] text-white" : ""}`} onClick={() => handleFilterByScore("")}>
+                <button
+                  className={`w-[10%] text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${SelctedScore === "" ? "bg-black text-white" : " bg-slate-300 text-black"}`}
+                  onClick={() => handleFilterByScore("")}
+                >
                   All
                 </button>
                 <button
-                  className={`w-[10%] bg-slate-300 text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${SelctedScore === "1" ? "bg-[#070707] text-white" : ""}`}
+                  className={`w-[10%] text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${SelctedScore === "1" ? "bg-black text-white" : " bg-slate-300 text-black"}`}
                   onClick={() => handleFilterByScore("1")}
                 >
                   <FaStar className="text-yellow-400 mr-1" />1
                 </button>
                 <button
-                  className={`w-[10%] bg-slate-300 text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${SelctedScore === "2" ? "bg-[#070707] text-white" : ""}`}
+                  className={`w-[10%] text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${SelctedScore === "2" ? "bg-black text-white" : " bg-slate-300 text-black"}`}
                   onClick={() => handleFilterByScore("2")}
                 >
                   <FaStar className="text-yellow-400 mr-1" />2
                 </button>
                 <button
-                  className={`w-[10%] bg-slate-300 text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${SelctedScore === "3" ? "bg-[#070707] text-white" : ""}`}
+                  className={`w-[10%] text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${SelctedScore === "3" ? "bg-black text-white" : " bg-slate-300 text-black"}`}
                   onClick={() => handleFilterByScore("3")}
                 >
                   <FaStar className="text-yellow-400 mr-1" />3
                 </button>
                 <button
-                  className={`w-[10%] bg-slate-300 text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${SelctedScore === "4" ? "bg-[#070707] text-white" : ""}`}
+                  className={`w-[10%] text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${SelctedScore === "4" ? "bg-black text-white" : " bg-slate-300 text-black"}`}
                   onClick={() => handleFilterByScore("4")}
                 >
                   <FaStar className="text-yellow-400 mr-1" />4
                 </button>
                 <button
-                  className={`w-[10%] bg-slate-300 text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${SelctedScore === "5" ? "bg-[#070707] text-white" : ""}`}
+                  className={`w-[10%] text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${SelctedScore === "5" ? "bg-black text-white" : " bg-slate-300 text-black"}`}
                   onClick={() => handleFilterByScore("5")}
                 >
                   <FaStar className="text-yellow-400 mr-1" />5
@@ -392,10 +473,21 @@ export const Detail = () => {
                     const filteredRating = ratingCourse?.data?.rating.filter((rating) => (SelctedScore === "" ? true : rating.skor === parseInt(SelctedScore)));
                     return filteredRating.length > 0 ? (
                       filteredRating.map((rating) => (
-                        <div key={rating.rating_id} className="bg-white w-[45%] gap-5 flex flex-col rounded-xl">
-                          <h1 className="font-bold text-lg m-3">{rating.Account?.nama}</h1>
-                          <span className="text-lg m-3">{rating.comment}</span>
-                          <div className="flex items-center m-3">
+                        <div key={rating.rating_id} className="bg-white w-[47%] gap-5 flex flex-col rounded-xl">
+                          <div className="flex items-center m-3 ml-5">
+                            <label
+                              htmlFor="upload"
+                              className="w-24 h-24 bg-gray-300 rounded-full flex items-center justify-center border-2 border-[#6148FF]"
+                              style={{
+                                backgroundImage: `url(${rating.Account?.url_image})`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                              }}
+                            ></label>
+                            <h1 className="font-bold text-lg ml-5">{rating.Account?.nama}</h1>
+                          </div>
+                          <span className="text-lg m-3 ml-5">{rating.comment}</span>
+                          <div className="flex items-center m-3 ml-5">
                             {Array.from({ length: rating.skor }, (_, index) => (
                               <FaStar key={index} className="text-yellow-400 mr-1" />
                             ))}

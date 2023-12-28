@@ -25,4 +25,5 @@ export const API_ENDPOINT = {
   PUT_VIDEO: "/course-progress/progress",
   PROGRESS_COURSE: "/course-progress/myProgress",
   GET_RATING: "/rating",
+  POST_RATING_USER: "/rating/rate",
 };
