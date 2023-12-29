@@ -464,11 +464,13 @@ export const Detail = () => {
                             ></label>
                             <h1 className="font-bold text-lg ml-5">{rating.Account?.nama}</h1>
                           </div>
-                          <span className="text-lg m-3 ml-5">{rating.comment}</span>
-                          <div className="flex items-center m-3 ml-5">
-                            {Array.from({ length: rating.skor }, (_, index) => (
-                              <FaStar key={index} className="text-yellow-400 mr-1" />
-                            ))}
+                          <div className="h-full flex flex-col justify-between">
+                            <span className="text-lg m-3 ml-5">{rating.comment}</span>
+                            <div className="flex items-center m-3 ml-5">
+                              {Array.from({ length: rating.skor }, (_, index) => (
+                                <FaStar key={index} className="text-yellow-400 mr-1" />
+                              ))}
+                            </div>
                           </div>
                         </div>
                       ))
@@ -492,12 +494,17 @@ export const Detail = () => {
               <div className="bg-white rounded-lg p-4 shadow-md mb-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-2xl font-bold ">Materi Belajar</h2>
-                  <div className="flex items-center w-3/5">
+                  <div className="flex items-center w-3/5 relative">
+                    {" "}
+                    {/* Add relative here */}
                     <FaRegCheckCircle className="text-green-500 mr-2" />
-                    <div className="w-full bg-black rounded-full dark:bg-gray-700">
+                    <div className="w-full bg-black rounded-full dark:bg-gray-700 overflow-hidden">
                       <div className="bg-[#6148FF] h-7 flex items-center rounded-full" style={{ width: `${completionPercentage}%` }}>
-                        <span className="ml-2 text-white font-semibold">{`${completionPercentage}% complete`}</span>
+                        {/* No changes here */}
                       </div>
+                      <span className="absolute left-0 ml-8 text-white font-semibold" style={{ top: "50%", transform: "translateY(-50%)" }}>
+                        {`${completionPercentage}% complete`}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -508,12 +515,12 @@ export const Detail = () => {
                       {index > 0 && <hr className="my-4" />}
                       <h2 className="text-lg font-bold mb-4 text-[#6148FF]">{chapter.title}</h2>
                       <ol className="list-decimal list-inside">
-                        {chapter.Video.map((video) => (
+                        {chapter.Video.map((video, videoIndex) => (
                           <li key={video.video_id} className="mb-2 mt-2 flex items-center justify-between" onClick={() => handleSelectVideo(video)}>
-                            <div className="flex items-center">
-                              <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">{video.video_id}</span>
+                            <button className="flex items-center">
+                              <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">{videoIndex + 1}</span>
                               {video.title}
-                            </div>
+                            </button>
                             {video.is_preview || dataCourseDetail.sudahBeli === true ? (
                               <FaCirclePlay className={`text-xl ${isVideoDone(video.video_id) ? "text-[#73CA5C]" : "text-[#6148FF]"}`} />
                             ) : (
