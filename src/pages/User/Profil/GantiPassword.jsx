@@ -2,12 +2,16 @@ import React, { useState } from "react";
 import { GoPencil, GoGear } from "react-icons/go";
 import { BsCart3 } from "react-icons/bs";
 import { BiLogOut } from "react-icons/bi";
+import { FaArrowLeft } from "react-icons/fa";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { LayoutUser } from "../../../Layout/LayoutUser";
 import { SidebarProfil } from "../../../components/Sidebar/SidebarProfil";
 import { useGantiPassword } from "../../../services/User Profile/ganti_password";
+import { Link } from "react-router-dom";
 
 export const GantiPassword = () => {
+  const isMobile = window.innerWidth <= 768;  
+
   const [passwordShown, setPasswordShown] = useState(false);
 
   const { mutate: gantiPassword } = useGantiPassword();
@@ -36,19 +40,30 @@ export const GantiPassword = () => {
   return (
     <>
       <LayoutUser>
-        <div className="w-4/5 mx-auto bg-primary rounded-xl border border-primary">
+        <div className={`mx-auto ${(isMobile) ? 'w-full' : 'w-4/5 bg-primary rounded-xl border border-primary'}`}>
+          {!isMobile && (
           <div className="flex flex-col items-center mt-5 mb-6">
             <div className="text-white text-xl font-bold">Akun</div>
           </div>
-          <div className="flex shadow-md bg-white">
+          )}
+          {(isMobile) && (
+            <Link
+              className="block py-2 px-4 cursor-pointer"
+              to={"/profil"}
+            >
+              <FaArrowLeft className="w-6 h-6 inline-block" />
+            </Link>
+          )}
+          <div className={`flex ${isMobile ? 'rounded-xl' : 'bg-white shadow-md'}`}>
             {/* Left Side - Menu */}
-
-            <SidebarProfil />
+            {(!isMobile ) && (
+              <SidebarProfil />
+            )}
 
             {/* Right Side - Profile Form */}
 
-            <div className="w-2/3 rounded p-4">
-              <div className="flex flex-col items-center mb-6">
+            <div className={`p-4 ${isMobile ? 'w-full':'w-2/3'}`}>
+              <div className={`flex flex-col mb-6  ${isMobile ? '':'items-center'}`}>
                 <p className="text-black text-2xl font-bold">Ubah Password</p>
               </div>
 

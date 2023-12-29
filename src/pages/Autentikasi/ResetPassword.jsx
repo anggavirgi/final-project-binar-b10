@@ -6,6 +6,7 @@ import { CookieStorage, CookiesKeys } from "../../utils/cookies";
 import belajar from "../../assets/img/Belajar_white.png";
 
 export const ResetPassword = () => {
+  const isMobile = window.innerWidth <= 768;
   const location = useLocation();
 
   const [passwordShown, setPasswordShown] = useState(false);
@@ -31,8 +32,8 @@ export const ResetPassword = () => {
   return (
     <div className="flex h-screen">
       {/* Bagian Kiri */}
-      <div className="w-1/2 bg-gray-100 flex justify-center items-center">
-        <div className="p-8 w-3/4">
+      <div className={`w-1/2 bg-gray-100 flex justify-center items-center ${isMobile ? 'w-full':'w-1/2 bg-gray-100'}`}>
+        <div className={`p-8 w-3/4 ${isMobile ? 'w-full':'w-1/2'}`}>
           <h1 className="text-2xl font-bold mb-4 text-indigo-600">
             Reset Password
           </h1>
@@ -96,6 +97,7 @@ export const ResetPassword = () => {
       </div>
 
       {/* Bagian Kanan */}
+      { !isMobile && ( 
       <div className="w-1/2 bg-indigo-600 flex flex-col items-center justify-center">
         {/* Pastikan path ke gambar sudah benar */}
         <img
@@ -104,6 +106,7 @@ export const ResetPassword = () => {
           className="object-cover w-1/2"
         />
       </div>
+      )}
     </div>
   );
 };

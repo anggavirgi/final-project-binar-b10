@@ -1,5 +1,11 @@
 import { fetchMe } from "../../services/auth/GetMe";
-import { setEmail, setId, setName, setRole } from "../reducers/auth/meReducer";
+import {
+  setEmail,
+  setId,
+  setName,
+  setRole,
+  setlistCourse,
+} from "../reducers/auth/meReducer";
 
 export const getDataMe = () => (dispatch) => {
   return fetchMe()
@@ -8,6 +14,7 @@ export const getDataMe = () => (dispatch) => {
       dispatch(setName(result.data.data.user.nama));
       dispatch(setEmail(result.data.data.user.email));
       dispatch(setRole(result.data.data.user.role));
+      dispatch(setlistCourse(result.data.data.listCourse));
       return result;
     })
     .catch((err) => {
