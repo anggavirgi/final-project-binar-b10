@@ -19,14 +19,10 @@ export const Class = () => {
   const [selectedLevels, setSelectedLevels] = useState([]);
   const [isPremium, setIsPremium] = useState(false);
   const [isFree, setIsFree] = useState(false);
-  
-  const { data: coursesAll, isLoading } = useCourse(
-    searchQuery,
-    100,
-    selectedCategories,
-    selectedLevels
-  );
-  const { data: levelsAll } = useCourse("", 1000, [], []);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const { data: coursesAll, isLoading } = useCourse(searchQuery, 10, selectedCategories, selectedLevels, currentPage);
+  const { data: levelsAll } = useCourse("", 10, [], [], currentPage);
   const { data: categoryAll } = useCategory(10);
 
   const isMobile = window.innerWidth <= 768;
@@ -40,14 +36,16 @@ export const Class = () => {
       setDataCategories(categoryAll.data.category);
     }
     if (levelsAll?.data && levelsAll?.data?.course) {
-      setDataLevels([
-        ...new Set(levelsAll.data.course.map((course) => course.level)),
-      ]);
+      setDataLevels([...new Set(levelsAll.data.course.map((course) => course.level))]);
     }
   }, [coursesAll, categoryAll, levelsAll]);
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
+  };
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
   };
 
   const handleCategoryChange = (categoryId) => {
@@ -238,11 +236,7 @@ export const Class = () => {
                           </div>
                           <div className="flex items-center gap-1">
                             <RiBook3Line className="text-[#73CA5C]" />
-                            <span>10 Modul</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <LuClock className="stroke-[#73CA5C]" />
-                            <span>120 Menit</span>
+                            <span>{course?.module} Modul</span>
                           </div>
                         </div>
                         <button className="bg-[#489CFF] rounded-full p-1 px-6 font-medium text-white">{course.harga !== 0 ? `Rp ${course.harga}` : "Gratis"}</button>
@@ -251,6 +245,17 @@ export const Class = () => {
                   );
                 })}
             </div>
+          </div>
+        </div>
+        <div className="w-full flex justify-end">
+          <div className="flex justify-center mt-8 mobile:w-[70%] desktop:w-3/4 desktopfull:w-4/5">
+            <button className={`px-4 py-2 mx-1 rounded text-white font-bold ${currentPage <= 1 ? "bg-gray-300" : "bg-[#489CFF] cursor-pointer"}`} onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage <= 1}>
+              Previous Page
+            </button>
+            <span className="px-4 py-2 mx-1 rounded text-gray-700 font-bold">Page {currentPage}</span>
+            <button className="px-4 py-2 mx-1 rounded text-white font-bold bg-[#489CFF] cursor-pointer" onClick={() => handlePageChange(currentPage + 1)}>
+              Next Page
+            </button>
           </div>
         </div>
       </LayoutUser>

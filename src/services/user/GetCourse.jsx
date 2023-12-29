@@ -2,15 +2,16 @@ import { useQuery } from "@tanstack/react-query";
 import { API_ENDPOINT } from "../../utils/api-endpoint";
 import http from "../../utils/http";
 
-export const fetchCourse = async (search, limit, categoryIds, levels) => {
+export const fetchCourse = async (search, limit, categoryIds, levels, page) => {
   const categoryParams = categoryIds
     .map((categoryId) => `category_ids=${categoryId}`)
     .join("&");
   const levelParams = levels.map((level) => `level=${level}`).join("&");
 
+  // Add the page parameter to the API endpoint
   const { data } = await http
     .get(
-      `${API_ENDPOINT.GET_COURSE}?search=${search}&limit=${limit}&${categoryParams}&${levelParams}`
+      `${API_ENDPOINT.GET_COURSE}?search=${search}&limit=${limit}&${categoryParams}&${levelParams}&page=${page}`
     )
     .then((result) => {
       return result;
@@ -22,9 +23,10 @@ export const fetchCourse = async (search, limit, categoryIds, levels) => {
   return data;
 };
 
-export const useCourse = (search, limit, categoryIds, levels, options) => {
+export const useCourse = (search, limit, categoryIds, levels, page, options) => {
   return useQuery({
-    queryKey: ["course", { search, limit, categoryIds, levels, ...options }],
-    queryFn: () => fetchCourse(search, limit, categoryIds, levels),
+    queryKey: ["course", { search, limit, categoryIds, levels, page, ...options }],
+    queryFn: () => fetchCourse(search, limit, categoryIds, levels, page),
   });
 };
+
