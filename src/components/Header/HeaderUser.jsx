@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FiLogIn } from "react-icons/fi";
+import { FiChevronDown, FiLogIn } from "react-icons/fi";
 import { BiSearchAlt } from "react-icons/bi";
 import { FiUser } from "react-icons/fi";
 import { LuBell } from "react-icons/lu";
@@ -11,6 +11,7 @@ import { getDataMe } from "../../redux/actions/meAction";
 export const HeaderUser = ({ setSearchQuery }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [getHandleDropwdown, setHandleDropdown] = useState(false);
   const [searchQueryLocal, setSearchQueryLocal] = useState("");
 
   const handleSearch = (e) => {
@@ -22,74 +23,103 @@ export const HeaderUser = ({ setSearchQuery }) => {
   const handleChange = (e) => {
     setSearchQueryLocal(e.target.value);
   };
-  // const { pathname } = useLocation();
+
   const token = CookieStorage.get(CookiesKeys.AuthToken);
 
   useEffect(() => {
-    dispatch(getDataMe());
-  }, []);
+    if(token){
+      dispatch(getDataMe());
+    }
+  }, [token]);
 
-  // const subpage = pathname.split("/")?.[1];
-  // const activePage = (page = null) => {
-  //   let classes;
-  //   if (page === subpage) {
-  //     classes = "bg-red-500";
-  //   } else {
-  //     classes = "bg-blue-900";
-  //   }
-
-  //   return classes;
-  // };
+  const handleLogout = () => {
+    CookieStorage.remove(CookiesKeys.AuthToken);
+    window.location.href = "/home";
+  };
 
   return (
-    <div className="flex justify-between items-center px-36 py-5 bg-primary text-white">
+    <div className="flex justify-between items-center px-36 py-3 bg-white">
       <div className="flex items-center gap-16 w-1/2">
         <div
-          className="font-bold text-center text-2xl cursor-pointer"
+          className="font-bold text-center text-2xl cursor-pointer text-primary"
           onClick={() => navigate("/home")}
         >
-          LOGO
+          LearnWise
         </div>
         <div className="relative flex items-center w-full">
           <input
             type="text"
             placeholder="cari kursus.."
-            className="border-gray-300 rounded-xl text-sm ps-6 pe-16 py-4 text-black w-full"
+            className="border-grey-500 rounded-full text-sm ps-6 pe-16 py-2.5 text-black w-full"
             value={searchQueryLocal}
             onChange={handleChange}
             onKeyDown={handleSearch}
           />
           <button
-            className="absolute p-2 rounded-xl bg-primary hover:bg-purple-800 right-4"
+            className="absolute right-4 text-primary"
             onClick={() => setSearchQuery(searchQueryLocal)}
           >
-            <BiSearchAlt className="w-4 h-4" />
+            <BiSearchAlt className="w-5 h-5" />
           </button>
         </div>
       </div>
       {token ? (
-        <div className="relative flex items-center gap-8 font-medium">
+        <div className="relative flex items-center gap-4">
           <Link
-            className="px-6 py-1 bg-[#489CFF] rounded-xl cursor-pointer hover:bg-white hover:text-[#489CFF]"
+            className="px-4 py-1 cursor-pointer hover:bg-primary hover:text-white hover:rounded-full"
             to={"/kelas"}
           >
             Kelas
           </Link>
-          {/* <Link className={activePage("notifikasi")} to={"/notifikasi"}> */}
-          <Link to={"/notifikasi"}>
-            <LuBell className="w-6 h-6" />
+          <Link
+            className="px-4 py-1 cursor-pointer hover:bg-primary hover:text-white hover:rounded-full"
+            to={"/notifikasi"}
+          >
+            <LuBell className="w-6 h-6 stroke-1" />
           </Link>
-          <Link to={"/profil"}>
-            <FiUser className="w-6 h-6 cursor-pointer" />
-          </Link>
+          <div
+            className="flex gap-1 px-4 py-1 cursor-pointer hover:bg-primary hover:text-white hover:rounded-full"
+            onClick={() =>
+              getHandleDropwdown
+                ? setHandleDropdown(false)
+                : setHandleDropdown(true)
+            }
+          >
+            <FiUser className="w-6 h-6 stroke-1" />
+            <FiChevronDown className="w-6 h-6 stroke-1" />
+          </div>
+          <div
+            className={`${
+              getHandleDropwdown ? "flex flex-col" : "hidden"
+            } absolute top-10 right-0 z-10 text-sm rounded-lg bg-white border border-grey-100`}
+          >
+            <Link
+              className="ps-4 pe-16 py-3 hover:bg-gray-100 cursor-pointer"
+              to={"/profil"}
+            >
+              Edit Profil
+            </Link>
+            <Link
+              className="ps-4 pe-16 py-3 hover:bg-gray-100 cursor-pointer"
+              to={"/kelas"}
+            >
+              Kelas Saya
+            </Link>
+            <Link
+              className="ps-4 pe-16 py-3 hover:bg-gray-100 cursor-pointer"
+              onClick={handleLogout}
+            >
+              Keluar
+            </Link>
+          </div>
         </div>
       ) : (
         <Link
-          className="flex items-center gap-1.5 cursor-pointer"
+          className="flex items-center gap-2 px-4 py-1 cursor-pointer hover:bg-primary hover:text-white hover:rounded-full"
           to={"/login"}
         >
-          <FiLogIn />
-          <span className="font-medium">Masuk</span>
+          <FiLogIn className="stroke-1"/>
+          <span>Masuk</span>
         </Link>
       )}
     </div>

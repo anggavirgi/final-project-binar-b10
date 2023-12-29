@@ -43,7 +43,7 @@ export const LoginUser = () => {
       <div className="w-1/2 bg-gray-100 flex justify-center items-center">
         <div className="p-8 w-3/4">
           <h1 className="text-2xl font-bold mb-4 text-indigo-600">Masuk</h1>
-          <div>
+          <form onSubmit={loginUser}>
             <div className="mb-4">
               <label htmlFor="email" className="block text-black-600">
                 Email
@@ -88,12 +88,11 @@ export const LoginUser = () => {
 
             <button
               type="submit"
-              onClick={loginUser}
               className="bg-indigo-600 hover:bg-blue-600 text-white font-semibold rounded-2xl py-2 px-4 w-full mb-4"
             >
               Masuk
             </button>
-          </div>
+          </form>
 
           {/* Tautan untuk registrasi, gantikan "#" dengan link yang sesuai */}
           <p>

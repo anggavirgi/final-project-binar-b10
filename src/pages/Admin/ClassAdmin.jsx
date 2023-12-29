@@ -46,7 +46,7 @@ export const ClassAdmin = () => {
   };
 
   //GET CATEGORY
-  const { data: getDataCategory } = useCategory(10);
+  const { data: getDataCategory } = useCategory(50);
 
   const dataCategory = getDataCategory?.data.category || [];
 

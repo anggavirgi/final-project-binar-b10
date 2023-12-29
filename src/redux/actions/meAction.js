@@ -8,6 +8,7 @@ export const getDataMe = () => (dispatch) => {
       dispatch(setName(result.data.data.user.nama));
       dispatch(setEmail(result.data.data.user.email));
       dispatch(setRole(result.data.data.user.role));
+      return result;
     })
     .catch((err) => {
       throw err;
