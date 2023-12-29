@@ -14,6 +14,7 @@ export const API_ENDPOINT = {
   GET_MENTOR: "/mentor",
   GET_PAYMENT: "/payment",
   POST_PAYMENT_CHECKOUT: "/payment/checkout",
+  GET_SALARY: "/salary/course/",
   USER_REGISTER: "/auth/register",
   VERIFY_OTP: "/auth/verify-otp",
   RESEND_OTP: "/auth/resend-otp",

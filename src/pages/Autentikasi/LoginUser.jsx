@@ -92,7 +92,6 @@ export const LoginUser = () => {
 
             <button
               type="submit"
-              onClick={loginUser}
               className="bg-indigo-600 hover:bg-blue-600 text-white font-semibold rounded-2xl py-2 px-4 w-full mb-4"
             >
               Masuk
