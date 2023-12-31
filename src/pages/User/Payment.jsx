@@ -22,14 +22,14 @@ export const Payment = () => {
 
   const handleCheckout = () => {
     getPutPayment({
-      course_id: dataCourseDetail.course_id,
+      course_id: dataCourseDetail?.course?.course_id,
       metode_pembayaran: "BNI",
     });
   };
   if (isSuccess) {
     navigate("/kelas/payment/berhasil", {
       state: {
-        courseId: dataCourseDetail.course_id,
+        courseId: dataCourseDetail?.course?.course_id,
       },
     });
   }
@@ -156,13 +156,13 @@ export const Payment = () => {
               </div>
               <div className="flex justify-center px-4 mb-5">
                 <div className="w-full shadow-xl rounded-3xl overflow-hidden">
-                  <img className="w-full h-40 object-cover" src="https://via.placeholder.com/150" alt="Course thumbnail" />
+                  <img className="w-full h-40 object-cover" src={dataCourseDetail?.course?.url_image_preview} alt="Course thumbnail" />
                   <div className="px-4 pt-1 pb-3 bg-white rounded-b-3xl shadow-lg">
                     <div className="flex justify-between items-center pt-2">
-                      <h4 className="text-base font-bold text-[#6148FF]">{dataCourseDetail.Kategori.title}</h4>
+                      <h4 className="text-base font-bold text-[#6148FF]">{dataCourseDetail?.course?.Kategori?.title}</h4>
                     </div>
-                    <h1 className="font-bold text-base">{dataCourseDetail.title}</h1>
-                    <p className="text-sm mb-2">by {dataCourseDetail.Mentor.name}</p>
+                    <h1 className="font-bold text-base">{dataCourseDetail?.course?.title}</h1>
+                    <p className="text-sm mb-2">by {dataCourseDetail?.course?.Mentor?.name}</p>
                   </div>
                 </div>
               </div>
@@ -170,7 +170,7 @@ export const Payment = () => {
               <div className="flex justify-between items-center px-5">
                 <div className="flex flex-col gap-1.5">
                   <div className="font-semibold">Harga</div>
-                  <div>Rp {dataCourseDetail.harga}</div>
+                  <div>Rp {dataCourseDetail?.course?.harga}</div>
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <div className="font-semibold">PPN 11%</div>
@@ -178,7 +178,7 @@ export const Payment = () => {
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <div className="font-semibold">Total Bayar</div>
-                  <div className="font-semibold text-primary">Rp {dataCourseDetail.harga + ppn}</div>
+                  <div className="font-semibold text-primary">Rp {dataCourseDetail?.course?.harga + ppn}</div>
                 </div>
               </div>
 

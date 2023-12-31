@@ -16,6 +16,7 @@ import { usePutVideo } from "../../services/user/PutVideo";
 import { useGetProgress } from "../../services/user/GetProgressCourses";
 import { useGetRating } from "../../services/user/GetRating";
 import { usePostRating } from "../../services/user/PostRating";
+import { usePostCourse } from "../../services/user/PostBeliCourse";
 
 export const Detail = () => {
   const [activeVideoUrl, setActiveVideoUrl] = useState("");
@@ -51,8 +52,8 @@ export const Detail = () => {
     account_id: userData.id_user,
   });
 
-  // POST PAYMENT
-  const { mutate: getPostPayment, isSuccess: postPaymentSuccess } = usePostPayment();
+  // BELI COURSE
+  const { mutate: getPostCourse, isSuccess: postCourseSuccess } = usePostCourse();
 
   // GET PROGRESS COURSE USER
   const { data: progressCourse, refetch: refetchProgress } = useGetProgress();
@@ -75,15 +76,14 @@ export const Detail = () => {
   console.log(dataCourseDetail, "detailcourse");
 
   const handleCheckout = () => {
-    getPostPayment({
-      course_id: dataCourseDetail.course_id,
-      metode_pembayaran: "BNI",
+    getPostCourse({
+      course_id: dataCourseDetail?.course?.course_id,
     });
   };
-  if (postPaymentSuccess) {
+  if (postCourseSuccess) {
     navigate("/kelas/payment", {
       state: {
-        courseId: dataCourseDetail.course_id,
+        courseId: dataCourseDetail?.course?.course_id,
       },
     });
   }
@@ -367,7 +367,7 @@ export const Detail = () => {
             </div>
 
             {/* Content Section */}
-            <div className="">
+            <div className="mobile:mx-5 desktop:mx-0 desktopfull:mx-0">
               <h2 className="text-2xl font-bold mb-4">Tentang Kelas</h2>
               <p className="mb-6 text-lg">{dataCourseDetail.course?.deskripsi}</p>
 
@@ -375,7 +375,7 @@ export const Detail = () => {
               <ul className="list-disc pl-5 mb-6 text-gray-700">{/* List items here */}</ul>
             </div>
             {completionPercentage === 100 && (
-              <form onSubmit={handleRatingSubmit} className="w-full max-w-lg">
+              <form onSubmit={handleRatingSubmit} className="w-full max-w-lg mobile:mx-5 desktop:mx-0 desktopfull:mx-0">
                 <div className="mb-4">
                   <p className="font-bold text-2xl mb-4">Beri Rating Course</p>
                   <div className="flex items-center" aria-label="Beri Rating Course">
@@ -391,13 +391,13 @@ export const Detail = () => {
                     value={comment}
                     onChange={(e) => setcomment(e.target.value)}
                     placeholder="Tulis komentar..."
-                    className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mobile:w-[70%] desktop:w-full desktopfull:w-full"
                   />
                 </div>
-                <div className="flex justify-center mb-5">
+                <div className="flex justify-center mb-5 mobile:justify-start">
                   <button
                     type="submit"
-                    className="bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full rounded-3xl transition duration-300 ease-in-out"
+                    className="bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full rounded-3xl transition duration-300 ease-in-out mobile:w-[70%] desktop:w-full desktopfull:w-full"
                   >
                     Kirim Rating
                   </button>
@@ -405,53 +405,65 @@ export const Detail = () => {
               </form>
             )}
             <div>
-              <h1 className="text-2xl font-bold mb-4">Review Dari Manusia Yang Sudah Berlangganan</h1>
-              <div className="flex gap-5 items-center mb-4">
+              <h1 className="text-2xl font-bold mb-4 mobile:mx-5 desktop:mx-0 desktopfull:mx-0">Review Dari Manusia Yang Sudah Berlangganan</h1>
+              <div className="flex gap-5 items-center mb-4 mobile:mx-5 desktop:mx-0 desktopfull:mx-0">
                 <button
-                  className={`w-[10%] text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${SelctedScore === "" ? "bg-black text-white" : " bg-slate-300 text-black"}`}
+                  className={`mobile:w-full mobile:text-sm desktop:w-[15%] desktop:text-lg desktopfull:text-lg desktopfull:w-[10%] text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${
+                    SelctedScore === "" ? "bg-black text-white" : " bg-slate-300 text-black"
+                  }`}
                   onClick={() => handleFilterByScore("")}
                 >
                   All
                 </button>
                 <button
-                  className={`w-[10%] text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${SelctedScore === "1" ? "bg-black text-white" : " bg-slate-300 text-black"}`}
+                  className={`mobile:w-full mobile:text-sm desktop:w-[15%] desktop:text-lg desktopfull:text-lg desktopfull:w-[10%] text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${
+                    SelctedScore === "1" ? "bg-black text-white" : " bg-slate-300 text-black"
+                  }`}
                   onClick={() => handleFilterByScore("1")}
                 >
                   <FaStar className="text-yellow-400 mr-1" />1
                 </button>
                 <button
-                  className={`w-[10%] text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${SelctedScore === "2" ? "bg-black text-white" : " bg-slate-300 text-black"}`}
+                  className={`mobile:w-full mobile:text-sm desktop:w-[15%] desktop:text-lg desktopfull:text-lg desktopfull:w-[10%] text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${
+                    SelctedScore === "2" ? "bg-black text-white" : " bg-slate-300 text-black"
+                  }`}
                   onClick={() => handleFilterByScore("2")}
                 >
                   <FaStar className="text-yellow-400 mr-1" />2
                 </button>
                 <button
-                  className={`w-[10%] text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${SelctedScore === "3" ? "bg-black text-white" : " bg-slate-300 text-black"}`}
+                  className={`mobile:w-full mobile:text-sm desktop:w-[15%] desktop:text-lg desktopfull:text-lg desktopfull:w-[10%] text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${
+                    SelctedScore === "3" ? "bg-black text-white" : " bg-slate-300 text-black"
+                  }`}
                   onClick={() => handleFilterByScore("3")}
                 >
                   <FaStar className="text-yellow-400 mr-1" />3
                 </button>
                 <button
-                  className={`w-[10%] text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${SelctedScore === "4" ? "bg-black text-white" : " bg-slate-300 text-black"}`}
+                  className={`mobile:w-full mobile:text-sm desktop:w-[15%] desktop:text-lg desktopfull:text-lg desktopfull:w-[10%] text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${
+                    SelctedScore === "4" ? "bg-black text-white" : " bg-slate-300 text-black"
+                  }`}
                   onClick={() => handleFilterByScore("4")}
                 >
                   <FaStar className="text-yellow-400 mr-1" />4
                 </button>
                 <button
-                  className={`w-[10%] text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${SelctedScore === "5" ? "bg-black text-white" : " bg-slate-300 text-black"}`}
+                  className={`mobile:w-full mobile:text-sm desktop:w-[15%] desktop:text-lg desktopfull:text-lg desktopfull:w-[10%] text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${
+                    SelctedScore === "5" ? "bg-black text-white" : " bg-slate-300 text-black"
+                  }`}
                   onClick={() => handleFilterByScore("5")}
                 >
                   <FaStar className="text-yellow-400 mr-1" />5
                 </button>
               </div>
 
-              <div className="flex justify-between flex-wrap gap-5 w-[90%]">
+              <div className="flex justify-between flex-wrap gap-5 mobile:justify-center mobile:mx-5 desktop:mx-0 desktop:justify-between desktopfull:mx-0 desktop:w-full desktopfull:w-[90%] desktopfull:justify-between">
                 {ratingCourse?.data?.rating.length > 0 ? (
                   (() => {
                     const filteredRating = ratingCourse?.data?.rating.filter((rating) => (SelctedScore === "" ? true : rating.skor === parseInt(SelctedScore)));
                     return filteredRating.length > 0 ? (
                       filteredRating.map((rating) => (
-                        <div key={rating.rating_id} className="bg-white w-[47%] gap-5 flex flex-col rounded-xl">
+                        <div key={rating.rating_id} className="bg-white mobile:w-full desktop:w-[100%] desktopfull:w-[47%] gap-5 flex flex-col rounded-xl">
                           <div className="flex items-center m-3 ml-5">
                             <label
                               htmlFor="upload"
@@ -502,7 +514,7 @@ export const Detail = () => {
                       <div className="bg-[#6148FF] h-7 flex items-center rounded-full" style={{ width: `${completionPercentage}%` }}>
                         {/* No changes here */}
                       </div>
-                      <span className="absolute left-0 ml-8 text-white font-semibold" style={{ top: "50%", transform: "translateY(-50%)" }}>
+                      <span className="absolute left-0 ml-7 text-white font-semibold desktop:text-[10px] desktopfull:text-sm" style={{ top: "50%", transform: "translateY(-50%)" }}>
                         {`${completionPercentage}% complete`}
                       </span>
                     </div>
