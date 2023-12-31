@@ -237,14 +237,14 @@ export const Detail = () => {
         {/* Modal */}
         {openModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center" onClick={closeModal}>
-            <div className="bg-white p-8 rounded shadow-lg mobile:w-1/2 desktop:w-[45%] desktopfull:w-[40%]" onClick={(e) => e.stopPropagation()}>
+            <div className="bg-white p-8 rounded shadow-lg desktop:w-[45%] desktopfull:w-[40%]" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center flex-col mb-4">
                 <span className="text-black font-bold text-2xl">Selangkah lagi menuju</span>
                 <span className="text-[#6148FF] font-bold text-2xl">Kelas Premium</span>
               </div>
               {detailSuccess && (
                 <div className="flex justify-center">
-                  <div className="w-full shadow-xl rounded-3xl sm:w-full md:w-[47%] lg:w-[47%] xl:w-[80%] mb-4 overflow-hidden">
+                  <div className="w-full shadow-xl rounded-3xl mb-4 overflow-hidden">
                     <div className="overflow-hidden">
                       <img className="w-full h-40 object-cover" src={dataCourseDetail?.course?.url_image_preview} alt="Course thumbnail" />
                     </div>
