@@ -27,4 +27,5 @@ export const API_ENDPOINT = {
   PROGRESS_COURSE: "/course-progress/myProgress",
   GET_RATING: "/rating",
   POST_RATING_USER: "/rating/rate",
+  POST_COURSE: "/course/beli",
 };
