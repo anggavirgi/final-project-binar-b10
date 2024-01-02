@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import belajar from "../../assets/img/Belajar_white.png";
 import { useRegisterUser } from "../../services/auth/register_user";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export const Register = () => {
   const [Username, setUsername] = useState("");
@@ -12,8 +12,6 @@ export const Register = () => {
   const [ConfirmationPassword, setConfirmationPassword] = useState("");
   const [passwordShown, setPasswordShown] = useState(false);
   const [RegisterError, setRegisterError] = useState(null);
-  const [registeredEmail, setRegisteredEmail] = useState("");
-  const navigate = useNavigate();
 
   const {
     mutate: register,
@@ -47,26 +45,15 @@ export const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      // Melakukan operasi pendaftaran
-      await register({
-        email: Email,
-        nama: Username,
-        password: Password,
-        no_telp: no_telp,
-        ConfirmationPassword: ConfirmationPassword,
-      });
-
-      // Jika pendaftaran berhasil, navigasi ke halaman lain
-      navigate("/otp", {
-        state: {
-          registerEmail: Email,
-        },
-      });
-    } catch (error) {
-      // Tangani kesalahan jika pendaftaran gagal
-      console.error("Gagal mendaftar:", error);
-    }
+    await register({
+      email: Email,
+      nama: Username,
+      password: Password,
+      no_telp: no_telp,
+      ConfirmationPassword: ConfirmationPassword,
+    });
+    // Store email for later use (e.g., local storage)
+    localStorage.setItem("registeredEmail", Email);
   };
 
   const togglePasswordVisibility = () => {

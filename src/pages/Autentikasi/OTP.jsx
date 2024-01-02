@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
 import belajar from "../../assets/img/Belajar_white.png";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSendOTP } from "../../services/auth/otp_user";
 import { useReSendOTP } from "../../services/auth/resendOtp_user";
 
@@ -12,9 +12,6 @@ export const OTP = () => {
   const [registeredEmail, setRegisteredEmail] = useState(""); // State to hold registered email
   const [OtpError, setOtpError] = useState("");
 
-  const { state } = useLocation();
-  console.log(state, "state email di otp");
-  
   const { mutate: sendOTP, isError, error } = useSendOTP({
     onError: (error) => {
       setOtpError(error);
@@ -31,7 +28,7 @@ export const OTP = () => {
   }, []);
 
   useEffect(() => {
-    const storedEmail = state.registerEmail
+    const storedEmail = localStorage.getItem("registeredEmail");
     if (storedEmail) {
       setRegisteredEmail(storedEmail);
     }

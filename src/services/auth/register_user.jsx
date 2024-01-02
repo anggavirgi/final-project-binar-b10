@@ -4,14 +4,14 @@ import { API_ENDPOINT } from "../../utils/api-endpoint";
 import { CookieStorage, CookiesKeys } from "../../utils/cookies";
 import http from "../../utils/http";
 
-const registerUser = async (input, navigate) => {
+const registerUser = async (input) => {
   return await http
     .post(API_ENDPOINT.USER_REGISTER, input)
     .then((result) => {
       console.log(result.data.data.token);
       CookieStorage.set(CookiesKeys.AuthToken, result.data.data.token);
       // Langsung navigasi setelah token disimpan
-      // navigate("/otp");
+      window.location.href = "/otp";
       return result.data;
     })
     .catch((err) => {
@@ -21,9 +21,7 @@ const registerUser = async (input, navigate) => {
 };
 
 const useRegisterUser = () => {
-  const navigate = useNavigate();
-
-  return useMutation((input) => registerUser(input, navigate));
+  return useMutation(registerUser);
 };
 
 export { registerUser, useRegisterUser };
