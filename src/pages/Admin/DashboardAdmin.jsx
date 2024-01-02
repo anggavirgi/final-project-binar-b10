@@ -1,26 +1,58 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LayoutAdmin } from "../../Layout/LayoutAdmin";
 import { CardAdmin } from "../../components/Card/CardAdmin";
 import { CiFilter } from "react-icons/ci";
 import { FaSearch } from "react-icons/fa";
 import { usePayment } from "../../services/admin/GetPayment";
+import { useDebounce } from "use-debounce";
 
 export const DashboardAdmin = () => {
   const [getModalFilter, setModalFilter] = useState(false);
 
   // GET PAYMENT
   const [getLimit, setLimit] = useState(10);
-  const [getPage, setPage] = useState(1);
+  const [getSearch, setSearch] = useState("");
+  const [getStatus, setStatus] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
 
-  const { data: getPayment } = usePayment({
+  const [getDataPayment, setDataPayment] = useState([]);
+  const [searchValue] = useDebounce(getSearch, 1200);
+
+  const { data: getPayment, isSuccess } = usePayment({
     limit: getLimit,
-    page: getPage,
+    page: currentPage,
+    search: searchValue,
+    status: getStatus,
   });
 
-  const dataPayment = getPayment?.data.payment || [];
+  useEffect(() => {
+    setDataPayment(getPayment);
+  }, [searchValue, getStatus, isSuccess, currentPage]);
 
-  console.log(getPayment);
+  const dataPayment = getDataPayment?.data?.payment || [];
 
+  // HANDLE PAGE
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
+  useEffect(() => {
+    const totalCourse = getPayment?.data?.pagination?.total_items;
+    const forLastPage = totalCourse / 10;
+    setLastPage(Math.ceil(forLastPage));
+  }, [lastPage, getPayment]);
+
+  // HANDLE RADIO BUTTON
+  const handleRadio = (status) => {
+    if (status === "Belum Bayar") {
+      setStatus(status);
+    } else if (status === "Sudah Bayar") {
+      setStatus(status);
+    }
+  };
+
+  // FUNCTION DATE FORMAT
   const dateFormat = (date) => {
     const dateTime = new Date(date);
 
@@ -60,7 +92,9 @@ export const DashboardAdmin = () => {
               type="radio"
               id="notyet"
               name="status"
-              value=""
+              value="Belum Bayar"
+              onChange={(e) => handleRadio(e.target.value)}
+              checked={getStatus === "Belum Bayar"}
               className="h-4 w-4 border border-gray-300 rounded-md"
             />
             <label htmlFor="notyet" className="whitespace-nowrap">
@@ -72,7 +106,9 @@ export const DashboardAdmin = () => {
               type="radio"
               id="done"
               name="status"
-              value=""
+              value="Sudah Bayar"
+              onChange={(e) => handleRadio(e.target.value)}
+              checked={getStatus === "Sudah Bayar"}
               className="h-4 w-4 border border-gray-300 rounded-md"
             />
             <label htmlFor="done" className="whitespace-nowrap">
@@ -81,18 +117,11 @@ export const DashboardAdmin = () => {
           </div>
         </div>
         <hr className="mt-3 mb-2" />
-        <div className="flex justify-end items-center gap-2 text-sm">
-          <button
-            className="bg-gray-400 text-white rounded-lg px-2 py-1"
-            onClick={() =>
-              getModalFilter ? setModalFilter(false) : setModalFilter(true)
-            }
-          >
-            batal
-          </button>
-          <button className="bg-primary text-white rounded-lg px-2 py-1">
-            simpan
-          </button>
+        <div
+          onClick={() => setStatus("")}
+          className="py-0.5 text-center bg-slate-400 text-white rounded-lg cursor-pointer"
+        >
+          Reset
         </div>
       </div>
     );
@@ -125,6 +154,7 @@ export const DashboardAdmin = () => {
                   <input
                     type="text"
                     placeholder="cari.."
+                    onChange={(e) => setSearch(e.target.value)}
                     className="border border-primary rounded-lg ps-8 pe-3 py-[0.275rem] w-[15rem]"
                   />
                   <FaSearch className="w-3.5 h-3.5 absolute left-2.5" />
@@ -161,6 +191,33 @@ export const DashboardAdmin = () => {
                 })}
               </tbody>
             </table>
+            <div className="flex justify-center mt-8 mobile:w-[70%] desktop:w-full">
+              <button
+                className={`px-4 py-2 mx-1 rounded text-white font-bold ${
+                  currentPage <= 1
+                    ? "bg-gray-300"
+                    : "bg-[#489CFF] cursor-pointer"
+                }`}
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage <= 1}
+              >
+                Previous Page
+              </button>
+              <span className="px-4 py-2 mx-1 rounded text-gray-700 font-bold">
+                Page {currentPage}
+              </span>
+              <button
+                className={`px-4 py-2 mx-1 rounded text-white font-bold ${
+                  currentPage === lastPage
+                    ? "bg-gray-300"
+                    : "bg-[#489CFF] cursor-pointer"
+                }`}
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === lastPage}
+              >
+                Next Page
+              </button>
+            </div>
           </div>
         </div>
       </LayoutAdmin>

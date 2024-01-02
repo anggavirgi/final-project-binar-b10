@@ -5,7 +5,7 @@ import { API_ENDPOINT } from "../../utils/api-endpoint";
 const fetchRating = async ({ queryKey }) => {
   const [_key, _params] = queryKey;
   const { data } = await http.get(_key, { params: _params });
-  console.log(data);
+  
   return data;
 };
 

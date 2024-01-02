@@ -19,7 +19,6 @@ export const UserProfile = () => {
   const [imageUrl, setImageUrl] = useState("");
 
   const { data: dataUser } = useGetDataUser();
-  console.log(dataUser);
 
   const updateUserMutation = useUpdateUser();
 
