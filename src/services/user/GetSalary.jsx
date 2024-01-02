@@ -4,10 +4,8 @@ import { API_ENDPOINT } from "../../utils/api-endpoint";
 
 export const fetchSalary = async ({ queryKey }) => {
   const [_key, _params] = queryKey;
-  console.log(queryKey);
 
   const { data } = await http.get(_key + _params.course_id);
-  console.log(data);
 
   return data;
 };

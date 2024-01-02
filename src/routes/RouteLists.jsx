@@ -16,22 +16,68 @@ import { OTP } from "../pages/Autentikasi/OTP";
 import { Register } from "../pages/Autentikasi/Register";
 import { LoginUser } from "../pages/Autentikasi/LoginUser";
 import { SendEmail } from "../pages/Autentikasi/SendEmail";
+import { ProtectedAuth } from "../components/Protected/ProtectedAuth";
+import { AddVideo } from "../pages/Admin/AddVideo";
+import { MyClass } from "../pages/User/MyClass";
 
 export const RouteLists = () => {
   return (
     <BrowserRouter>
       <Routes>
         {/* AUTH */}
-        <Route path="/" element={<LoginUser />} />
-        <Route path="/login" element={<LoginUser />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/otp" element={<OTP />} />
-        <Route path="/sendemail" element={<SendEmail />} />
-        <Route path="/reset" element={<ResetPassword />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedAuth>
+              <LoginUser />
+            </ProtectedAuth>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <ProtectedAuth>
+              <LoginUser />
+            </ProtectedAuth>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <ProtectedAuth>
+              <Register />
+            </ProtectedAuth>
+          }
+        />
+        <Route
+          path="/otp"
+          element={
+            <ProtectedAuth>
+              <OTP />
+            </ProtectedAuth>
+          }
+        />
+        <Route
+          path="/sendemail"
+          element={
+            <ProtectedAuth>
+              <SendEmail />
+            </ProtectedAuth>
+          }
+        />
+        <Route
+          path="/reset"
+          element={
+            <ProtectedAuth>
+              <ResetPassword />
+            </ProtectedAuth>
+          }
+        />
 
         {/* USER */}
         <Route path="/home" element={<Homepage />} />
         <Route path="/kelas" element={<Class />} />
+        <Route path="/kelassaya" element={<MyClass />} />
         <Route path="/notifikasi" element={<Notifikasi />} />
         <Route path="/kelas/detail" element={<Detail />} />
         <Route path="/kelas/payment" element={<Payment />} />
@@ -41,9 +87,11 @@ export const RouteLists = () => {
         <Route path="/profil" element={<UserProfile />} />
         <Route path="/profil/gantipassword" element={<GantiPassword />} />
         <Route path="/profil/riwayat" element={<RiwayatUser />} />
+
         {/* ADMIN */}
         <Route path="/admin" element={<DashboardAdmin />} />
         <Route path="/admin/kelolakelas" element={<ClassAdmin />} />
+        <Route path="/admin/add-video" element={<AddVideo />} />
       </Routes>
     </BrowserRouter>
   );

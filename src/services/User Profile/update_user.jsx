@@ -6,7 +6,6 @@ const UpdateUser = async (input) => {
   return await http
     .put(API_ENDPOINT.UPDATE_USER, input)
     .then((result) => {
-      console.log(result);
       return result;
     })
     .catch((err) => {
