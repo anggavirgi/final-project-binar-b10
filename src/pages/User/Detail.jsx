@@ -17,6 +17,7 @@ import { useGetProgress } from "../../services/user/GetProgressCourses";
 import { useGetRating } from "../../services/user/GetRating";
 import { usePostRating } from "../../services/user/PostRating";
 import { usePostCourse } from "../../services/user/PostBeliCourse";
+import Cookies from "universal-cookie";
 
 export const Detail = () => {
   const [activeVideoUrl, setActiveVideoUrl] = useState("");
@@ -29,10 +30,24 @@ export const Detail = () => {
   const [skor, setskor] = useState("");
   const [comment, setcomment] = useState("");
   const [openModal, setOpenModal] = useState(false);
+  const cookies = new Cookies();
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   const closeModal = () => {
     setOpenModal(false);
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -88,7 +103,7 @@ export const Detail = () => {
     });
   }
 
-  const isMobile = window.innerWidth <= 768;
+  // const isMobile = window.innerWidth <= 768;
 
   const handleJoinTelegram = () => {
     // Membuka link Telegram pada tab baru
@@ -231,6 +246,61 @@ export const Detail = () => {
     return stars;
   };
 
+  const handleJoinClass = () => {
+    const token = cookies.get("authToken");
+    if (!token) {
+      alert("Anda belum login.");
+      navigate("/login");
+    } else {
+      setOpenModal(true);
+    }
+  };
+
+  const MateriBelajar = ({ isMobile, detailSuccess, getCourseDetail, completionPercentage, handleSelectVideo }) => {
+    if (!detailSuccess) return null;
+    return (
+      <div className={`${isMobile ? "order-3 mt-10" : "hidden"} px-4 overflow-auto`}>
+        <div className="bg-white rounded-lg p-4 shadow-md mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-bold ">Materi Belajar</h2>
+            <div className="flex items-center w-3/5 relative">
+              {" "}
+              {/* Add relative here */}
+              <FaRegCheckCircle className="text-green-500 mr-2" />
+              <div className="w-full bg-black rounded-full dark:bg-gray-700 overflow-hidden">
+                <div className="bg-[#6148FF] h-7 flex items-center rounded-full" style={{ width: `${completionPercentage}%` }}>
+                  {/* No changes here */}
+                </div>
+                <span className="absolute left-0 ml-7 text-white font-semibold desktop:text-[10px] desktopfull:text-sm" style={{ top: "50%", transform: "translateY(-50%)" }}>
+                  {`${completionPercentage}% complete`}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {getCourseDetail?.data?.course.Chapter &&
+            getCourseDetail?.data?.course.Chapter.map((chapter, index) => (
+              <div key={chapter?.title}>
+                {index > 0 && <hr className="my-4" />}
+                <h2 className="text-lg font-bold mb-4 text-[#6148FF]">{chapter.title}</h2>
+                <ol className="list-decimal list-inside">
+                  {chapter.Video.map((video, videoIndex) => (
+                    <li key={video.video_id} className="mb-2 mt-2 flex items-center justify-between" onClick={() => handleSelectVideo(video)}>
+                      <button className="flex items-center text-xs">
+                        <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">{videoIndex + 1}</span>
+                        <span className="text-start mx-2">{video.title}</span>
+                      </button>
+                      {video.is_preview || dataCourseDetail.sudahBeli === true ? <FaCirclePlay className={`text-xl ${isVideoDone(video.video_id) ? "text-[#73CA5C]" : "text-[#6148FF]"}`} /> : <GiPadlock className="text-xl text-gray-500" />}
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
       <LayoutUser>
@@ -329,7 +399,7 @@ export const Detail = () => {
                         )}
 
                         {!dataCourseDetail.sudahBeli && (
-                          <button className="flex items-center px-4 py-2 bg-[#73CA5C] text-white rounded-full" onClick={() => setOpenModal(true)}>
+                          <button className="flex items-center px-4 py-2 bg-[#73CA5C] text-white rounded-full" onClick={handleJoinClass}>
                             Gabung Kelas
                           </button>
                         )}
@@ -345,7 +415,7 @@ export const Detail = () => {
             </div>
 
             {/* Video Section - Adjusted size */}
-            <div className={`${isMobile ? "mx-5" : "justify-start mb-6"}`}>
+            <div className={`${isMobile ? "mx-5 order-2" : "justify-start mb-6"}`}>
               <iframe
                 className="w-full aspect-video rounded-3xl" // This line controls the width at different breakpoints
                 src={activeVideoUrl}
@@ -366,8 +436,10 @@ export const Detail = () => {
               </div>
             </div>
 
+            <MateriBelajar isMobile={isMobile} detailSuccess={detailSuccess} getCourseDetail={getCourseDetail} completionPercentage={completionPercentage} handleSelectVideo={handleSelectVideo} />
+
             {/* Content Section */}
-            <div className="mobile:mx-5 desktop:mx-0 desktopfull:mx-0">
+            <div className={`${isMobile ? "mx-5 order-3" : ""} desktop:mx-0 desktopfull:mx-0`}>
               <h2 className="text-2xl font-bold mb-4">Tentang Kelas</h2>
               <p className="mb-6 text-lg">{dataCourseDetail.course?.deskripsi}</p>
 
@@ -501,7 +573,7 @@ export const Detail = () => {
             </div>
           </div>
           {/* Materi Belajar Section */}
-          {detailSuccess && (
+          {detailSuccess && !isMobile && (
             <div className="desktop:w-2/5 desktopfull:w-1/3 px-4 overflow-auto">
               <div className="bg-white rounded-lg p-4 shadow-md mb-6">
                 <div className="flex items-center justify-between mb-4">
@@ -531,7 +603,7 @@ export const Detail = () => {
                           <li key={video.video_id} className="mb-2 mt-2 flex items-center justify-between" onClick={() => handleSelectVideo(video)}>
                             <button className="flex items-center">
                               <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">{videoIndex + 1}</span>
-                              {video.title}
+                              <span className="text-start mx-2">{video.title}</span>
                             </button>
                             {video.is_preview || dataCourseDetail.sudahBeli === true ? (
                               <FaCirclePlay className={`text-xl ${isVideoDone(video.video_id) ? "text-[#73CA5C]" : "text-[#6148FF]"}`} />
