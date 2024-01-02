@@ -1,263 +1,388 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { HeaderUser } from "../../components/Header/HeaderUser";
-import banner from "../../assets/img/banner.png";
-import img1 from "../../assets/img/img1.png";
-import img2 from "../../assets/img/img2.png";
-import img3 from "../../assets/img/img3.png";
-import img4 from "../../assets/img/img4.png";
-import img5 from "../../assets/img/img5.png";
-import img6 from "../../assets/img/img6.png";
-import { FaStar } from "react-icons/fa";
-import { RiShieldStarLine } from "react-icons/ri";
-import { RiBook3Line } from "react-icons/ri";
-import { LuClock } from "react-icons/lu";
-import { RiArrowDropLeftLine } from "react-icons/ri";
-import { RiArrowDropRightLine } from "react-icons/ri";
+import banner from "../../assets/img/banner1.jpg";
+import img1 from "../../assets/img/banner.png";
+import { useCourse } from "../../services/user/GetCourse";
+import { useCategoryId } from "../../services/user/GetCategory";
+import { BsDot } from "react-icons/bs";
+import { MdOutlineSell } from "react-icons/md";
+import { HiArrowLongRight } from "react-icons/hi2";
+import { Link, useNavigate } from "react-router-dom";
+import { useSalary } from "../../services/user/GetSalary";
+import { CookieStorage, CookiesKeys } from "../../utils/cookies";
+import { useGetRating } from "../../services/user/GetRating";
+import { FooterUser } from "../../components/Footer/FooterUser";
 
 export const Homepage = () => {
-  const [slideStart, setSlideStart] = useState(true);
-  const [slideEnd, setSlideEnd] = useState(false);
-  const divRef = useRef(null);
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const slideLeft = () => {
-    console.log(divRef);
-  };
+  const token = CookieStorage.get(CookiesKeys.AuthToken);
 
-  const slideRight = () => {
-    console.log(divRef);
-  };
+  // GET COURSE by Rating
+  const { data: getDataCourseByRating } = useCourse(
+    "",
+    4,
+    [],
+    [],
+    "rating",
+    "desc",
+    1
+  );
+
+  const dataCourseByRating = getDataCourseByRating?.data.course || [];
+
+  // GET COURSE by ID Course
+  const [getIdCourse, setIdCourse] = useState(11); // Dipake buat get salary juga
+
+  const { data: getDataCourseById } = useCourse(
+    "",
+    4,
+    [getIdCourse],
+    [],
+    "rating",
+    "desc",
+    1
+  );
+
+  const dataCoursebyIdCourse = getDataCourseById?.data.course || [];
+
+  // GET CATEGORY BY ID COURSE FOR COURSES
+  const idKategori = dataCoursebyIdCourse[0]?.kategori_id;
+
+  const { data: getDataCategoryId } = useCategoryId({
+    kategori_id: idKategori,
+  });
+
+  const dataCategoryId = getDataCategoryId?.data.category || [];
+
+  // GET SALARY
+
+  const { data: getDataSalary, isSuccess: salarySuccess } = useSalary({
+    course_id: getIdCourse,
+  });
+
+  const dataSalary = getDataSalary?.data.salary || [];
+
+  // GET REVIEW
+  const { data: getDataRating } = useGetRating();
+
+  const dataRating = getDataRating?.data.rating || [];
+
+  // GET COURSE FOR REVIEW CATEGORY
+  const { data: getDataCourse } = useCourse("", 30, [], [], "", "", 1);
+
+  const dataCourse = getDataCourse?.data.course || [];
+
+  const dataCategory = dataCourse.map((value) => ({
+    course_id: value.course_id,
+    category: value.Kategori.title,
+  }));
 
   return (
-    <div>
-      <HeaderUser />
+    <div className="bg-white">
+      <HeaderUser setSearchQuery={setSearchQuery} />
       <div className="flex">
-        <div className="relative w-[58%] h-[46dvh]">
-          <img src={banner} alt="banner" className="h-[46dvh] object-cover" />
-          <div className="absolute top-0 w-full h-[46dvh] bg-gradient-to-r from-transparent from-60% to-primary to-95%"></div>
-        </div>
-        <div className="bg-primary flex items-center justify-center w-[42%]">
-          <div className="flex flex-col gap-6 -mt-12 mr-10">
-            <div className="flex flex-col gap-2 font-bold text-4xl desktopfull:text-5xl text-white">
-              <div>Belajar</div>
-              <div>dari Praktisi Terbaik!</div>
-            </div>
-            <button className="text-primary bg-white rounded-2xl px-6 py-2 font-bold hover:shadow-xl hover:shadow-purple-800">
-              IKUTI KELAS
-            </button>
-          </div>
-        </div>
-      </div>
-      <div className="bg-[#EBF3FC] py-6 px-36">
-        <div className="flex items-center justify-between px-4">
-          <div className="font-bold text-xl">Kategori Belajar</div>
-          <div className="font-bold text-primary">Lihat Semua</div>
-        </div>
-        <div className="grid grid-cols-6 gap-6 mt-4 text-sm desktopfull:text-base">
-          <div className="flex flex-col items-center gap-1">
-            <img src={img1} alt="img1" className="rounded-3xl" />
-            <div className="font-bold">UI/UX Design</div>
-          </div>
-          <div className="flex flex-col items-center gap-1">
-            <img src={img2} alt="img2" className="rounded-3xl" />
-            <div className="font-bold">Product Management</div>
-          </div>
-          <div className="flex flex-col items-center gap-1">
-            <img src={img3} alt="img3" className="rounded-3xl" />
-            <div className="font-bold">Web Development</div>
-          </div>
-          <div className="flex flex-col items-center gap-1">
-            <img src={img4} alt="img4" className="rounded-3xl" />
-            <div className="font-bold">Android Development</div>
-          </div>
-          <div className="flex flex-col items-center gap-1">
-            <img src={img5} alt="img5" className="rounded-3xl" />
-            <div className="font-bold">iOS Development</div>
-          </div>
-          <div className="flex flex-col items-center gap-1">
-            <img src={img6} alt="img6" className="rounded-3xl" />
-            <div className="font-bold">Data Science</div>
-          </div>
-        </div>
-      </div>
-      <div className="py-6 px-36">
-        <div className="flex items-center justify-between px-4">
-          <div className="font-bold text-xl">Kursus Populer</div>
-          <div className="font-bold text-primary">Lihat Semua</div>
-        </div>
-        <div className="relative flex items-center mt-4">
-          <div
-            className={`absolute ${
-              slideStart ? "hidden" : "block"
-            } w-7 left-1 h-full flex items-center justify-center text-primary bg-white/95 rounded-full shadow-xl hover:bg-primary hover:text-white cursor-pointer`}
-          >
-            <RiArrowDropLeftLine
-              onClick={slideLeft}
-              className="w-5 h-5 stroke-1"
-            />
-          </div>
-          <div
-            className={`absolute ${
-              slideEnd ? "hidden" : "block"
-            } w-7 right-0 h-full flex items-center justify-center text-primary bg-white/95 rounded-full shadow-xl hover:bg-primary hover:text-white cursor-pointer`}
-          >
-            <RiArrowDropRightLine
-              onClick={slideRight}
-              className="w-5 h-5 stroke-1"
-            />
-          </div>
-          <div
-            ref={divRef}
-            className="flex justify-between gap-1 px-1 text-black font-bold whitespace-nowrap overflow-x-hidden scroll-smooth rounded-full"
-          >
-            <div className="bg-[#EBF3FC] text-center px-3.5 py-1 rounded-full w-fit cursor-pointer hover:bg-primary hover:text-white">
-              Data Science
-            </div>
-            <div className="bg-[#EBF3FC] text-center px-3.5 py-1 rounded-full w-fit cursor-pointer hover:bg-primary hover:text-white">
-              UI/UX Design
-            </div>
-            <div className="bg-[#EBF3FC] text-center px-3.5 py-1 rounded-full w-fit cursor-pointer hover:bg-primary hover:text-white">
-              Android Development
-            </div>
-            <div className="bg-[#EBF3FC] text-center px-3.5 py-1 rounded-full w-fit cursor-pointer hover:bg-primary hover:text-white">
-              iOS Development
-            </div>
-            <div className="bg-[#EBF3FC] text-center px-3.5 py-1 rounded-full w-fit cursor-pointer hover:bg-primary hover:text-white">
-              Web Development
-            </div>
-            <div className="bg-[#EBF3FC] text-center px-3.5 py-1 rounded-full w-fit cursor-pointer hover:bg-primary hover:text-white">
-              Business Intelligence
-            </div>
-            <div className="bg-[#EBF3FC] text-center px-3.5 py-1 rounded-full w-fit cursor-pointer hover:bg-primary hover:text-white">
-              Business Intelligence
-            </div>
-            <div className="bg-[#EBF3FC] text-center px-3.5 py-1 rounded-full w-fit cursor-pointer hover:bg-primary hover:text-white">
-              Business Intelligence
-            </div>
-            <div className="bg-[#EBF3FC] text-center px-3.5 py-1 rounded-full w-fit cursor-pointer hover:bg-primary hover:text-white">
-              Business Intelligence
-            </div>
-            <div className="bg-[#EBF3FC] text-center px-3.5 py-1 rounded-full w-fit cursor-pointer hover:bg-primary hover:text-white">
-              Business Intelligence
-            </div>
-          </div>
-        </div>
-        <div className="grid grid-cols-3 gap-6 mt-4 text-sm desktopfull:text-base">
-          <div className="rounded-3xl shadow-lg">
-            <img
-              src={img1}
-              alt="img1"
-              className="w-full h-[9rem] object-cover rounded-3xl"
-            />
-            <div className="px-3 pt-1.5 pb-3">
-              <div className="flex justify-between font-bold">
-                <div className="text-primary">UI/UX Design</div>
-                <div className="flex items-center gap-1">
-                  <FaStar className="fill-yellow-400" />
-                  <span>4.7</span>
+        <div className="relative w-full h-[90dvh]">
+          <img
+            src={banner}
+            alt="banner"
+            className="w-full h-[90dvh] object-cover"
+          />
+          <div className="absolute top-0 w-full h-[90dvh] bg-black/75">
+            <div className="absolute right-0 flex justify-center items-center mobile:w-full desktop:w-1/2 h-[90dvh] text-white">
+              <div className="space-y-5 pe-10 mobile:ps-10 desktop:ps-0">
+                <div className="flex flex-col gap-1.5 text-5xl desktopfull:text-6xl tracking-wider font-semibold">
+                  <div>Unlock your potential</div>
+                  <div className="text-yellow-400">anytime, anywhere</div>
                 </div>
+                <div className="text-lg desktopfull:text-2xl">
+                  Mulai atau tingkatkan kemampuanmu dalam dunia IT dan
+                  mendapatkan setifikasi profesional.
+                </div>
+                <Link
+                  to={"/register"}
+                  className={`${
+                    token ? "hidden" : "block"
+                  } w-fit px-9 py-3.5 bg-primary border-2 border-primary rounded-xl text-lg font-medium hover:border-2 hover:border-primary hover:bg-transparent`}
+                >
+                  Daftar Sekarang
+                </Link>
               </div>
-              <div className="font-bold whitespace-nowrap overflow-hidden">
-                Belajar Web Designer dengan Figma asfkjask jlsfkjalsfkj laflakf
-                lkasjflaksjf laksf lksjl
-              </div>
-              <div className="font-medium">by Angela Doe</div>
-              <div className="flex items-center gap-3 desktopfull:gap-6 my-1 font-medium">
-                <div className="flex items-center gap-1">
-                  <RiShieldStarLine className="text-[#73CA5C]" />
-                  <span>Intermediate</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <RiBook3Line className="text-[#73CA5C]" />
-                  <span>10 Modul</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <LuClock className="stroke-[#73CA5C]" />
-                  <span>120 Menit</span>
-                </div>
-              </div>
-              <button className="bg-[#489CFF] rounded-full p-1 px-6 font-medium text-white">
-                Rp 249.000
-              </button>
-            </div>
-          </div>
-          <div className="rounded-3xl shadow-lg">
-            <img
-              src={img1}
-              alt="img1"
-              className="w-full h-[9rem] object-cover rounded-3xl"
-            />
-            <div className="px-3 pt-1.5 pb-3">
-              <div className="flex justify-between font-bold">
-                <div className="text-primary">UI/UX Design</div>
-                <div className="flex items-center gap-1">
-                  <FaStar className="fill-yellow-400" />
-                  <span>4.7</span>
-                </div>
-              </div>
-              <div className="font-bold whitespace-nowrap overflow-hidden">
-                Belajar Web Designer dengan Figma asfkjask jlsfkjalsfkj laflakf
-                lkasjflaksjf laksf lksjl
-              </div>
-              <div className="font-medium">by Angela Doe</div>
-              <div className="flex items-center gap-3 desktopfull:gap-6 my-1 font-medium">
-                <div className="flex items-center gap-1">
-                  <RiShieldStarLine className="text-[#73CA5C]" />
-                  <span>Intermediate</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <RiBook3Line className="text-[#73CA5C]" />
-                  <span>10 Modul</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <LuClock className="stroke-[#73CA5C]" />
-                  <span>120 Menit</span>
-                </div>
-              </div>
-              <button className="bg-[#489CFF] rounded-full p-1 px-6 font-medium text-white">
-                Rp 249.000
-              </button>
-            </div>
-          </div>
-          <div className="rounded-3xl shadow-lg">
-            <img
-              src={img1}
-              alt="img1"
-              className="w-full h-[9rem] object-cover rounded-3xl"
-            />
-            <div className="px-3 pt-1.5 pb-3">
-              <div className="flex justify-between font-bold">
-                <div className="text-primary">UI/UX Design</div>
-                <div className="flex items-center gap-1">
-                  <FaStar className="fill-yellow-400" />
-                  <span>4.7</span>
-                </div>
-              </div>
-              <div className="font-bold whitespace-nowrap overflow-hidden">
-                Belajar Web Designer dengan Figma asfkjask jlsfkjalsfkj laflakf
-                lkasjflaksjf laksf lksjl
-              </div>
-              <div className="font-medium">by Angela Doe</div>
-              <div className="flex items-center gap-3 desktopfull:gap-6 my-1 font-medium">
-                <div className="flex items-center gap-1">
-                  <RiShieldStarLine className="text-[#73CA5C]" />
-                  <span>Intermediate</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <RiBook3Line className="text-[#73CA5C]" />
-                  <span>10 Modul</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <LuClock className="stroke-[#73CA5C]" />
-                  <span>120 Menit</span>
-                </div>
-              </div>
-              <button className="bg-[#489CFF] rounded-full p-1 px-6 font-medium text-white">
-                Rp 249.000
-              </button>
             </div>
           </div>
         </div>
       </div>
+
+      <div className="mobile:px-8 desktop:px-16 pt-8 pb-4">
+        <div className="text-2xl font-bold text-primary mb-4">
+          Kelas Unggulan
+        </div>
+        <div className="grid mobile:grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-4 gap-5 text-sm">
+          {dataCourseByRating.map((value, index) => {
+            return (
+              <div
+                className="rounded-3xl shadow-lg hover:shadow-2xl hover:border hover:border-gray-300 hover:scale-105 cursor-pointer"
+                key={index}
+                onClick={() =>
+                  navigate("/kelas/detail", {
+                    state: {
+                      courseId: value.course_id,
+                    },
+                  })
+                }
+              >
+                <img
+                  src={img1}
+                  alt=""
+                  className="w-full h-[9rem] object-cover rounded-t-3xl"
+                />
+                <div className="px-3.5 pt-2 pb-5">
+                  <div className="text-primary">{value.Kategori.title}</div>
+                  <div className="font-bold whitespace-nowrap overflow-hidden text-base">
+                    {value.title}
+                  </div>
+                  <div className="font-medium text-xs">
+                    by <span>{value.Mentor.name}</span>
+                  </div>
+                  <div
+                    className={`flex gap-1 items-center text-base font-semibold ${
+                      value.harga === 0 ? "text-blue-700" : "text-green-500 "
+                    }  mt-2.5 mb-1.5`}
+                  >
+                    <MdOutlineSell />
+                    <span>
+                      {value.harga === 0 ? "Gratis" : `Rp ${value.harga}`}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-0.5 text-xs">
+                    <div>{value.level}</div>
+                    <BsDot />
+                    <div>{value.module} Modul</div>
+                    <BsDot />
+                    <div>Sertifikasi Profesional</div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="mobile:px-8 desktop:px-16 pt-6 pb-16 text-sm">
+        <div className="flex mobile:flex-col desktop:flex-row desktop:justify-between desktop:items-center mobile:gap-2 desktop:gap-10 mb-4">
+          <div className="text-2xl font-bold text-primary">
+            Mulai karir baru anda
+          </div>
+          <Link
+            to={"/kelas"}
+            className="flex items-center gap-2 hover:text-gray-400"
+          >
+            <div>Lihat semua kategori</div>
+            <HiArrowLongRight />
+          </Link>
+        </div>
+        <table className="mb-4 w-full text-center">
+          <tr>
+            <td
+              className={`pb-2 px-5 text-base font-medium border-b-2 ${
+                getIdCourse === 11
+                  ? "border-primary text-primary"
+                  : "border-gray-300"
+              } hover:border-primary hover:text-primary cursor-pointer`}
+              value="11"
+              onClick={() => setIdCourse(11)}
+            >
+              Front-End Developer
+            </td>
+            <td
+              className={`pb-2 px-5 text-base font-medium border-b-2 ${
+                getIdCourse === 12
+                  ? "border-primary text-primary"
+                  : "border-gray-300"
+              } hover:border-primary hover:text-primary cursor-pointer`}
+              value="12"
+              onClick={() => setIdCourse(12)}
+            >
+              Back-End Developer
+            </td>
+            <td
+              className={`pb-2 px-5 text-base font-medium border-b-2 ${
+                getIdCourse === 1
+                  ? "border-primary text-primary"
+                  : "border-gray-300"
+              } hover:border-primary hover:text-primary cursor-pointer`}
+              value="1"
+              onClick={() => setIdCourse(1)}
+            >
+              UI / UX Designer
+            </td>
+            <td
+              className={`pb-2 px-5 text-base font-medium border-b-2 ${
+                getIdCourse === 13
+                  ? "border-primary text-primary"
+                  : "border-gray-300"
+              } hover:border-primary hover:text-primary cursor-pointer`}
+              value="13"
+              onClick={() => setIdCourse(13)}
+            >
+              Machine Learning
+            </td>
+            <td
+              className={`pb-2 px-5 text-base font-medium border-b-2 ${
+                getIdCourse === 4
+                  ? "border-primary text-primary"
+                  : "border-gray-300"
+              } hover:border-primary hover:text-primary cursor-pointer`}
+              value="4"
+              onClick={() => setIdCourse(4)}
+            >
+              Android Developer
+            </td>
+            <td
+              className={`pb-2 px-5 text-base font-medium border-b-2 ${
+                getIdCourse === 5
+                  ? "border-primary text-primary"
+                  : "border-gray-300"
+              } hover:border-primary hover:text-primary cursor-pointer`}
+              value="5"
+              onClick={() => setIdCourse(5)}
+            >
+              iOS Developer
+            </td>
+          </tr>
+        </table>
+        <div className="p-8 border-2 border-gray-300 rounded-lg">
+          <div className="font-bold text-3xl mb-2">{dataCategoryId.title}</div>
+          <div className="text-gray-700 mb-5">{dataCategoryId.deskripsi}</div>
+          <div className="font-semibold text-base mb-2">Rata - rata gaji</div>
+          <div className="flex mobile:flex-col desktop:flex-row desktop:items-center mobile:gap-1 desktop:gap-4 mb-2">
+            <div className="desktop:w-1/3 desktop:ps-5 desktop:py-2 desktop:rounded desktop:text-white desktop:bg-yellow-400">
+              Di Indonesia
+            </div>
+            <div className="mobile:hidden desktop:block">
+              Rp.{dataSalary.gaji_dn} / thn
+            </div>
+            <div className="desktop:hidden w-2/5 ps-5 py-2 rounded text-white bg-yellow-400">
+              Rp.{dataSalary.gaji_dn} / thn
+            </div>
+          </div>
+          <div className="flex mobile:flex-col desktop:flex-row desktop:items-center mobile:gap-1 desktop:gap-4">
+            <div className="desktop:w-4/5 desktop:ps-5 desktop:py-2 desktop:rounded desktop:text-white desktop:bg-primary">
+              Di Luar Negeri
+            </div>
+            <div className="mobile:hidden desktop:block">
+              Rp.{dataSalary.gaji_ln} / thn
+            </div>
+            <div className="desktop:hidden w-2/5 ps-5 py-2 rounded text-white bg-yellow-400">
+              Rp.{dataSalary.gaji_ln} / thn
+            </div>
+          </div>
+          <hr className="my-7" />
+          <div className="grid mobile:grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-4 gap-5">
+            {dataCoursebyIdCourse.map((value, index) => {
+              return (
+                <div
+                  className="rounded-3xl shadow-lg hover:shadow-2xl hover:border hover:border-gray-300 hover:scale-105 cursor-pointer"
+                  key={index}
+                  onClick={() =>
+                    navigate("/kelas/detail", {
+                      state: {
+                        courseId: value.course_id,
+                      },
+                    })
+                  }
+                >
+                  <img
+                    src={img1}
+                    alt=""
+                    className="w-full h-[9rem] object-cover rounded-t-3xl"
+                  />
+                  <div className="px-3.5 pt-2 pb-5">
+                    <div className="text-primary">{value.Kategori.title}</div>
+                    <div className="font-bold whitespace-nowrap overflow-hidden text-base">
+                      {value.title}
+                    </div>
+                    <div className="font-medium text-xs">
+                      by <span>{value.Mentor.name}</span>
+                    </div>
+                    <div
+                      className={`flex gap-1 items-center text-base font-semibold ${
+                        value.harga === 0 ? "text-blue-700" : "text-green-500 "
+                      }  mt-2.5 mb-1.5`}
+                    >
+                      <MdOutlineSell />
+                      <span>
+                        {value.harga === 0 ? "Gratis" : `Rp ${value.harga}`}
+                      </span>
+                    </div>
+                    <div className="flex items-center text-xs">
+                      <div>{value.level}</div>
+                      <BsDot />
+                      <div>{value.module} Modul</div>
+                      <BsDot />
+                      <div>Sertifikasi Profesional</div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      <div className="px-8 pt-8 pb-12 text-sm text-white text-center bg-blue-900">
+        <div className="text-lg text-yellow-300 tracking-wider font-medium mb-3">
+          Trusted by 500k+ Students
+        </div>
+        <div className="text-2xl font-medium tracking-wide mb-3">
+          Gabung komunitas LearnWise Sekarang !
+        </div>
+        <div className="text-lg font-medium text-center desktop:px-64 text-gray-300 mb-10">
+          LearnWise telah dipercaya dan mendapat review baik dari alumni
+          LearnWise dari seluruh Indonesia
+        </div>
+        <div className="carousel carousel-center mobile:w-full desktop:w-4/5 h-[220px] bg-transparent space-x-4 rounded-box">
+          {dataRating.slice(0, 9).map((value, index) => {
+            const categoryReview = (id) => {
+              const result = dataCategory.filter((value) => {
+                if (value.course_id === id) {
+                  return value.category;
+                }
+              });
+
+              return result;
+            };
+
+            const categoryName =
+              categoryReview(value.course_id)[0]?.category || [];
+
+            return (
+              <div
+                className="mobile:w-3/4 tablet:w-1/2 desktop:w-1/4 carousel-item flex-col space-y-3 bg-white text-black rounded-box px-5 py-6"
+                key={index}
+              >
+                <div className="flex items-center gap-3">
+                  <div>
+                    <img
+                      src={value.Account.url_image}
+                      alt="profile pic"
+                      className="w-7 h-7 object-cover rounded-full"
+                    />
+                  </div>
+                  <div className="text-left">
+                    <div className="font-semibold">{value.Account.nama}</div>
+                    <div className="text-gray-500 text-xs">{categoryName}</div>
+                  </div>
+                </div>
+                <div className="text-left mt-2">{value.comment}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <FooterUser />
     </div>
   );
 };

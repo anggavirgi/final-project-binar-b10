@@ -9,7 +9,7 @@ export const LayoutAdmin = ({children}) => {
 
       <div className="ml-[250px] w-full">
         <HeaderAdmin />
-        <div className="py-7 px-16">
+        <div className="py-7 px-14">
           {children}
         </div>  
       </div>

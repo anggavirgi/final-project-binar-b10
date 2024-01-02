@@ -1,10 +1,14 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}", "node_modules/flowbite-react/lib/esm/**/*.js"],
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}",
+    "node_modules/flowbite-react/lib/esm/**/*.js",
+  ],
   theme: {
     extend: {
       screens: {
-        mobile: "425px",
+        mobile: "0px",
+        tablet: "425px",
         desktop: "1024px",
         desktopfull: "1400px",
       },
@@ -13,5 +17,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require("flowbite/plugin")],
+  plugins: [require("flowbite/plugin"), require("daisyui")],
 };

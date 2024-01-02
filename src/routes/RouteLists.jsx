@@ -1,45 +1,97 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { LoginUser } from "../pages/LoginUser";
-import { Register } from "../pages/Register";
-import OTP from "../pages/OTP";
-import { ResetPw } from "../pages/ResetPw";
-import { UserProfile } from "../pages/UserProfile";
-import { Notif } from "../pages/Notif";
-import { GantiPWUser } from "../pages/GantiPWUser";
-import { RiwayatUser } from "../pages/RiwayatUser";
+import { UserProfile } from "../pages/User/Profil/UserProfile";
+import { RiwayatUser } from "../pages/User/Profil/RiwayatUser";
+import { GantiPassword } from "../pages/User/Profil/GantiPassword";
+import { Notifikasi } from "../pages/User/Notifikasi";
 import { DashboardAdmin } from "../pages/Admin/DashboardAdmin";
 import { ClassAdmin } from "../pages/Admin/ClassAdmin";
 import { Class } from "../pages/User/Class";
-import { Homepage } from "../pages/User/Homepage";
-import Detail from "../pages/User/Detail";
+import { Detail } from "../pages/User/Detail";
 import { Payment } from "../pages/User/Payment";
 import { Berhasil } from "../pages/User/Berhasil";
+import { Homepage } from "../pages/User/Homepage";
+import { ResetPassword } from "../pages/Autentikasi/ResetPassword";
+import { OTP } from "../pages/Autentikasi/OTP";
+import { Register } from "../pages/Autentikasi/Register";
+import { LoginUser } from "../pages/Autentikasi/LoginUser";
+import { SendEmail } from "../pages/Autentikasi/SendEmail";
+import { ProtectedAuth } from "../components/Protected/ProtectedAuth";
+import { AddVideo } from "../pages/Admin/AddVideo";
+import { MyClass } from "../pages/User/MyClass";
 
 export const RouteLists = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LoginUser />} />
-        <Route path="/1" element={<OTP />} />
-        <Route path="/2" element={<Register />} />
-        <Route path="/3" element={<ResetPw />} />
-        <Route path="/4" element={<UserProfile />} />
-        <Route path="/5" element={<Notif />} />
-        <Route path="/6" element={<GantiPWUser />} />
-        <Route path="/7" element={<RiwayatUser />} />
+        {/* AUTH */}
+        <Route
+          path="/"
+          element={
+            <ProtectedAuth>
+              <LoginUser />
+            </ProtectedAuth>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <ProtectedAuth>
+              <LoginUser />
+            </ProtectedAuth>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <ProtectedAuth>
+              <Register />
+            </ProtectedAuth>
+          }
+        />
+        <Route
+          path="/otp"
+          element={
+            <ProtectedAuth>
+              <OTP />
+            </ProtectedAuth>
+          }
+        />
+        <Route
+          path="/sendemail"
+          element={
+            <ProtectedAuth>
+              <SendEmail />
+            </ProtectedAuth>
+          }
+        />
+        <Route
+          path="/reset"
+          element={
+            <ProtectedAuth>
+              <ResetPassword />
+            </ProtectedAuth>
+          }
+        />
 
         {/* USER */}
-        <Route path="/" element={<Homepage />} />
         <Route path="/home" element={<Homepage />} />
         <Route path="/kelas" element={<Class />} />
-        <Route path="/detail" element={<Detail />} />
-        <Route path="/payment" element={<Payment />} />
-        <Route path="/berhasil" element={<Berhasil />} />
+        <Route path="/kelassaya" element={<MyClass />} />
+        <Route path="/notifikasi" element={<Notifikasi />} />
+        <Route path="/kelas/detail" element={<Detail />} />
+        <Route path="/kelas/payment" element={<Payment />} />
+        <Route path="/kelas/payment/berhasil" element={<Berhasil />} />
+
+        {/* USER PROFILE */}
+        <Route path="/profil" element={<UserProfile />} />
+        <Route path="/profil/gantipassword" element={<GantiPassword />} />
+        <Route path="/profil/riwayat" element={<RiwayatUser />} />
 
         {/* ADMIN */}
         <Route path="/admin" element={<DashboardAdmin />} />
-        <Route path="/kelolakelas" element={<ClassAdmin />} />
+        <Route path="/admin/kelolakelas" element={<ClassAdmin />} />
+        <Route path="/admin/add-video" element={<AddVideo />} />
       </Routes>
     </BrowserRouter>
   );
