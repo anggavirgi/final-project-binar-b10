@@ -5,6 +5,7 @@ import {
   setName,
   setRole,
   setlistCourse,
+  setUrl,
 } from "../reducers/auth/meReducer";
 
 export const getDataMe = () => (dispatch) => {
@@ -15,7 +16,7 @@ export const getDataMe = () => (dispatch) => {
       dispatch(setEmail(result.data.data.user.email));
       dispatch(setRole(result.data.data.user.role));
       dispatch(setlistCourse(result.data.data.listCourse));
-      return result;
+      dispatch(setUrl(result.data.data.user.url_image));
     })
     .catch((err) => {
       throw err;

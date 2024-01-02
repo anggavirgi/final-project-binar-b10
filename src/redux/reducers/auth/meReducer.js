@@ -8,6 +8,7 @@ const meSlice = createSlice({
     email: "",
     role: "",
     listCourse: [],
+    url: "",
   },
   reducers: {
     setId: (state, action) => {
@@ -25,9 +26,13 @@ const meSlice = createSlice({
     setlistCourse: (state, action) => {
       state.listCourse = action.payload;
     },
+    setUrl: (state, action) => {
+      state.url = action.payload;
+    },
   },
 });
 
-export const { setId, setName, setEmail, setRole, setlistCourse } = meSlice.actions;
+export const { setId, setName, setEmail, setRole, setlistCourse, setUrl } =
+  meSlice.actions;
 
 export default meSlice.reducer;

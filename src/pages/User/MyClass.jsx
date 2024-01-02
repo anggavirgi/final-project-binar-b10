@@ -6,8 +6,9 @@ import { useCourse } from "../../services/user/GetCourse";
 import { useCategory } from "../../services/user/GetCategory";
 import { LayoutUser } from "../../Layout/LayoutUser";
 import img1 from "../../assets/img/img1.png";
+import { useMyCourse } from "../../services/user/GetMyCourse";
 
-export const Class = () => {
+export const MyClass = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
 
@@ -37,7 +38,7 @@ export const Class = () => {
   }, [handleAll, searchQuery, state]);
 
   // GET COURSE ALL
-  const { data: coursesAll, isLoading } = useCourse(
+  const { data: coursesAll, isLoading } = useMyCourse(
     searchQuery,
     10,
     selectedCategories,
@@ -51,8 +52,8 @@ export const Class = () => {
   const { data: categoryAll } = useCategory(10);
 
   useEffect(() => {
-    if (coursesAll?.data && coursesAll?.data?.course) {
-      setDataCourses(coursesAll.data.course);
+    if (coursesAll?.data && coursesAll?.data?.userCourse) {
+      setDataCourses(coursesAll.data.userCourse);
     }
     if (categoryAll?.data && categoryAll?.data?.category) {
       setDataCategories(categoryAll.data.category);
@@ -75,7 +76,7 @@ export const Class = () => {
   }, [lastPage, coursesAll]);
 
   const handleCategoryChange = (categoryId) => {
-    setCurrentPage(1)
+    setCurrentPage(1);
     setSelectedCategories((prevCategories) => {
       if (prevCategories.includes(categoryId)) {
         return prevCategories.filter((id) => id !== categoryId);
@@ -86,7 +87,7 @@ export const Class = () => {
   };
 
   const handleLevelChange = (level) => {
-    setCurrentPage(1)
+    setCurrentPage(1);
     setSelectedLevels((prevLevels) => {
       if (prevLevels.includes(level)) {
         return prevLevels.filter((lv) => lv !== level);
@@ -97,7 +98,7 @@ export const Class = () => {
   };
 
   const handleClearFilters = () => {
-    setCurrentPage(1)
+    setCurrentPage(1);
     setSelectedCategories([]);
     setSelectedLevels([]);
   };
@@ -111,13 +112,13 @@ export const Class = () => {
   };
 
   const handlePremiumClick = () => {
-    setCurrentPage(1)
+    setCurrentPage(1);
     setIsPremium(true);
     setIsFree(false);
   };
 
   const handleFreeClick = () => {
-    setCurrentPage(1)
+    setCurrentPage(1);
     setIsPremium(false);
     setIsFree(true);
   };
@@ -127,6 +128,7 @@ export const Class = () => {
     setIsPremium(false);
     setIsFree(false);
   };
+
   const filteredCourses = dataCourses.filter((course) => {
     if (isPremium) return course.harga !== 0;
     if (isFree) return course.harga === 0;
@@ -138,7 +140,7 @@ export const Class = () => {
       <LayoutUser>
         {/* Title and Search */}
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-700">Kelas Berjalan</h2>
+          <h2 className="text-2xl font-bold text-gray-700">Kelas Saya</h2>
         </div>
 
         <div className="relative flex desktop:gap-10 desktopfull:gap-14">

@@ -20,3 +20,14 @@ export const useCategory = (limit, options) => {
     queryFn: () => fetchCategory(limit),
   });
 };
+
+export const fetchCategoryId = async ({ queryKey }) => {
+  const [_key, _params] = queryKey;
+  const { data } = await http.get(_key + _params.kategori_id);
+
+  return data;
+};
+
+export const useCategoryId = (options) => {
+  return useQuery([API_ENDPOINT.GET_CATEGORY_ID, options], fetchCategoryId);
+};
