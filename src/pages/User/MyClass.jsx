@@ -7,6 +7,7 @@ import { useCategory } from "../../services/user/GetCategory";
 import { LayoutUser } from "../../Layout/LayoutUser";
 import img1 from "../../assets/img/img1.png";
 import { useMyCourse } from "../../services/user/GetMyCourse";
+import { useGetProgress } from "../../services/user/GetProgressCourses";
 
 export const MyClass = () => {
   const navigate = useNavigate();
@@ -38,18 +39,14 @@ export const MyClass = () => {
   }, [handleAll, searchQuery, state]);
 
   // GET COURSE ALL
-  const { data: coursesAll, isLoading } = useMyCourse(
-    searchQuery,
-    10,
-    selectedCategories,
-    selectedLevels,
-    "",
-    "",
-    currentPage
-  );
+  const { data: coursesAll, isLoading } = useMyCourse(searchQuery, 10, selectedCategories, selectedLevels, "", "", currentPage);
 
   const { data: levelsAll } = useCourse("", 10, [], [], "", "", currentPage);
   const { data: categoryAll } = useCategory(10);
+  const { data: progressCourse, refetch: refetchProgress } = useGetProgress();
+
+  const progress = progressCourse?.data?.data?.result;
+  console.log(progress, "progressnyaa");
 
   useEffect(() => {
     if (coursesAll?.data && coursesAll?.data?.userCourse) {
@@ -59,15 +56,24 @@ export const MyClass = () => {
       setDataCategories(categoryAll.data.category);
     }
     if (levelsAll?.data && levelsAll?.data?.course) {
-      setDataLevels([
-        ...new Set(levelsAll.data.course.map((course) => course.level)),
-      ]);
+      setDataLevels([...new Set(levelsAll.data.course.map((course) => course.level))]);
     }
   }, [coursesAll, categoryAll, levelsAll]);
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
+
+  useEffect(() => {
+    if (coursesAll?.data && coursesAll?.data?.userCourse) {
+      // Map the courses to include the progress data
+      const updatedCourses = coursesAll.data.userCourse.map((course) => {
+        const courseProgress = progress.find((p) => p.course_id === course.course_id);
+        return { ...course, progress: courseProgress ? courseProgress.percentage : 0 };
+      });
+      setDataCourses(updatedCourses);
+    }
+  }, [coursesAll, progress]);
 
   useEffect(() => {
     const totalCourse = coursesAll?.data?.pagination?.total_items;
@@ -152,53 +158,30 @@ export const MyClass = () => {
             </h3>
             <div className="flex flex-col gap-4 whitespace-nowrap overflow-x-hidden">
               <div className="space-y-3 px-1.5">
-                <h4 className="text-base font-bold text-primary -pt-3">
-                  Jenis
-                </h4>
+                <h4 className="text-base font-bold text-primary -pt-3">Jenis</h4>
                 <label className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    id="some_id"
-                    className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
-                  />
+                  <input type="checkbox" id="some_id" className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0" />
                   <span className="">Paling Baru</span>
                 </label>
                 <label className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    id="some_id"
-                    className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
-                  />
+                  <input type="checkbox" id="some_id" className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0" />
                   <span className="">Paling Populer</span>
                 </label>
                 <label className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    id="some_id"
-                    className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
-                  />
+                  <input type="checkbox" id="some_id" className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0" />
                   <span className="">Promo</span>
                 </label>
               </div>
               <div className="space-y-3 px-1.5">
-                <h4 className="text-base font-bold text-primary -pt-3">
-                  Kategori
-                </h4>
+                <h4 className="text-base font-bold text-primary -pt-3">Kategori</h4>
                 {dataCategories.map((category) => {
                   return (
-                    <div
-                      className="flex gap-2 items-center"
-                      key={category.kategori_id}
-                    >
+                    <div className="flex gap-2 items-center" key={category.kategori_id}>
                       <input
                         type="checkbox"
                         id={`category_${category.kategori_id}`}
-                        onChange={() =>
-                          handleCategoryChange(category.kategori_id)
-                        }
-                        checked={selectedCategories.includes(
-                          category.kategori_id
-                        )}
+                        onChange={() => handleCategoryChange(category.kategori_id)}
+                        checked={selectedCategories.includes(category.kategori_id)}
                         className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
                       />
                       <span className="">{category.title}</span>
@@ -207,9 +190,7 @@ export const MyClass = () => {
                 })}
               </div>
               <div className="space-y-3 px-1.5">
-                <h4 className="text-base font-bold text-primary -pt-3">
-                  Level Kesulitan
-                </h4>
+                <h4 className="text-base font-bold text-primary -pt-3">Level Kesulitan</h4>
                 {dataLevels?.map((level) => {
                   return (
                     <div className="flex gap-2 items-center">
@@ -226,10 +207,7 @@ export const MyClass = () => {
                 })}
               </div>
               <div className="w-full flex justify-center mt-2">
-                <button
-                  className="font-bold text-red-500 hover:underline"
-                  onClick={handleClearFilters}
-                >
+                <button className="font-bold text-red-500 hover:underline" onClick={handleClearFilters}>
                   Hapus Filter
                 </button>
               </div>
@@ -239,22 +217,13 @@ export const MyClass = () => {
           {/* BODY */}
           <div className="desktop:w-3/4 desktopfull:w-4/5">
             <div className="grid grid-cols-3 gap-4 mb-7 text-center">
-              <div
-                className="py-2 font-semibold text-gray-600 hover:text-white rounded-full bg-white hover:bg-primary cursor-pointer shadow"
-                onClick={handleAllClick}
-              >
+              <div className="py-2 font-semibold text-gray-600 hover:text-white rounded-full bg-white hover:bg-primary cursor-pointer shadow" onClick={handleAllClick}>
                 All
               </div>
-              <div
-                className="py-2 font-semibold text-gray-600 hover:text-white rounded-full bg-white hover:bg-primary cursor-pointer shadow"
-                onClick={handlePremiumClick}
-              >
+              <div className="py-2 font-semibold text-gray-600 hover:text-white rounded-full bg-white hover:bg-primary cursor-pointer shadow" onClick={handlePremiumClick}>
                 Kelas Premium
               </div>
-              <div
-                className="py-2 font-semibold text-gray-600 hover:text-white rounded-full bg-white hover:bg-primary cursor-pointer shadow"
-                onClick={handleFreeClick}
-              >
+              <div className="py-2 font-semibold text-gray-600 hover:text-white rounded-full bg-white hover:bg-primary cursor-pointer shadow" onClick={handleFreeClick}>
                 Kelas Gratis
               </div>
             </div>
@@ -262,13 +231,7 @@ export const MyClass = () => {
             {isLoading && (
               <div className="w-full flex items-center justify-center mt-4">
                 <div>
-                  <svg
-                    aria-hidden="true"
-                    className="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-gray-600 dark:fill-gray-300"
-                    viewBox="0 0 100 101"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                  <svg aria-hidden="true" className="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-gray-600 dark:fill-gray-300" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
                       d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
                       fill="currentColor"
@@ -286,38 +249,20 @@ export const MyClass = () => {
               {/* {render courses} */}
               {!isLoading &&
                 filteredCourses.map((course) => {
+                  const completionPercentage = course.progress;
                   return (
-                    <div
-                      key={course.course_id}
-                      className="rounded-3xl bg-white shadow-lg"
-                      onClick={() => handleToDetail(course.course_id)}
-                      onKeyDown={() => {}}
-                    >
-                      <img
-                        src={img1}
-                        alt="img1"
-                        className="w-full h-[9rem] object-cover rounded-3xl"
-                      />
+                    <div key={course.course_id} className="rounded-3xl bg-white shadow-lg" onClick={() => handleToDetail(course.course_id)} onKeyDown={() => {}}>
+                      <img src={img1} alt="img1" className="w-full h-[9rem] object-cover rounded-3xl" />
                       <div className="flex flex-col gap-1 px-3 pt-3 pb-4">
                         <div className="flex justify-between font-bold">
-                          <div className="text-primary">
-                            {course.Kategori.title}
-                          </div>
+                          <div className="text-primary">{course.Kategori.title}</div>
                           <div className="flex items-center gap-1">
                             <FaStar className="fill-yellow-400" />
-                            <span>
-                              {course.avgRating !== 0
-                                ? Math.floor(course.avgRating * 10) / 10
-                                : "-"}
-                            </span>
+                            <span>{course.avgRating !== 0 ? Math.floor(course.avgRating * 10) / 10 : "-"}</span>
                           </div>
                         </div>
-                        <div className="font-bold whitespace-nowrap overflow-hidden">
-                          {course.title}
-                        </div>
-                        <div className="font-medium">
-                          by {course.Mentor.name}
-                        </div>
+                        <div className="font-bold whitespace-nowrap overflow-hidden">{course.title}</div>
+                        <div className="font-medium">by {course.Mentor.name}</div>
                         <div className="flex items-center gap-3 desktopfull:gap-6 font-medium my-1">
                           <div className="flex items-center gap-1">
                             <RiShieldStarLine className="text-[#73CA5C]" />
@@ -328,9 +273,15 @@ export const MyClass = () => {
                             <span>{course?.module} Modul</span>
                           </div>
                         </div>
-                        <button className="bg-[#489CFF] rounded-full p-1 px-6 font-medium text-white">
-                          {course.harga !== 0 ? `Rp ${course.harga}` : "Gratis"}
-                        </button>
+                        <div className="font-medium">
+                          <div className="relative w-full bg-black rounded-full dark:bg-gray-700 overflow-hidden">
+                            <div className="bg-[#6148FF] h-7 flex items-center rounded-full" style={{ width: `${completionPercentage}%` }}></div>
+                            <span className="absolute left-0 ml-7 text-white font-semibold desktop:text-[10px] desktopfull:text-sm" style={{ top: "50%", transform: "translateY(-50%)" }}>
+                              {`${completionPercentage}% complete`}
+                            </span>
+                          </div>
+                        </div>
+                        <button className="bg-[#489CFF] rounded-full p-1 px-6 font-medium text-white">Lanjut Kelas</button>
                       </div>
                     </div>
                   );
@@ -340,27 +291,11 @@ export const MyClass = () => {
         </div>
         <div className="w-full flex justify-end">
           <div className="flex justify-center mt-8 mobile:w-[70%] desktop:w-3/4 desktopfull:w-4/5">
-            <button
-              className={`px-4 py-2 mx-1 rounded text-white font-bold ${
-                currentPage <= 1 ? "bg-gray-300" : "bg-[#489CFF] cursor-pointer"
-              }`}
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage <= 1}
-            >
+            <button className={`px-4 py-2 mx-1 rounded text-white font-bold ${currentPage <= 1 ? "bg-gray-300" : "bg-[#489CFF] cursor-pointer"}`} onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage <= 1}>
               Previous Page
             </button>
-            <span className="px-4 py-2 mx-1 rounded text-gray-700 font-bold">
-              Page {currentPage}
-            </span>
-            <button
-              className={`px-4 py-2 mx-1 rounded text-white font-bold ${
-                currentPage === lastPage
-                  ? "bg-gray-300"
-                  : "bg-[#489CFF] cursor-pointer"
-              }`}
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === lastPage}
-            >
+            <span className="px-4 py-2 mx-1 rounded text-gray-700 font-bold">Page {currentPage}</span>
+            <button className={`px-4 py-2 mx-1 rounded text-white font-bold ${currentPage === lastPage ? "bg-gray-300" : "bg-[#489CFF] cursor-pointer"}`} onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === lastPage}>
               Next Page
             </button>
           </div>

@@ -9,6 +9,8 @@ export const fetchPostRating = async (input) => {
       return result;
     })
     .catch((err) => {
+      console.log(err, "err rating post");
+      alert(err.response.data.err);
       throw err;
     });
 };
