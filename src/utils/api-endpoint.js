@@ -10,7 +10,7 @@ export const API_ENDPOINT = {
   GET_CATEGORY: "/category",
   GET_CATEGORY_ID: "/category/",
   GET_COURSE: "/course",
-  POST_COURSE: "/course/addCourse",
+  POST_ADD_COURSE: "/course/addCourse",
   PUT_COURSE: "/course/",
   DELETE_COURSE: "/course/",
   GET_COURSE_ID: "/course/",
