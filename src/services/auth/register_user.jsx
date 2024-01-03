@@ -10,21 +10,18 @@ const registerUser = async (input) => {
     .then((result) => {
       console.log(result.data.data.token);
       CookieStorage.set(CookiesKeys.AuthToken, result.data.data.token);
+      // Langsung navigasi setelah token disimpan
+      window.location.href = "/otp";
       return result.data;
     })
     .catch((err) => {
-      throw new Error(err.response.data.message);
+      console.log(err.response.data.error, "err register user");
+      throw new Error(err.response.data.error);
     });
 };
 
 const useRegisterUser = () => {
-  const navigate = useNavigate();
-
-  return useMutation(registerUser, {
-    onSuccess: () => {
-      navigate("/otp");
-    },
-  });
+  return useMutation(registerUser);
 };
 
 export { registerUser, useRegisterUser };

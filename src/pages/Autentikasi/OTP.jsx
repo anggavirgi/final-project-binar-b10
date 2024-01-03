@@ -10,8 +10,13 @@ export const OTP = () => {
   const navigate = useNavigate();
   const inputRefs = useRef([]);
   const [registeredEmail, setRegisteredEmail] = useState(""); // State to hold registered email
+  const [OtpError, setOtpError] = useState("");
 
-  const { mutate: sendOTP } = useSendOTP();
+  const { mutate: sendOTP, isError, error } = useSendOTP({
+    onError: (error) => {
+      setOtpError(error);
+    },
+  });
   const { mutate: resendOTP } = useReSendOTP();
 
   const isMobile = window.innerWidth <= 768;
@@ -83,7 +88,7 @@ export const OTP = () => {
 
   return (
     <div className="flex flex-wrap h-screen">
-      <div className={`w-full md:w-1/2 flex ${isMobile ? 'mt-5':'items-center justify-center'}`}>
+      <div className={`w-full md:w-1/2 flex ${isMobile ? "mt-5" : "items-center justify-center"}`}>
         <div className="bg-white rounded-lg p-8 flex flex-col items-center shadow-lg w-full max-w-md">
           <div className="flex items-center justify-between w-full mb-8">
             <Link to="/register" className="text-black hover:text-indigo-600">
@@ -112,7 +117,7 @@ export const OTP = () => {
           <button className="text-indigo-600 hover:text-indigo-700 text-sm mb-4" onClick={resendOTPOnClick}>
             Kirim Ulang OTP dalam 60 detik
           </button>
-
+          {isError && <div className="text-red-500 text-center mb-4">{error.message}</div>}
           <button
             className="bg-indigo-600 hover:indigo-700 text-white font-bold py-2 px-4 w-full rounded focus:outline-none focus:shadow-outline"
             onClick={handleSave} // Added onClick handler for Save button
@@ -122,14 +127,10 @@ export const OTP = () => {
         </div>
       </div>
       {!isMobile && (
-      <div className="w-1/2 bg-indigo-600 flex flex-col items-center justify-center">
-        {/* Pastikan path ke gambar sudah benar */}
-        <img
-          src={belajar}
-          alt="Belajar"
-          className="object-cover w-1/2"
-        />
-      </div>
+        <div className="w-1/2 bg-indigo-600 flex flex-col items-center justify-center">
+          {/* Pastikan path ke gambar sudah benar */}
+          <img src={belajar} alt="Belajar" className="object-cover w-1/2" />
+        </div>
       )}
     </div>
   );
