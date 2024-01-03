@@ -11,7 +11,8 @@ const GantiPassword = async (input) => {
       return result;
     })
     .catch((err) => {
-      console.log(err);
+      console.log(err, "err ganti password");
+      throw new Error(err.response.data.error);
     });
 };
 

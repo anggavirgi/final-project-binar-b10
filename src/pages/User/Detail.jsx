@@ -287,10 +287,14 @@ export const Detail = () => {
                   {chapter.Video.map((video, videoIndex) => (
                     <li key={video.video_id} className="mb-2 mt-2 flex items-center justify-between" onClick={() => handleSelectVideo(video)}>
                       <button className="flex items-center text-xs">
-                        <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">{videoIndex + 1}</span>
-                        <span className="text-start mx-2">{video.title}</span>
+                        <span className="flex items-center justify-center h-5 w-5 flex-shrink-0 bg-blue-100 text-black rounded-full text-xs mr-2">{videoIndex + 1}</span>
+                        <span className={`text-start mx-2 ${activeVideoIndex === videoIndex && currentChapterIndex === index ? "font-bold" : ""}`}>{video.title}</span>
                       </button>
-                      {video.is_preview || dataCourseDetail.sudahBeli === true ? <FaCirclePlay className={`text-xl ${isVideoDone(video.video_id) ? "text-[#73CA5C]" : "text-[#6148FF]"}`} /> : <GiPadlock className="text-xl text-gray-500" />}
+                      {video.is_preview || dataCourseDetail.sudahBeli === true ? (
+                        <FaCirclePlay className={`w-5 h-5 flex-shrink-0 ${isVideoDone(video.video_id) ? "text-[#73CA5C]" : "text-[#6148FF]"}`} />
+                      ) : (
+                        <GiPadlock className="w-5 h-5 flex-shrink-0 text-gray-500" />
+                      )}
                     </li>
                   ))}
                 </ol>
@@ -442,9 +446,6 @@ export const Detail = () => {
             <div className={`${isMobile ? "mx-5 order-3" : ""} desktop:mx-0 desktopfull:mx-0`}>
               <h2 className="text-2xl font-bold mb-4">Tentang Kelas</h2>
               <p className="mb-6 text-lg">{dataCourseDetail.course?.deskripsi}</p>
-
-              <h2 className="text-2xl font-bold mb-4">Kelas Ini Ditujukan Untuk</h2>
-              <ul className="list-disc pl-5 mb-6 text-gray-700">{/* List items here */}</ul>
             </div>
             {completionPercentage === 100 && (
               <form onSubmit={handleRatingSubmit} className="w-full max-w-lg mobile:mx-5 desktop:mx-0 desktopfull:mx-0">
@@ -574,7 +575,7 @@ export const Detail = () => {
           </div>
           {/* Materi Belajar Section */}
           {detailSuccess && !isMobile && (
-            <div className="desktop:w-2/5 desktopfull:w-1/3 px-4 overflow-auto">
+            <div className="desktop:w-1/2 desktopfull:w-1/3 px-4 overflow-auto">
               <div className="bg-white rounded-lg p-4 shadow-md mb-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-2xl font-bold ">Materi Belajar</h2>
@@ -602,13 +603,13 @@ export const Detail = () => {
                         {chapter.Video.map((video, videoIndex) => (
                           <li key={video.video_id} className="mb-2 mt-2 flex items-center justify-between" onClick={() => handleSelectVideo(video)}>
                             <button className="flex items-center">
-                              <span className="flex items-center justify-center h-6 w-6 bg-blue-100 text-black rounded-full text-xs mr-2">{videoIndex + 1}</span>
-                              <span className="text-start mx-2">{video.title}</span>
+                              <span className="flex items-center justify-center h-6 w-6 flex-shrink-0 bg-blue-100 text-black rounded-full text-xs mr-2">{videoIndex + 1}</span>
+                              <span className={`text-start mx-2 ${activeVideoIndex === videoIndex && currentChapterIndex === index ? "font-bold" : ""}`}>{video.title}</span>
                             </button>
                             {video.is_preview || dataCourseDetail.sudahBeli === true ? (
-                              <FaCirclePlay className={`text-xl ${isVideoDone(video.video_id) ? "text-[#73CA5C]" : "text-[#6148FF]"}`} />
+                              <FaCirclePlay className={`w-6 h-6 flex-shrink-0 ${isVideoDone(video.video_id) ? "text-[#73CA5C]" : "text-[#6148FF]"}`} />
                             ) : (
-                              <GiPadlock className="text-xl text-gray-500" />
+                              <GiPadlock className="w-6 h-6 flex-shrink-0 text-gray-500" />
                             )}
                           </li>
                         ))}

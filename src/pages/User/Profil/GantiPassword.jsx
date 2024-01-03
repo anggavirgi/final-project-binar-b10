@@ -13,8 +13,13 @@ export const GantiPassword = () => {
   const isMobile = window.innerWidth <= 768;  
 
   const [passwordShown, setPasswordShown] = useState(false);
+  const [gantiPasswordd, setgantiPassword] = useState("")
 
-  const { mutate: gantiPassword } = useGantiPassword();
+  const { mutate: gantiPassword, isError, error } = useGantiPassword({
+    onError: (error) => {
+      setgantiPassword(error);
+    },
+  });
 
   const [passwordData, setPasswordData] = useState({
     password_lama: "",
@@ -81,6 +86,7 @@ export const GantiPassword = () => {
                       onChange={handleInput}
                       className="w-full border border-gray-300 rounded-lg py-2 px-3 focus:outline-none focus:border-blue-500"
                       autoComplete="off"
+                      required
                     />
                     <span className="absolute right-3 top-3 cursor-pointer" onClick={togglePasswordVisibility}>
                       {passwordShown ? <IoEyeOutline /> : <IoEyeOffOutline />}
@@ -101,6 +107,7 @@ export const GantiPassword = () => {
                       onChange={handleInput}
                       className="w-full border border-gray-300 rounded-lg py-2 px-3 focus:outline-none focus:border-blue-500"
                       autoComplete="off"
+                      required
                     />
                     <span className="absolute right-3 top-3 cursor-pointer" onClick={togglePasswordVisibility}>
                       {passwordShown ? <IoEyeOutline /> : <IoEyeOffOutline />}
@@ -121,12 +128,14 @@ export const GantiPassword = () => {
                       onChange={handleInput}
                       className="w-full border border-gray-300 rounded-lg py-2 px-3 focus:outline-none focus:border-blue-500"
                       autoComplete="off"
+                      required
                     />
                     <span className="absolute right-3 top-3 cursor-pointer" onClick={togglePasswordVisibility}>
                       {passwordShown ? <IoEyeOutline /> : <IoEyeOffOutline />}
                     </span>
                   </div>
                 </div>
+                {isError && <div className="text-red-500 text-center mb-4">{error.message}</div>}
                 <div className="flex justify-center mb-5">
                   <br></br>
                   <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline w-full rounded-lg">

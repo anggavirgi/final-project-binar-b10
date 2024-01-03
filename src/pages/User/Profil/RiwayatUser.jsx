@@ -50,7 +50,7 @@ export const RiwayatUser = () => {
               {riwayatPembayaran.map((course) => (
                 <div className="w-full shadow-xl rounded-3xl sm:w-full md:w-[90%] lg:w-[90%] xl:w-[90%] mb-4 overflow-hidden" key={course.course_id}>
                   {/* Course Thumbnail Placeholder */}
-                  <img className="w-full h-40 object-cover" src="https://via.placeholder.com/150" alt={course.title} />
+                  <img className="w-full h-40 object-cover" src={course.url_image_preview} alt={course.title} />
 
                   <div className="px-4 py-5 rounded-b-3xl shadow-lg w-full">
                     {/* Course Details */}
