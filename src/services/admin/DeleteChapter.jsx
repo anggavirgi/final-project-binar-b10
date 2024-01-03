@@ -1,16 +1,12 @@
 import http from "../../utils/http"
 import { API_ENDPOINT } from "../../utils/api-endpoint"
-import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
-export const fetchDeleteChapter = async({queryKey}) => {
-  const [_key, _params] = queryKey;
-  
-  console.log(`${_key}${_params.chapter_id}`);
-  // const { data } = await http.get(`${_key}${_params.video_id}`);
-
-  // return data;
+export const fetchDeleteChapter = async(input, chapter_id) => {
+  return await http.delete(API_ENDPOINT.DELETE_CHAPTER + chapter_id);
 }
 
 export const useDeleteChapter = (options) => {
-  return useQuery([API_ENDPOINT.DELETE_CHAPTER, options], fetchDeleteChapter);
+  const {chapter_id} = options
+  return useMutation((input) => fetchDeleteChapter(input, chapter_id));
 }
