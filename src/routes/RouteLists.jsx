@@ -26,14 +26,6 @@ export const RouteLists = () => {
       <Routes>
         {/* AUTH */}
         <Route
-          path="/"
-          element={
-            <ProtectedAuth>
-              <LoginUser />
-            </ProtectedAuth>
-          }
-        />
-        <Route
           path="/login"
           element={
             <ProtectedAuth>
@@ -75,6 +67,7 @@ export const RouteLists = () => {
         />
 
         {/* USER */}
+        <Route path="/" element={<Homepage />} />
         <Route path="/home" element={<Homepage />} />
         <Route path="/kelas" element={<Class />} />
         <Route path="/kelassaya" element={<MyClass />} />
