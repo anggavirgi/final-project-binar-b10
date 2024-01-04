@@ -28,22 +28,8 @@ export const RouteLists = () => {
         <Route path="/login" element={<LoginUser />} />
         <Route path="/register" element={<Register />} />
         <Route path="/otp" element={<OTP />} />
-        <Route
-          path="/sendemail"
-          element={
-            <ProtectedAuth>
-              <SendEmail />
-            </ProtectedAuth>
-          }
-        />
-        <Route
-          path="/reset"
-          element={
-            <ProtectedAuth>
-              <ResetPassword />
-            </ProtectedAuth>
-          }
-        />
+        <Route path="/sendemail" element={<SendEmail />} />
+        <Route path="/reset" element={<ResetPassword />} />
 
         {/* USER */}
         <Route path="/" element={<Homepage />} />
