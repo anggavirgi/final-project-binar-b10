@@ -13,7 +13,6 @@ import { useRiwayatPembayaran } from "../../../services/User Profile/riwayat_pem
 export const RiwayatUser = () => {
   const [riwayatPembayaran, setRiwayatPembayaran] = useState([]);
   const { data, isLoading, isError } = useRiwayatPembayaran();
-  console.log(data);
 
   useEffect(() => {
     if (data && data.status) {

@@ -75,7 +75,7 @@ export const Class = () => {
   }, [lastPage, coursesAll]);
 
   const handleCategoryChange = (categoryId) => {
-    setCurrentPage(1)
+    setCurrentPage(1);
     setSelectedCategories((prevCategories) => {
       if (prevCategories.includes(categoryId)) {
         return prevCategories.filter((id) => id !== categoryId);
@@ -86,7 +86,7 @@ export const Class = () => {
   };
 
   const handleLevelChange = (level) => {
-    setCurrentPage(1)
+    setCurrentPage(1);
     setSelectedLevels((prevLevels) => {
       if (prevLevels.includes(level)) {
         return prevLevels.filter((lv) => lv !== level);
@@ -97,7 +97,7 @@ export const Class = () => {
   };
 
   const handleClearFilters = () => {
-    setCurrentPage(1)
+    setCurrentPage(1);
     setSelectedCategories([]);
     setSelectedLevels([]);
   };
@@ -111,13 +111,13 @@ export const Class = () => {
   };
 
   const handlePremiumClick = () => {
-    setCurrentPage(1)
+    setCurrentPage(1);
     setIsPremium(true);
     setIsFree(false);
   };
 
   const handleFreeClick = () => {
-    setCurrentPage(1)
+    setCurrentPage(1);
     setIsPremium(false);
     setIsFree(true);
   };
@@ -149,35 +149,6 @@ export const Class = () => {
               <span>FILTER</span>
             </h3>
             <div className="flex flex-col gap-4 whitespace-nowrap overflow-x-hidden">
-              <div className="space-y-3 px-1.5">
-                <h4 className="text-base font-bold text-primary -pt-3">
-                  Jenis
-                </h4>
-                <label className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    id="some_id"
-                    className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
-                  />
-                  <span className="">Paling Baru</span>
-                </label>
-                <label className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    id="some_id"
-                    className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
-                  />
-                  <span className="">Paling Populer</span>
-                </label>
-                <label className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    id="some_id"
-                    className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
-                  />
-                  <span className="">Promo</span>
-                </label>
-              </div>
               <div className="space-y-3 px-1.5">
                 <h4 className="text-base font-bold text-primary -pt-3">
                   Kategori
@@ -238,19 +209,25 @@ export const Class = () => {
           <div className="desktop:w-3/4 desktopfull:w-4/5">
             <div className="grid grid-cols-3 gap-4 mb-7 text-center">
               <div
-                className="py-2 font-semibold text-gray-600 hover:text-white rounded-full bg-white hover:bg-primary cursor-pointer shadow"
+                className={`py-2 font-semibold hover:text-white rounded-full hover:bg-primary cursor-pointer shadow ${
+                  handleAll ? "bg-primary text-white" : "bg-white text-gray-600"
+                }`}
                 onClick={handleAllClick}
               >
                 All
               </div>
               <div
-                className="py-2 font-semibold text-gray-600 hover:text-white rounded-full bg-white hover:bg-primary cursor-pointer shadow"
+                className={`py-2 font-semibold hover:text-white rounded-full hover:bg-primary cursor-pointer shadow ${
+                  isPremium ? "bg-primary text-white" : "bg-white text-gray-600"
+                }`}
                 onClick={handlePremiumClick}
               >
                 Kelas Premium
               </div>
               <div
-                className="py-2 font-semibold text-gray-600 hover:text-white rounded-full bg-white hover:bg-primary cursor-pointer shadow"
+                className={`py-2 font-semibold hover:text-white rounded-full hover:bg-primary cursor-pointer shadow ${
+                  isFree ? "bg-primary text-white" : "bg-white text-gray-600"
+                }`}
                 onClick={handleFreeClick}
               >
                 Kelas Gratis

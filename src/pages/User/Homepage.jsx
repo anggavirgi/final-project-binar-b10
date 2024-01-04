@@ -263,7 +263,7 @@ export const Homepage = () => {
             <div className="mobile:hidden desktop:block">
               Rp.{dataSalary.gaji_dn} / thn
             </div>
-            <div className="desktop:hidden w-2/5 ps-5 py-2 rounded text-white bg-yellow-400">
+            <div className="desktop:hidden mobile:text-xs desktop:text-sm desktopfull:text-sm w-3/5 ps-5 py-2 rounded text-white bg-yellow-400">
               Rp.{dataSalary.gaji_dn} / thn
             </div>
           </div>
@@ -274,7 +274,7 @@ export const Homepage = () => {
             <div className="mobile:hidden desktop:block">
               Rp.{dataSalary.gaji_ln} / thn
             </div>
-            <div className="desktop:hidden w-2/5 ps-5 py-2 rounded text-white bg-yellow-400">
+            <div className="desktop:hidden mobile:text-xs desktop:text-sm desktopfull:text-sm w-full ps-5 py-2 rounded text-white bg-primary">
               Rp.{dataSalary.gaji_ln} / thn
             </div>
           </div>
