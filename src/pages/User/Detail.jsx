@@ -18,6 +18,9 @@ import { useGetRating } from "../../services/user/GetRating";
 import { usePostRating } from "../../services/user/PostRating";
 import { usePostCourse } from "../../services/user/PostBeliCourse";
 import Cookies from "universal-cookie";
+import { useLoginUser } from "../../services/auth/PostLogin";
+import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
+import { useLoginUserModal } from "../../services/auth/PostLoginModal";
 
 export const Detail = () => {
   const [activeVideoUrl, setActiveVideoUrl] = useState("");
@@ -32,6 +35,16 @@ export const Detail = () => {
   const [openModal, setOpenModal] = useState(false);
   const cookies = new Cookies();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [passwordShown, setPasswordShown] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  useEffect(() => {
+    // Scroll ke atas setiap kali pengguna masuk ke halaman detail
+    window.scrollTo(0, 0);
+  }, []);
 
   const closeModal = () => {
     setOpenModal(false);
@@ -63,8 +76,8 @@ export const Detail = () => {
     isSuccess: detailSuccess,
     refetch: refetchCourseDetail,
   } = useCourseDetail({
-    course_id: state.courseId,
-    account_id: userData.id_user,
+    course_id: state?.courseId,
+    account_id: userData?.id_user,
   });
 
   // BELI COURSE
@@ -86,6 +99,17 @@ export const Detail = () => {
 
   //POST RATING
   const { mutate: getPostRating } = usePostRating();
+
+  //POST LOGIN
+  const {
+    mutate: login,
+    isError,
+    error,
+  } = useLoginUserModal({
+    onError: (error) => {
+      setLoginError(error);
+    },
+  });
 
   const dataCourseDetail = getCourseDetail?.data || [];
   console.log(dataCourseDetail, "detailcourse");
@@ -246,11 +270,38 @@ export const Detail = () => {
     return stars;
   };
 
+  const togglePasswordVisibility = () => {
+    setPasswordShown(!passwordShown);
+  };
+
+  const handleInput = (e) => {
+    const { id, value } = e.target;
+    if (id === "email") setEmail(value);
+    if (id === "password") setPassword(value);
+  };
+
+  const loginUser = (e) => {
+    e.preventDefault();
+    login(
+      { email, password },
+      {
+        onSuccess: (user) => {
+          setShowLoginModal(false); // Menutup modal setelah login berhasil
+
+          // Reload halaman untuk memperbarui data dan state sesuai pengguna yang baru login
+          window.location.reload();
+        },
+        onError: (error) => {
+          setLoginError(error.message); // Menampilkan pesan error jika login gagal
+        },
+      }
+    );
+  };
+
   const handleJoinClass = () => {
     const token = cookies.get("authToken");
     if (!token) {
-      alert("Anda belum login.");
-      navigate("/login");
+      setShowLoginModal(true);
     } else {
       setOpenModal(true);
     }
@@ -308,6 +359,89 @@ export const Detail = () => {
   return (
     <>
       <LayoutUser>
+        {/* Modal untuk login */}
+        {showLoginModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center px-4" onClick={() => setShowLoginModal(false)}>
+            <div className="bg-white rounded-lg p-8 shadow-lg w-full max-w-md mx-auto relative" onClick={(e) => e.stopPropagation()}>
+              {/* Close button */}
+              <button className="absolute top-0 right-0 mt-4 mr-4 text-gray-600 hover:text-gray-800" onClick={() => setShowLoginModal(false)}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+
+              <h3 className="text-xl font-semibold text-center mb-6">Log In to Your Account</h3>
+
+              {/* Email field */}
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                  Email address
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                  className="mt-1 block w-full px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  onChange={handleInput}
+                  value={email}
+                />
+              </div>
+
+              {/* Password field */}
+              <div className="mt-4">
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                  Password
+                </label>
+                <div className="mt-1 relative">
+                  <input
+                    type={passwordShown ? "text" : "password"}
+                    id="password"
+                    name="password"
+                    required
+                    className="block w-full px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    onChange={handleInput}
+                    value={password}
+                  />
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 cursor-pointer" onClick={togglePasswordVisibility}>
+                    {passwordShown ? <IoEyeOutline className="text-gray-500" /> : <IoEyeOffOutline className="text-gray-500" />}
+                  </div>
+                </div>
+              </div>
+
+              {/* Error message */}
+              {isError && <div className="mt-4 text-sm text-red-600">{error.message}</div>}
+
+              {/* Login button */}
+              <div className="mt-6">
+                <button
+                  type="submit"
+                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  onClick={loginUser}
+                >
+                  Continue Learning
+                </button>
+              </div>
+
+              {/* Alternative login option */}
+              <div className="mt-4 text-center">
+                <p className="text-sm">
+                  Sudah punya akun?{" "}
+                  <a
+                    href="#"
+                    className="text-blue-600 hover:underline"
+                    onClick={() => {
+                      /* handle alternative login */
+                    }}
+                  >
+                    Log In
+                  </a>
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Modal */}
         {openModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center" onClick={closeModal}>
@@ -478,7 +612,7 @@ export const Detail = () => {
               </form>
             )}
             <div>
-              <h1 className="text-2xl font-bold mb-4 mobile:mx-5 desktop:mx-0 desktopfull:mx-0">Review Dari Manusia Yang Sudah Berlangganan</h1>
+              <h1 className="text-2xl font-bold mb-4 mobile:mx-5 desktop:mx-0 desktopfull:mx-0">Review Dari User Yang Telah Berlangganan</h1>
               <div className="flex gap-5 items-center mb-4 mobile:mx-5 desktop:mx-0 desktopfull:mx-0">
                 <button
                   className={`mobile:w-full mobile:text-sm desktop:w-[15%] desktop:text-lg desktopfull:text-lg desktopfull:w-[10%] text-2xl p-2 rounded-full font-semibold text-center flex justify-center items-center ${
@@ -579,7 +713,7 @@ export const Detail = () => {
               <div className="bg-white rounded-lg p-4 shadow-md mb-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-2xl font-bold ">Materi Belajar</h2>
-                  <div className="flex items-center w-3/5 relative">
+                  <div className={`flex items-center w-3/5 relative ${dataCourseDetail.sudahBeli ? "" : "hidden"}`}>
                     {" "}
                     {/* Add relative here */}
                     <FaRegCheckCircle className="text-green-500 mr-2" />

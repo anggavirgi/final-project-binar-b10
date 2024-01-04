@@ -11,8 +11,14 @@ export const OTP = () => {
   const inputRefs = useRef([]);
   const [registeredEmail, setRegisteredEmail] = useState(""); // State to hold registered email
   const [OtpError, setOtpError] = useState("");
+  const [timeLeft, setTimeLeft] = useState(60);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
-  const { mutate: sendOTP, isError, error } = useSendOTP({
+  const {
+    mutate: sendOTP,
+    isError,
+    error,
+  } = useSendOTP({
     onError: (error) => {
       setOtpError(error);
     },
@@ -34,12 +40,39 @@ export const OTP = () => {
     }
   }, []);
 
+  useEffect(() => {
+    // Jangan jalankan timer jika button tidak dalam keadaan disabled
+    if (!isButtonDisabled) return;
+
+    // Jika waktu habis, izinkan user untuk mengklik button lagi
+    if (timeLeft === 0) {
+      setIsButtonDisabled(false);
+      return;
+    }
+
+    // Kurangi waktu setiap detik
+    const timerId = setTimeout(() => {
+      setTimeLeft(timeLeft - 1);
+    }, 1000);
+
+    // Bersihkan timer
+    return () => clearTimeout(timerId);
+  }, [timeLeft, isButtonDisabled]);
+
   const resendOTPOnClick = () => {
+    if (isButtonDisabled) {
+      // Logika untuk menangani kondisi saat tombol seharusnya tidak diklik
+      return;
+    }
+
     const resendOTPTask = resendOTP(registeredEmail);
     if (resendOTPTask) {
       resendOTPTask
         .then(() => {
           console.log("OTP berhasil dikirim ulang");
+          // Mulai hitung mundur setelah OTP berhasil dikirim
+          setTimeLeft(60);
+          setIsButtonDisabled(true);
         })
         .catch(() => {
           console.error("Gagal mengirimkan ulang OTP");
@@ -97,7 +130,7 @@ export const OTP = () => {
           </div>
 
           <h2 className="text-3xl mb-2 text-indigo-600 text-center font-bold">Masukkan OTP</h2>
-          <p className="mb-8 text-sm text-gray-500 text-center">Ketik 6 digit kode yang dikirimkan ke j****@gmail.com</p>
+          <p className="mb-8 text-sm text-gray-500 text-center">Ketik 6 digit kode yang dikirimkan ke {registeredEmail}</p>
 
           <div className="flex justify-center gap-2 mb-8">
             {otpValues.map((value, index) => (
@@ -114,9 +147,10 @@ export const OTP = () => {
             ))}
           </div>
 
-          <button className="text-indigo-600 hover:text-indigo-700 text-sm mb-4" onClick={resendOTPOnClick}>
-            Kirim Ulang OTP dalam 60 detik
+          <button className={`text-indigo-600 hover:text-indigo-700 text-sm mb-4 ${isButtonDisabled ? "opacity-70 cursor-not-allowed" : ""}`} onClick={resendOTPOnClick} disabled={isButtonDisabled}>
+            {isButtonDisabled ? `Kirim Ulang OTP dalam ${timeLeft} detik` : "Kirim Ulang OTP"}
           </button>
+
           {isError && <div className="text-red-500 text-center mb-4">{error.message}</div>}
           <button
             className="bg-indigo-600 hover:indigo-700 text-white font-bold py-2 px-4 w-full rounded focus:outline-none focus:shadow-outline"
