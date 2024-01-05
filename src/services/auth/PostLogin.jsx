@@ -2,6 +2,8 @@ import { useMutation } from "@tanstack/react-query";
 import http from "../../utils/http";
 import { API_ENDPOINT } from "../../utils/api-endpoint";
 import { CookiesKeys, CookieStorage } from "../../utils/cookies";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const LoginUser = async (input) => {
   return await http
@@ -20,9 +22,21 @@ const LoginUser = async (input) => {
       return result?.data;
     })
     .catch((err) => {
-      console.log(err?.response?.data?.error, "err login");
-      // alert(err.response.data.error);
-      throw new Error(err.response.data.error);
+      const errorMessage = err?.response?.data?.error;
+
+      if (errorMessage === "lakukan verifikasi terlebih dahulu") {
+        toast.error(`${errorMessage}, anda akan diarahkan ke otp`, {
+          position: "top-center",
+          pauseOnHover: true,
+          autoClose: 3000,
+        });
+        setTimeout(() => {
+          window.location.href = "/otp";
+        }, 4000);
+      } else {
+      }
+
+      throw new Error(errorMessage);
     });
 };
 
