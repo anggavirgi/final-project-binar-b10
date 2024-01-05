@@ -34,7 +34,7 @@ export const Payment = () => {
     });
   }
 
-  const ppn = (dataCourseDetail.harga * 11) / 100;
+  const ppn = (dataCourseDetail?.course?.harga * 11) / 100;
 
   return (
     <>
@@ -44,9 +44,6 @@ export const Payment = () => {
             <FaArrowLeft className="mr-2" />
             <h2 className="font-bold">Kembali</h2>
           </Link>
-          <div className="flex justify-center mt-4 mb-6">
-            <h3 className="text-base font-semibold mb-5 bg-[#FF0000] text-white w-2/3 h-12 rounded-xl flex items-center justify-center">Selesaikan Pembayaran sampai 10 Maret 2023 12:00</h3>
-          </div>
         </div>
 
         <div className="flex gap-4">
