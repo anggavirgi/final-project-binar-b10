@@ -135,15 +135,6 @@ export const Notifikasi = () => {
                 Loading...
               </div>
             )}
-
-            <div className="flex justify-between mt-4 gap-4">
-              <button onClick={loadPreviousPage} className={`bg-indigo-600 text-white px-4 py-2 rounded ${isLoading ? "opacity-50" : ""}`} disabled={isLoading}>
-                <GoArrowLeft className="w-4 h-4" />
-              </button>
-              <button onClick={loadNextPage} className={`bg-indigo-600 text-white px-4 py-2 rounded ${isLoading ? "opacity-50" : ""}`} disabled={isLoading}>
-                <GoArrowRight className="w-4 h-4" />
-              </button>
-            </div>
           </div>
         </div>
       </LayoutUser>
