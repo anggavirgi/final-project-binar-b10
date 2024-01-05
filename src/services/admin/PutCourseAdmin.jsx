@@ -3,8 +3,13 @@ import { API_ENDPOINT } from "../../utils/api-endpoint";
 import http from "../../utils/http";
 
 export const fetchPutCourse = async (input, course_id) => {
+  console.log(input);
   return await http
-    .put(API_ENDPOINT.PUT_COURSE + course_id, input)
+    .put(API_ENDPOINT.PUT_COURSE + course_id, input, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
     .then((result) => {
       console.log(result);
     })

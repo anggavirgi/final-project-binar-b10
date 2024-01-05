@@ -12,7 +12,7 @@ export const API_ENDPOINT = {
   GET_COURSE: "/course",
   POST_ADD_COURSE: "/course/addCourse",
   PUT_COURSE: "/course/",
-  DELETE_COURSE: "/course/",
+  DELETE_COURSE: "/course/delete/",
   GET_COURSE_ID: "/course/",
   GET_MY_CLASS: "/class/myclass",
   GET_MENTOR: "/mentor",
