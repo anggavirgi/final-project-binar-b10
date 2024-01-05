@@ -268,12 +268,12 @@ export const MyClass = () => {
                         checked={selectedLevels.includes(level)}
                         className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
                       />
-                      <span
+                      <label
                         htmlFor={level}
                         className="cursor-pointer hover:text-primary"
                       >
                         {level}
-                      </span>
+                      </label>
                     </div>
                   );
                 })}
@@ -314,27 +314,6 @@ export const MyClass = () => {
                   className="gap-4 whitespace-nowrap overflow-y-auto px-4"
                   style={{ maxHeight: "60vh" }}
                 >
-                  <div className="space-y-3 px-1.5 pt-4">
-                    <h4 className="text-base font-bold text-primary -pt-3">
-                      Jenis
-                    </h4>
-                    <label className="flex gap-2 items-center">
-                      <input
-                        type="checkbox"
-                        id="some_id"
-                        className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
-                      />
-                      <span className="">Paling Baru</span>
-                    </label>
-                    <label className="flex gap-2 items-center">
-                      <input
-                        type="checkbox"
-                        id="some_id"
-                        className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
-                      />
-                      <span className="">Paling Populer</span>
-                    </label>
-                  </div>
                   <div className="space-y-3 px-1.5 pt-4">
                     <h4 className="text-base font-bold text-primary -pt-3">
                       Kategori
