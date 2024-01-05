@@ -59,7 +59,11 @@ export const AddVideo = () => {
   }, [dataAllChapter, getIdChapter]);
 
   // POST CHAPTER
-  const { mutate: postChapter, data: dataPostChapter } = usePostChapter();
+  const {
+    mutate: postChapter,
+    data: dataPostChapter,
+    isSuccess: successPostChapter,
+  } = usePostChapter();
 
   // HANDLE SAVE ADD CHAPTER
   const handleAddChapter = (e) => {
@@ -73,21 +77,31 @@ export const AddVideo = () => {
   };
 
   useEffect(() => {
-    if (dataPostChapter?.status === 200) {
-      refetchAllChapter()
-      const filterAllChapter = dataAllChapter.filter((value) => {
-        if (value.chapter_id === getIdChapter) {
-          return { ...value };
-        }
+    if (successPostChapter) {
+      toast.success("Chapter berhasil ditambahkan", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
       });
-  
-      setAddChapter(false)
-      setDataAllChapter(filterAllChapter || []);
     }
-  }, [getIdChapter, dataAllChapter, refetchAllChapter, dataPostChapter]);
+
+    refetchAllChapter();
+    setAddChapter(false);
+    const filterAllChapter = dataAllChapter.filter((value) => {
+      if (value.chapter_id === getIdChapter) {
+        return { ...value };
+      }
+    });
+    setDataAllChapter(filterAllChapter || []);
+  }, [successPostChapter, refetchAllChapter, dataAllChapter, getIdChapter]);
 
   // PUT CHAPTER
-  const { mutate: putChapter } = usePutChapter({
+  const { mutate: putChapter, isSuccess: successPutChapter } = usePutChapter({
     chapter_id: getIdChapter,
   });
 
@@ -111,6 +125,30 @@ export const AddVideo = () => {
       });
     }
   };
+
+  useEffect(() => {
+    if (successPutChapter) {
+      toast.success("Chapter berhasil diubah", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+
+    refetchAllChapter();
+    setEditChapter(false);
+    const filterAllChapter = dataAllChapter.filter((value) => {
+      if (value.chapter_id === getIdChapter) {
+        return { ...value };
+      }
+    });
+    setDataAllChapter(filterAllChapter || []);
+  }, [successPutChapter, refetchAllChapter, dataAllChapter, getIdChapter]);
 
   // HANDLE DELETE CHAPTER
   const [getChapterIdDelete, setChapterIdDelete] = useState();
@@ -196,16 +234,16 @@ export const AddVideo = () => {
 
   useEffect(() => {
     if (successDataVideo) {
-      toast.success("Video berhasil ditambahkan", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      // toast.success("Video berhasil ditambahkan", {
+      //   position: "top-right",
+      //   autoClose: 3000,
+      //   hideProgressBar: false,
+      //   closeOnClick: true,
+      //   pauseOnHover: true,
+      //   draggable: true,
+      //   progress: undefined,
+      //   theme: "light",
+      // });
     }
   }, [successDataVideo]);
 
@@ -342,7 +380,7 @@ export const AddVideo = () => {
                           <input
                             type="text"
                             placeholder="new chapter"
-                            className="py-2 border-none !ring-0"
+                            className="py-2 border-none !ring-0 w-full"
                             value={getInputChapter}
                             onChange={(e) => setInputChapter(e.target.value)}
                             onKeyDown={handleEditChapter}
@@ -388,7 +426,7 @@ export const AddVideo = () => {
                     <input
                       type="text"
                       placeholder="new chapter"
-                      className="py-2 border-none !ring-0"
+                      className="py-2 border-none !ring-0 w-full"
                       onChange={(e) => setInputChapter(e.target.value)}
                       onKeyDown={handleAddChapter}
                     />
