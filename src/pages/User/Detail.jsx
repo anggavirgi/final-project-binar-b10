@@ -28,6 +28,8 @@ import { useLoginUser } from "../../services/auth/PostLogin";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { useLoginUserModal } from "../../services/auth/PostLoginModal";
 import { TbPolygon } from "react-icons/tb";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const Detail = () => {
   const [activeVideoUrl, setActiveVideoUrl] = useState("");
@@ -157,7 +159,7 @@ export const Detail = () => {
 
   const handleVideoClick = (video) => {
     if (video.is_preview === false && !dataCourseDetail.sudahBeli) {
-      alert("Anda belum membeli kelas ini.");
+      setShowLoginModal(true);
       return;
     }
 
@@ -271,7 +273,11 @@ export const Detail = () => {
 
     // Pastikan skor dan komentar telah diisi sebelum mengirim rating
     if (selectedScore === 0 || comment.trim() === "") {
-      alert("Harap isi skor dan komentar sebelum mengirim rating.");
+      toast.error("Harap isi skor dan komentar sebelum mengirim rating.", {
+        position: "top-center",
+        pauseOnHover: true,
+        autoClose: 2000,
+      });
       return;
     }
 
@@ -357,7 +363,7 @@ export const Detail = () => {
         <div className="bg-white rounded-lg p-4 shadow-md mb-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-2xl font-bold ">Materi Belajar</h2>
-            <div className="flex items-center w-3/5 relative">
+            <div className={`flex items-center w-3/5 relative ${dataCourseDetail.sudahBeli ? "" : "hidden"}`}>
               {" "}
               {/* Add relative here */}
               <FaRegCheckCircle className="text-green-500 mr-2" />
@@ -432,40 +438,15 @@ export const Detail = () => {
       <LayoutUser>
         {/* Modal untuk login */}
         {showLoginModal && (
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center px-4"
-            onClick={() => setShowLoginModal(false)}
-          >
-            <div
-              className="bg-white rounded-lg p-8 shadow-lg w-full max-w-md mx-auto relative"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Close button */}
-              <button
-                className="absolute top-0 right-0 mt-4 mr-4 text-gray-600 hover:text-gray-800"
-                onClick={() => setShowLoginModal(false)}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
+
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center px-4" onClick={() => setShowLoginModal(false)}>
+            <div className="bg-white rounded-lg p-8 shadow-lg w-full max-w-md mx-auto relative" onClick={(e) => e.stopPropagation()}>
+              <button className="absolute top-0 right-0 mt-4 mr-4 text-gray-600 hover:text-gray-800" onClick={() => setShowLoginModal(false)}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
-
-              <h3 className="text-xl font-semibold text-center mb-6">
-                Log In to Your Account
-              </h3>
-
-              {/* Email field */}
+              <h3 className="text-xl font-semibold text-center mb-6">Masuk ke Akun Anda</h3>
               <div>
                 <label
                   htmlFor="email"
@@ -483,8 +464,6 @@ export const Detail = () => {
                   value={email}
                 />
               </div>
-
-              {/* Password field */}
               <div className="mt-4">
                 <label
                   htmlFor="password"
@@ -515,35 +494,25 @@ export const Detail = () => {
                 </div>
               </div>
 
-              {/* Error message */}
-              {isError && (
-                <div className="mt-4 text-sm text-red-600">{error.message}</div>
-              )}
+              {isError && <div className="mt-4 text-sm text-red-600 text-center">{error.message}</div>}
 
-              {/* Login button */}
               <div className="mt-6">
                 <button
                   type="submit"
                   className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                   onClick={loginUser}
                 >
-                  Continue Learning
+                  Lanjut Kelas
                 </button>
               </div>
 
               {/* Alternative login option */}
               <div className="mt-4 text-center">
                 <p className="text-sm">
-                  Sudah punya akun?{" "}
-                  <a
-                    href="#"
-                    className="text-blue-600 hover:underline"
-                    onClick={() => {
-                      /* handle alternative login */
-                    }}
-                  >
-                    Log In
-                  </a>
+                  Belum punya akun?
+                  <Link to="/register" className="text-blue-600 hover:underline">
+                    Daftar Disini
+                  </Link>
                 </p>
               </div>
             </div>
