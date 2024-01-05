@@ -96,6 +96,7 @@ export const ClassAdmin = () => {
   const [getPremium, setPremium] = useState();
   const [getMentor, setMentor] = useState();
   const [getLevel, setLevel] = useState();
+  const [getImage, setImage] = useState();
 
   const { mutate: postCourse, data } = usePostCourse();
 
@@ -109,8 +110,12 @@ export const ClassAdmin = () => {
       premium: getPremium,
       mentor_id: getMentor,
       level: getLevel,
-      url_image_preview: "",
+      url_image_preview: getImage,
     });
+  };
+
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
   };
 
   // PUT COURSE
@@ -150,25 +155,27 @@ export const ClassAdmin = () => {
 
   // FOR PUT COURSE
   useEffect(() => {
-    setTitle(callDataCourseId.title);
-    setDeskripsi(callDataCourseId.deskripsi);
-    setKodeKelas(callDataCourseId.kode_kelas);
-    const categoryId = dataCategory.filter((value) => {
-      if (value?.title === callDataCourseId?.Kategori?.title) {
-        return value?.kategori_id;
-      }
-    });
-    setKategori(categoryId[0]?.kategori_id);
-    setHarga(callDataCourseId.harga);
-    setPremium(callDataCourseId.premium);
-    const mentorName = dataMentor.filter((value) => {
-      if (value?.name === callDataCourseId?.Mentor?.name) {
-        return value?.mentor_id;
-      }
-    });
-    setMentor(mentorName[0]?.mentor_id);
-    setLevel(callDataCourseId.level);
-  }, [callDataCourseId]);
+    if (getCourseId !== undefined) {
+      setTitle(callDataCourseId.title);
+      setDeskripsi(callDataCourseId.deskripsi);
+      setKodeKelas(callDataCourseId.kode_kelas);
+      const categoryId = dataCategory.filter((value) => {
+        if (value?.title === callDataCourseId?.Kategori?.title) {
+          return value?.kategori_id;
+        }
+      });
+      setKategori(categoryId[0]?.kategori_id);
+      setHarga(callDataCourseId.harga);
+      setPremium(callDataCourseId.premium);
+      const mentorName = dataMentor.filter((value) => {
+        if (value?.name === callDataCourseId?.Mentor?.name) {
+          return value?.mentor_id;
+        }
+      });
+      setMentor(mentorName[0]?.mentor_id);
+      setLevel(callDataCourseId.level);
+    }
+  }, [callDataCourseId, dataCategory, dataMentor, getCourseId]);
 
   // DELETE COURSE
   const { mutate: deleteCourse } = useDeleteCourse();
@@ -351,6 +358,15 @@ export const ClassAdmin = () => {
                           placeholder="ReactJS saat ini .."
                           className="text-sm border-gray-300 rounded-lg w-full h-28"
                         ></textarea>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <label htmlFor="gambar">Input Gambar</label>
+                        <input
+                          type="file"
+                          id="gambar"
+                          onChange={handleImageChange}
+                          className="w-full rounded-lg border border-gray-300"
+                        />
                       </div>
                     </div>
                   </Modal.Body>
