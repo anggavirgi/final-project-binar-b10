@@ -234,16 +234,16 @@ export const AddVideo = () => {
 
   useEffect(() => {
     if (successDataVideo) {
-      // toast.success("Video berhasil ditambahkan", {
-      //   position: "top-right",
-      //   autoClose: 3000,
-      //   hideProgressBar: false,
-      //   closeOnClick: true,
-      //   pauseOnHover: true,
-      //   draggable: true,
-      //   progress: undefined,
-      //   theme: "light",
-      // });
+      toast.success("Video berhasil ditambahkan", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   }, [successDataVideo]);
 
