@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { GoPencil, GoGear } from "react-icons/go";
-import { BsCart3 } from "react-icons/bs";
-import { BiLogOut } from "react-icons/bi";
-import { FaSearch } from "react-icons/fa";
-import { FaStar, FaRegClock, FaBookOpen } from "react-icons/fa";
-import { RiShieldStarLine } from "react-icons/ri";
-import { FaRegCheckCircle } from "react-icons/fa";
+import { BsDot } from "react-icons/bs";
+import { FaArrowLeft, FaRegCheckCircle } from "react-icons/fa";
 import { LayoutUser } from "../../../Layout/LayoutUser";
 import { SidebarProfil } from "../../../components/Sidebar/SidebarProfil";
 import { useRiwayatPembayaran } from "../../../services/User Profile/riwayat_pembayaran";
+import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 
 export const RiwayatUser = () => {
+  const navigate = useNavigate();
   const [riwayatPembayaran, setRiwayatPembayaran] = useState([]);
-  const { data, isLoading, isError } = useRiwayatPembayaran();
+  const { data, isError } = useRiwayatPembayaran();
+
+  const isMobile = window.innerWidth <= 768;
 
   useEffect(() => {
     if (data && data.status) {
@@ -20,65 +20,100 @@ export const RiwayatUser = () => {
     }
   }, [data]);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  // if (isLoading) {
+  //   return <div>Loading...</div>;
+  // }
 
   if (isError) {
     return <div>Error fetching data</div>;
   }
+
   return (
     <>
       <LayoutUser>
-        <div className="w-4/5 mx-auto bg-primary rounded-xl border border-primary">
-          <div className="flex flex-col items-center mt-5 mb-6">
-            <div className="text-white text-xl font-bold">Akun</div>
-          </div>
-          <div className="flex shadow-md bg-white">
+        <div
+          className={`${
+            !isMobile
+              ? "w-4/5 mobile:mt-8 desktop:mt-0 desktopfull:mt-0 mx-auto bg-primary rounded-xl border border-primary"
+              : "w-full px-3"
+          } `}
+        >
+          {!isMobile && (
+            <div className="flex flex-col items-center mt-5 mb-6">
+              <div className="text-white text-xl font-bold">Akun</div>
+            </div>
+          )}
+          {isMobile && (
+            <Link
+              className="block py-2 px-4 cursor-pointer mt-6"
+              to={"/profil"}
+            >
+              <FaArrowLeft className="w-6 h-6 inline-block" />
+            </Link>
+          )}
+          <div className={`flex ${!isMobile ? "bg-white shadow-md" : ""}`}>
             {/* Left Side - Menu */}
 
-            <SidebarProfil />
+            {!isMobile && <SidebarProfil />}
 
             {/* Right Side - Profile Form */}
 
-            <div className="w-2/3 rounded p-4">
-              <div className="flex flex-col items-center mt-5 mb-6">
-                <p className="text-black text-2xl font-bold">Riwayat Pembayaran</p>
+            <div className="mobile:w-full desktop:w-2/3 desktopfull:w-2/3 rounded p-4 pb-8">
+              <div className="flex flex-col items-center mt-3 mb-6">
+                <p className="text-black text-2xl font-bold">
+                  Riwayat Pembayaran
+                </p>
               </div>
 
-              {riwayatPembayaran.map((course) => (
-                <div className="w-full shadow-xl rounded-3xl sm:w-full md:w-[90%] lg:w-[90%] xl:w-[90%] mb-4 overflow-hidden" key={course.course_id}>
-                  {/* Course Thumbnail Placeholder */}
-                  <img className="w-full h-40 object-cover" src={course.url_image_preview} alt={course.title} />
-
-                  <div className="px-4 py-5 rounded-b-3xl shadow-lg w-full">
-                    {/* Course Details */}
-                    <div className="flex justify-between items-center">
-                      <h4 className="text-lg font-bold text-[#6148FF]">{course.Kategori.title}</h4>
-                      <div className="flex items-center">
-                        <FaStar className="text-yellow-500 mr-1" />
-                        <span className="text-purple-600 font-semibold">{course.avgRating !== 0 ? Math.floor(course.avgRating * 10) / 10 : "-"}</span>
+              <div className="grid mobile:grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-2 desktopfull:grid-cols-2 gap-3">
+                {riwayatPembayaran.map((course, index) => (
+                  <div
+                    className="rounded-3xl shadow-lg hover:shadow-2xl hover:border hover:border-gray-300 hover:scale-105 cursor-pointer"
+                    key={index}
+                    onClick={() =>
+                      navigate("/kelas/detail", {
+                        state: {
+                          courseId: course.course_id,
+                        },
+                      })
+                    }
+                  >
+                    <img
+                      src={course.url_image_preview}
+                      alt=""
+                      className="w-full h-[9rem] object-cover rounded-t-3xl"
+                    />
+                    <div className="px-3.5 pt-2 pb-5">
+                      <div className="text-primary">
+                        {course.Kategori.title}
                       </div>
-                    </div>
-                    <h1 className="font-bold text-lg">{course.title}</h1>
-                    <p className="text-sm mb-2">by {course.Mentor.name}</p>
-
-                    {/* Course Meta */}
-                    <div className="text-sm text-gray-600 mb-4 flex justify-between">
-                      <div className="flex items-center">
-                        <RiShieldStarLine className="text-green-500 mr-2" />
-                        <span className="text-[#6148FF] text-sm font-semibold">{course.level}</span>
+                      <div className="font-bold whitespace-nowrap overflow-hidden text-base">
+                        {course.title}
                       </div>
-                    </div>
-
-                    {/* Course Progress and Status */}
-                    <div className="flex items-center">
-                      <FaRegCheckCircle className="text-green-500 mr-2" />
-                      <span className="text-gray-700">{course.Riwayat_Transaksi[course.Riwayat_Transaksi.length - 1].status}</span>
+                      <div className="font-medium text-xs">
+                        by <span>{course.Mentor.name}</span>
+                      </div>
+                      <div className="flex items-center gap-0.5 text-xs mt-1">
+                        <div>{course.level}</div>
+                        <BsDot />
+                        <div>{course.module} Modul</div>
+                        <BsDot />
+                        <div>Sertifikasi Profesional</div>
+                      </div>
+                      <div className="flex items-center mt-1">
+                        <FaRegCheckCircle className="text-green-500 mr-2" />
+                        <span className="text-green-500 text-sm font-semibold">
+                          {
+                            course.Riwayat_Transaksi[
+                              course.Riwayat_Transaksi.length - 1
+                            ].status
+                          }
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </div>

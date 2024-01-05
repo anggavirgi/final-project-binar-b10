@@ -5,23 +5,28 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useCourse } from "../../services/user/GetCourse";
 import { useCategory } from "../../services/user/GetCategory";
 import { LayoutUser } from "../../Layout/LayoutUser";
-import img1 from "../../assets/img/img1.png";
 import { useMyCourse } from "../../services/user/GetMyCourse";
 import { useGetProgress } from "../../services/user/GetProgressCourses";
+import { CookieStorage, CookiesKeys } from "../../utils/cookies";
+import { BsDot } from "react-icons/bs";
 
 export const MyClass = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
+  const token = CookieStorage.get(CookiesKeys.AuthToken);
+  const isUserAuthenticated = !!token;
+  const isMobile = window.innerWidth <= 768;
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
-  const [handleAll, setHandleAll] = useState(false);
+  const [handleAll, setHandleAll] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [dataCourses, setDataCourses] = useState([]);
   const [dataCategories, setDataCategories] = useState([]);
   const [dataLevels, setDataLevels] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedLevels, setSelectedLevels] = useState([]);
-  const [isPremium, setIsPremium] = useState(false);
-  const [isFree, setIsFree] = useState(false);
+  const [isSedangBerjalan, setSedangBerjalan] = useState(false);
+  const [isSelesai, setSelesai] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
 
@@ -132,41 +137,87 @@ export const MyClass = () => {
     });
   };
 
-  const handlePremiumClick = () => {
+  const handleSedangBerjalan = () => {
     setCurrentPage(1);
-    setIsPremium(true);
-    setIsFree(false);
+    setSedangBerjalan(true);
+    setSelesai(false);
+    setHandleAll(false);
   };
 
-  const handleFreeClick = () => {
+  const handleSelesai = () => {
     setCurrentPage(1);
-    setIsPremium(false);
-    setIsFree(true);
+    setSedangBerjalan(false);
+    setSelesai(true);
+    setHandleAll(false);
   };
 
   const handleAllClick = () => {
     !handleAll ? setHandleAll(true) : setHandleAll(false);
-    setIsPremium(false);
-    setIsFree(false);
+    setSedangBerjalan(false);
+    setSelesai(false);
   };
 
   const filteredCourses = dataCourses.filter((course) => {
-    if (isPremium) return course.harga !== 0;
-    if (isFree) return course.harga === 0;
+    if (isSedangBerjalan) return course.progres !== 100.0;
+    if (isSelesai) return course.progress === 100.0;
     return true;
   });
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!isSidebarOpen);
+  };
+
+  const closeSidebar = () => {
+    setSidebarOpen(false);
+  };
+
+  // Close the sidebar when the window is resized
+  useEffect(() => {
+    const handleResize = () => {
+      if (isMobile && isSidebarOpen) {
+        closeSidebar();
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [isMobile, isSidebarOpen]);
+
+  const [isFilterOpen, setFilterOpen] = useState(false);
+
+  const openFilter = () => {
+    setFilterOpen(true);
+  };
+
+  const closeFilter = () => {
+    setFilterOpen(false);
+  };
 
   return (
     <>
       <LayoutUser>
         {/* Title and Search */}
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-700">Kelas Saya</h2>
-        </div>
+        {!isMobile ? (
+          <div className="flex justify-between items-center mb-6 ">
+            <h2 className="text-2xl font-bold text-gray-700">Kelas Berjalan</h2>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between px-7 mb-4 mt-6">
+            <div className="font-bold text-lg">Kelas Berjalan</div>
+            <div
+              className="font-bold text-primary cursor-pointer"
+              onClick={openFilter}
+            >
+              Filter
+            </div>
+          </div>
+        )}
 
         <div className="relative flex desktop:gap-10 desktopfull:gap-14">
           {/* FILTER */}
-          <div className="h-fit desktop:1/4 desktopfull:w-1/5 px-7 py-5 bg-white rounded-xl shadow">
+          <div className="mobile:hidden desktop:block desktopfull:block h-fit desktop:1/4 desktopfull:w-1/5 px-7 py-5 bg-white rounded-xl shadow">
             <h3 className="flex items-center gap-2 text-lg font-bold mb-2">
               <FaFilter className="w-3 h-3" />
               <span>FILTER</span>
@@ -191,9 +242,14 @@ export const MyClass = () => {
                         checked={selectedCategories.includes(
                           category.kategori_id
                         )}
-                        className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
+                        className="appearance-none w-5 h-5 cursor-pointer border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
                       />
-                      <span className="">{category.title}</span>
+                      <label
+                        htmlFor={`category_${category.kategori_id}`}
+                        className="cursor-pointer hover:text-primary"
+                      >
+                        {category.title}
+                      </label>
                     </div>
                   );
                 })}
@@ -212,7 +268,12 @@ export const MyClass = () => {
                         checked={selectedLevels.includes(level)}
                         className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
                       />
-                      <span className="">{level}</span>
+                      <span
+                        htmlFor={level}
+                        className="cursor-pointer hover:text-primary"
+                      >
+                        {level}
+                      </span>
                     </div>
                   );
                 })}
@@ -228,32 +289,146 @@ export const MyClass = () => {
             </div>
           </div>
 
+          {/* FILTER Mobile */}
+          {isMobile && (
+            <>
+              <div
+                className="fixed inset-0 bg-black bg-opacity-40 z-50"
+                style={{ display: isFilterOpen ? "block" : "none" }}
+                onClick={closeFilter}
+              ></div>
+              <div
+                className={`fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl transform ${
+                  isFilterOpen ? "translate-y-0" : "translate-y-full"
+                } transition-transform ease-in-out duration-300 overflow-hidden z-50`}
+                style={{ maxHeight: "75vh" }}
+              >
+                <div className="flex justify-between items-center px-5 py-3 border-b">
+                  <FaFilter className="w-3 h-3" />
+                  <span className="font-bold text-lg">Filter</span>
+                  <button onClick={closeFilter}>
+                    <span className="text-gray-500 text-xl">X</span>
+                  </button>
+                </div>
+                <div
+                  className="gap-4 whitespace-nowrap overflow-y-auto px-4"
+                  style={{ maxHeight: "60vh" }}
+                >
+                  <div className="space-y-3 px-1.5 pt-4">
+                    <h4 className="text-base font-bold text-primary -pt-3">
+                      Jenis
+                    </h4>
+                    <label className="flex gap-2 items-center">
+                      <input
+                        type="checkbox"
+                        id="some_id"
+                        className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
+                      />
+                      <span className="">Paling Baru</span>
+                    </label>
+                    <label className="flex gap-2 items-center">
+                      <input
+                        type="checkbox"
+                        id="some_id"
+                        className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
+                      />
+                      <span className="">Paling Populer</span>
+                    </label>
+                  </div>
+                  <div className="space-y-3 px-1.5 pt-4">
+                    <h4 className="text-base font-bold text-primary -pt-3">
+                      Kategori
+                    </h4>
+                    {dataCategories.map((category) => {
+                      return (
+                        <div
+                          className="flex gap-2 items-center"
+                          key={category.kategori_id}
+                        >
+                          <input
+                            type="checkbox"
+                            id={`category_${category.kategori_id}`}
+                            onChange={() =>
+                              handleCategoryChange(category.kategori_id)
+                            }
+                            checked={selectedCategories.includes(
+                              category.kategori_id
+                            )}
+                            className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
+                          />
+                          <span className="">{category.title}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="space-y-3 px-1.5 pt-4">
+                    <h4 className="text-base font-bold text-primary -pt-3">
+                      Level Kesulitan
+                    </h4>
+                    {dataLevels?.map((level) => {
+                      return (
+                        <div className="flex gap-2 items-center">
+                          <input
+                            type="checkbox"
+                            id={level}
+                            onChange={() => handleLevelChange(level)}
+                            checked={selectedLevels.includes(level)}
+                            className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
+                          />
+                          <span className="">{level}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="w-full flex justify-center mt-2">
+                    <button
+                      className="font-bold text-red-500 hover:underline mb-5"
+                      onClick={handleClearFilters}
+                    >
+                      Hapus Filter
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
           {/* BODY */}
-          <div className="desktop:w-3/4 desktopfull:w-4/5">
+          <div
+            className={`${
+              isMobile ? "w-full px-3" : "desktop:w-3/4 desktopfull:w-4/5 "
+            }`}
+          >
             <div className="grid grid-cols-3 gap-4 mb-7 text-center">
               <div
-                className={`py-2 font-semibold hover:text-white rounded-full hover:bg-primary cursor-pointer shadow ${
-                  handleAll ? "bg-primary text-white" : "bg-white text-gray-600"
+                className={`py-2 font-semibold hover:text-white rounded-full hover:bg-primary cursor-pointer shadow-lg ${
+                  handleAll
+                    ? "bg-primary shadow-primary text-white"
+                    : "bg-white text-gray-600"
                 }`}
                 onClick={handleAllClick}
               >
                 All
               </div>
               <div
-                className={`py-2 font-semibold hover:text-white rounded-full hover:bg-primary cursor-pointer shadow ${
-                  isPremium ? "bg-primary text-white" : "bg-white text-gray-600"
+                className={`py-2 font-semibold hover:text-white rounded-full hover:bg-primary cursor-pointer shadow-lg ${
+                  isSedangBerjalan
+                    ? "bg-primary shadow-primary text-white"
+                    : "bg-white text-gray-600"
                 }`}
-                onClick={handlePremiumClick}
+                onClick={handleSedangBerjalan}
               >
-                Kelas Premium
+                Sedang Berjalan
               </div>
               <div
-                className={`py-2 font-semibold hover:text-white rounded-full hover:bg-primary cursor-pointer shadow ${
-                  isFree ? "bg-primary text-white" : "bg-white text-gray-600"
+                className={`py-2 font-semibold hover:text-white rounded-full hover:bg-primary cursor-pointer shadow-lg ${
+                  isSelesai
+                    ? "bg-primary shadow-primary text-white"
+                    : "bg-white text-gray-600"
                 }`}
-                onClick={handleFreeClick}
+                onClick={handleSelesai}
               >
-                Kelas Gratis
+                Selesai
               </div>
             </div>
             {/* spinner when load data */}
@@ -280,7 +455,7 @@ export const MyClass = () => {
                 </div>
               </div>
             )}
-            <div className="grid grid-cols-2 gap-5 gap-y-7">
+            <div className="grid mobile:grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-2 desktopfull:grid-cols-2 gap-5 gap-y-7">
               {/* {render courses} */}
               {!isLoading &&
                 filteredCourses.map((course) => {
@@ -288,12 +463,12 @@ export const MyClass = () => {
                   return (
                     <div
                       key={course.course_id}
-                      className="rounded-3xl bg-white shadow-lg"
+                      className="rounded-3xl bg-white shadow-lg hover:shadow-2xl hover:border hover:border-gray-300 hover:scale-105 cursor-pointer"
                       onClick={() => handleToDetail(course.course_id)}
                       onKeyDown={() => {}}
                     >
                       <img
-                        src={img1}
+                        src={course.url_image_preview}
                         alt="img1"
                         className="w-full h-[9rem] object-cover rounded-3xl"
                       />
@@ -317,17 +492,14 @@ export const MyClass = () => {
                         <div className="font-medium">
                           by {course.Mentor.name}
                         </div>
-                        <div className="flex items-center gap-3 desktopfull:gap-6 font-medium my-1">
-                          <div className="flex items-center gap-1">
-                            <RiShieldStarLine className="text-[#73CA5C]" />
-                            <span>{course.level}</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <RiBook3Line className="text-[#73CA5C]" />
-                            <span>{course?.module} Modul</span>
-                          </div>
+                        <div className="flex items-center gap-0.5 text-xs">
+                          <div>{course.level}</div>
+                          <BsDot />
+                          <div>{course.module} Modul</div>
+                          <BsDot />
+                          <div>Sertifikasi Profesional</div>
                         </div>
-                        <div className="font-medium">
+                        <div className="font-medium mt-2">
                           <div className="relative w-full bg-black rounded-full dark:bg-gray-700 overflow-hidden">
                             <div
                               className="bg-[#6148FF] h-7 flex items-center rounded-full"
@@ -344,7 +516,7 @@ export const MyClass = () => {
                             </span>
                           </div>
                         </div>
-                        <button className="bg-[#489CFF] rounded-full p-1 px-6 font-medium text-white">
+                        <button className="bg-[#489CFF] rounded-full p-1.5 px-6 font-medium text-white mt-1">
                           Lanjut Kelas
                         </button>
                       </div>
@@ -355,10 +527,12 @@ export const MyClass = () => {
           </div>
         </div>
         <div className="w-full flex justify-end">
-          <div className="flex justify-center mt-8 mobile:w-[70%] desktop:w-3/4 desktopfull:w-4/5">
+          <div className="flex justify-center mt-8 mobile:w-full tablet:w-full desktop:w-3/4 desktopfull:w-4/5">
             <button
               className={`px-4 py-2 mx-1 rounded text-white font-bold ${
-                currentPage <= 1 ? "bg-gray-300" : "bg-[#489CFF] cursor-pointer"
+                currentPage <= 1
+                  ? "bg-gray-300"
+                  : "bg-[#489CFF] cursor-pointer hover:bg-secondary"
               }`}
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage <= 1}
@@ -372,7 +546,7 @@ export const MyClass = () => {
               className={`px-4 py-2 mx-1 rounded text-white font-bold ${
                 currentPage === lastPage
                   ? "bg-gray-300"
-                  : "bg-[#489CFF] cursor-pointer"
+                  : "bg-[#489CFF] cursor-pointer hover:bg-secondary"
               }`}
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === lastPage}

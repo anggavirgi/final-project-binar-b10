@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { GoPencil, GoGear } from "react-icons/go";
-import { BsCart3 } from "react-icons/bs";
-import { BiLogOut } from "react-icons/bi";
 import { LayoutUser } from "../../../Layout/LayoutUser";
 import { SidebarProfil } from "../../../components/Sidebar/SidebarProfil";
 import { useGetDataUser } from "../../../services/User Profile/get_user";
@@ -22,7 +19,7 @@ export const UserProfile = () => {
 
   const updateUserMutation = useUpdateUser();
 
-  const isMobile = window.innerWidth <= 768;
+  const isMobile = window.innerWidth <= 1024;
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const isEdit = searchParams.get("edit") === "true";
@@ -67,27 +64,50 @@ export const UserProfile = () => {
   return (
     <>
       <LayoutUser>
-        <div className={`mx-auto ${isMobile && isEdit ? "w-full" : "w-4/5 bg-primary rounded-xl border border-primary"} ${isMobile && !isEdit && "w-4/5 bg-white rounded-xl border border-primary mt-20"}`}>
+        <div
+          className={`mx-auto ${
+            isMobile && isEdit
+              ? "w-full px-3"
+              : "w-4/5 bg-primary rounded-xl border border-primary"
+          } ${
+            isMobile &&
+            !isEdit &&
+            "w-4/5 bg-white rounded-xl border border-primary mt-20"
+          }`}
+        >
           {!isMobile && (
             <div className="flex flex-col items-center mt-5 mb-6">
               <div className="text-white text-xl font-bold">Akun</div>
             </div>
           )}
           {isMobile && isEdit && (
-            <Link className="block py-2 px-4 cursor-pointer" to={"/profil"}>
+            <Link
+              className="block py-2 px-4 cursor-pointer mt-6"
+              to={"/profil"}
+            >
               <FaArrowLeft className="w-6 h-6 inline-block" />
             </Link>
           )}
 
-          <div className={`flex ${isMobile ? "rounded-xl" : "bg-white shadow-md"}`}>
+          <div
+            className={`flex ${isMobile ? "rounded-xl" : "bg-white shadow-md"}`}
+          >
             {/* Left Side - Menu */}
             {(!isEdit || !isMobile) && <SidebarProfil />}
 
             {/* Right Side - Profile Form */}
             {(!isMobile || (isMobile && isEdit)) && (
-              <div className={`p-4 ${isMobile ? "w-full" : "w-2/3"}`}>
+              <div className={`p-4 ${isMobile ? "w-full mx-auto" : "w-2/3"}`}>
                 <div className="flex flex-col items-center mb-6">
-                  <label htmlFor="upload" className="w-24 h-24 bg-gray-300 rounded-full flex items-center justify-center mb-2" style={{ backgroundImage: `url(${imageUrl})`, backgroundSize: "cover", backgroundPosition: "center" }}>
+                  <label
+                    htmlFor="upload"
+                    className="w-24 h-24 bg-gray-300 rounded-full flex items-center justify-center mb-2"
+                    style={{
+                      backgroundImage: `url(${imageUrl})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  >
                     <input
                       type="file"
                       id="upload"
@@ -106,14 +126,17 @@ export const UserProfile = () => {
                     />
                     {/* Placeholder untuk gambar profil */}
                   </label>
-                  <button className="text-sm font-semibold text-indigo-600" onClick={() => document.getElementById("upload").click()}>
+                  <button
+                    className="text-sm font-semibold text-primary hover:text-secondary"
+                    onClick={() => document.getElementById("upload").click()}
+                  >
                     Ubah Foto Profil
                   </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="w-full max-w-lg">
-                  <div className="mb-4">
-                    <p className="text-black-300">Nama</p>
+                <form onSubmit={handleSubmit} className="w-full mx-auto max-w-lg">
+                  <div className="mb-3">
+                    <p className="text-black-300 mb-1">Nama</p>
                     <input
                       type="text"
                       value={name}
@@ -122,8 +145,8 @@ export const UserProfile = () => {
                       className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     />
                   </div>
-                  <div className="mb-4">
-                    <p className="text-black-300">Email</p>
+                  <div className="mb-3">
+                    <p className="text-black-300 mb-1">Email</p>
                     <input
                       type="email"
                       value={email}
@@ -132,8 +155,8 @@ export const UserProfile = () => {
                       className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     />
                   </div>
-                  <div className="mb-4">
-                    <p className="text-black-300">Nomor Telepon</p>
+                  <div className="mb-3">
+                    <p className="text-black-300 mb-1">Nomor Telepon</p>
                     <input
                       type="tel"
                       value={phone}
@@ -142,8 +165,8 @@ export const UserProfile = () => {
                       className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     />
                   </div>
-                  <div className="mb-4">
-                    <p className="text-black-300">Negara</p>
+                  <div className="mb-3">
+                    <p className="text-black-300 mb-1">Negara</p>
                     <input
                       type="text"
                       value={country}
@@ -152,8 +175,8 @@ export const UserProfile = () => {
                       className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     />
                   </div>
-                  <div className="mb-4">
-                    <p className="text-black-300">Kota</p>
+                  <div className="mb-3">
+                    <p className="text-black-300 mb-1">Kota</p>
                     <input
                       type="text"
                       value={city}
@@ -162,9 +185,11 @@ export const UserProfile = () => {
                       className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     />
                   </div>
-                  <div className="flex justify-center mb-5">
-                    <br></br>
-                    <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full rounded-3xl">
+                  <div className="flex justify-center mt-5">
+                    <button
+                      type="submit"
+                      className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full rounded-3xl"
+                    >
                       Simpan Profil Saya
                     </button>
                   </div>

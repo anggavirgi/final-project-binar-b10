@@ -3,8 +3,14 @@ import { LuLayoutDashboard } from "react-icons/lu";
 import { IoBookOutline } from "react-icons/io5";
 import { TbLogout } from "react-icons/tb";
 import { Link } from "react-router-dom";
+import { CookieStorage, CookiesKeys } from "../../utils/cookies";
 
 export const SidebarAdmin = () => {
+  const handleLogout = () => {
+    CookieStorage.remove(CookiesKeys.AuthToken);
+    window.location.href = "/home";
+  };
+
   return (
     <div className="fixed w-[250px] h-full bg-primary flex flex-col">
       <div className="font-bold text-center py-12 text-white text-2xl">
@@ -27,7 +33,7 @@ export const SidebarAdmin = () => {
         </Link>
 
         <Link
-          to={"/logout"}
+          onClick={() => handleLogout()}
           className="ps-10 py-3.5 hover:bg-[#489CFF] flex gap-3 items-center"
         >
           <TbLogout />
