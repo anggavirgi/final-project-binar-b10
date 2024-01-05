@@ -4,6 +4,8 @@ import belajar from "../../assets/img/Belajar_white.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useSendOTP } from "../../services/auth/otp_user";
 import { useReSendOTP } from "../../services/auth/resendOtp_user";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const OTP = () => {
   const [otpValues, setOtpValues] = useState(["", "", "", "", "", ""]);
@@ -107,15 +109,33 @@ export const OTP = () => {
       // Kirim OTP ke API menggunakan useSendOTP
       sendOTP(fullOtp, {
         onSuccess: () => {
-          // Navigasi ke halaman berikutnya setelah berhasil
-          navigate("/kelas");
+          // Display success toast with auto-close after 2 seconds (2000 milliseconds)
+          toast.success("Akun anda berhasil dibuat, anda akan diarahkan ke beranda", {
+            position: "top-center",
+            autoClose: 2000,
+          });
+
+          // Delay navigation for 3 seconds to allow the toast to be read
+          setTimeout(() => {
+            navigate("/home");
+          }, 3000);
         },
         onError: () => {
-          console.error("Gagal mengirimkan OTP");
+          console.error("Invalid Activation Code or Code Expired");
+          // Optionally, you can add a toast for errors too
+          toast.error("Kode Aktivasi Tidak Valid atau Kode Telah Kedaluwarsa", {
+            position: "top-center",
+            autoClose: 2000,
+          });
         },
       });
     } else {
       console.error("Harap lengkapi semua digit OTP terlebih dahulu");
+      // Optionally, add a toast for this error as well
+      toast.error("Kode OTP salah", {
+        position: "top-center",
+        autoClose: 2000,
+      });
     }
   };
 

@@ -21,6 +21,8 @@ import Cookies from "universal-cookie";
 import { useLoginUser } from "../../services/auth/PostLogin";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { useLoginUserModal } from "../../services/auth/PostLoginModal";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const Detail = () => {
   const [activeVideoUrl, setActiveVideoUrl] = useState("");
@@ -244,7 +246,11 @@ export const Detail = () => {
 
     // Pastikan skor dan komentar telah diisi sebelum mengirim rating
     if (selectedScore === 0 || comment.trim() === "") {
-      alert("Harap isi skor dan komentar sebelum mengirim rating.");
+      toast.error("Harap isi skor dan komentar sebelum mengirim rating.", {
+        position: "top-center",
+        pauseOnHover: true,
+        autoClose: 2000,
+      });
       return;
     }
 
@@ -368,7 +374,7 @@ export const Detail = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
-              <h3 className="text-xl font-semibold text-center mb-6">Log In to Your Account</h3>
+              <h3 className="text-xl font-semibold text-center mb-6">Masuk ke Akun Anda</h3>
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                   Email address
@@ -418,7 +424,7 @@ export const Detail = () => {
                 <p className="text-sm">
                   Belum punya akun?
                   <Link to="/register" className="text-blue-600 hover:underline">
-                    Register
+                    Daftar Disini
                   </Link>
                 </p>
               </div>
