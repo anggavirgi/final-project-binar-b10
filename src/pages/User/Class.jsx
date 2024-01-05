@@ -16,7 +16,7 @@ export const Class = () => {
   const isMobile = window.innerWidth <= 768;
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
-  const [handleAll, setHandleAll] = useState(true);
+  const [handleAll, setHandleAll] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [dataCourses, setDataCourses] = useState([]);
   const [dataCategories, setDataCategories] = useState([]);
