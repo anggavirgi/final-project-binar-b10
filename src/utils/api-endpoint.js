@@ -42,4 +42,5 @@ export const API_ENDPOINT = {
   PUT_VIDEO_ADMIN: "/video/",
   DELETE_VIDEO_ADMIN: "/video/",
   POST_COURSE: "/course/beli",
+  PUT_NOTIFIKASI_USER: "/notification/myNotifications/",
 };
