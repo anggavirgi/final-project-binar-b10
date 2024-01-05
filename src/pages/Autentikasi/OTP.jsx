@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
-import belajar from "../../assets/img/Belajar_white.png";
+import belajar from "../../assets/img/logo-white.png";
+import belajardua from "../../assets/img/logo-purple.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useSendOTP } from "../../services/auth/otp_user";
 import { useReSendOTP } from "../../services/auth/resendOtp_user";
@@ -121,16 +122,30 @@ export const OTP = () => {
 
   return (
     <div className="flex flex-wrap h-screen">
-      <div className={`w-full md:w-1/2 flex ${isMobile ? "mt-5" : "items-center justify-center"}`}>
-        <div className="bg-white rounded-lg p-8 flex flex-col items-center shadow-lg w-full max-w-md">
+      <div
+        className={`bg-gray-100 w-full md:w-1/2 flex ${
+          isMobile ? "mt-5" : "items-center justify-center"
+        }`}
+      >
+        <div className="text-sm border rounded-md border-primary bg-white shadow-lg shadow-primary p-8 flex flex-col items-center w-full max-w-md">
           <div className="flex items-center justify-between w-full mb-8">
             <Link to="/register" className="text-black hover:text-indigo-600">
               <IoArrowBackOutline className="h-6 w-6" />
             </Link>
           </div>
 
-          <h2 className="text-3xl mb-2 text-indigo-600 text-center font-bold">Masukkan OTP</h2>
-          <p className="mb-8 text-sm text-gray-500 text-center">Ketik 6 digit kode yang dikirimkan ke {registeredEmail}</p>
+          <h2 className="text-3xl mb-2 text-indigo-600 text-center font-bold">
+            Masukkan OTP
+          </h2>
+          <p className="text-sm text-gray-500 text-center">
+            Ketik 6 digit kode yang dikirimkan ke {registeredEmail}
+          </p>
+
+          {isError && (
+            <div className="text-red-800 text-medium bg-red-300 text-center mt-4 mb-5 border rounded-md border-red-300 shadow py-1.5 px-3">
+              {error.message}
+            </div>
+          )}
 
           <div className="flex justify-center gap-2 mb-8">
             {otpValues.map((value, index) => (
@@ -147,13 +162,20 @@ export const OTP = () => {
             ))}
           </div>
 
-          <button className={`text-indigo-600 hover:text-indigo-700 text-sm mb-4 ${isButtonDisabled ? "opacity-70 cursor-not-allowed" : ""}`} onClick={resendOTPOnClick} disabled={isButtonDisabled}>
-            {isButtonDisabled ? `Kirim Ulang OTP dalam ${timeLeft} detik` : "Kirim Ulang OTP"}
+          <button
+            className={`text-primary hover:text-secondary text-sm mb-4 ${
+              isButtonDisabled ? "opacity-70 cursor-not-allowed" : ""
+            }`}
+            onClick={resendOTPOnClick}
+            disabled={isButtonDisabled}
+          >
+            {isButtonDisabled
+              ? `Kirim Ulang OTP dalam ${timeLeft} detik`
+              : "Kirim Ulang OTP"}
           </button>
 
-          {isError && <div className="text-red-500 text-center mb-4">{error.message}</div>}
           <button
-            className="bg-indigo-600 hover:indigo-700 text-white font-bold py-2 px-4 w-full rounded focus:outline-none focus:shadow-outline"
+            className="bg-primary hover:bg-secondary text-white font-bold py-2 px-4 w-full rounded focus:outline-none focus:shadow-outline"
             onClick={handleSave} // Added onClick handler for Save button
           >
             Simpan
@@ -161,9 +183,9 @@ export const OTP = () => {
         </div>
       </div>
       {!isMobile && (
-        <div className="w-1/2 bg-indigo-600 flex flex-col items-center justify-center">
+        <div className="w-1/2 h-full bg-gradient-to-b from-slate-900 via-primary to-slate-900 md:flex flex flex-col items-center justify-center">
           {/* Pastikan path ke gambar sudah benar */}
-          <img src={belajar} alt="Belajar" className="object-cover w-1/2" />
+          <img src={belajar} alt="Belajar" className="object-cover w-1/3" />
         </div>
       )}
     </div>

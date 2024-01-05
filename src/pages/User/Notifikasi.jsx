@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { GoBellFill, GoArrowLeft, GoArrowRight, GoSync } from "react-icons/go";
+import { GoBellFill, GoSync } from "react-icons/go";
 import { useNotifikasi } from "../../services/User Profile/notifikasi_user";
 import { LayoutUser } from "../../Layout/LayoutUser";
 
@@ -17,7 +17,7 @@ export const Notifikasi = () => {
           jenis: notif.notificationType || "Notifikasi",
           judul: notif.title || "",
           isi: notif.deskripsi || "",
-          waktu: notif.timestamp || "",
+          waktu: notif.created_at || "",
           status: notif.is_read ? "bg-green-400" : "bg-rose-500",
         })
       );
@@ -34,60 +34,60 @@ export const Notifikasi = () => {
     }
   }, [data, page]);
 
-  const loadNextPage = async () => {
-    if (isLoading) return;
+  // const loadNextPage = async () => {
+  //   if (isLoading) return;
 
-    setIsLoading(true);
+  //   setIsLoading(true);
 
-    const nextPage = page + 1;
+  //   const nextPage = page + 1;
 
-    // Cek apakah data notifikasi untuk halaman tersebut sudah ada di cache
-    if (cachedData[nextPage]) {
-      setNotifikasi(cachedData[nextPage]);
-      setPage(nextPage);
-      setIsLoading(false);
-    } else {
-      const response = await refetch({ limit: 10, page: nextPage });
+  //   // Cek apakah data notifikasi untuk halaman tersebut sudah ada di cache
+  //   if (cachedData[nextPage]) {
+  //     setNotifikasi(cachedData[nextPage]);
+  //     setPage(nextPage);
+  //     setIsLoading(false);
+  //   } else {
+  //     const response = await refetch({ limit: 10, page: nextPage });
 
-      if (!response.error) {
-        setPage(nextPage);
-        setIsLoading(false);
-      } else {
-        setIsLoading(false);
-      }
-    }
-  };
+  //     if (!response.error) {
+  //       setPage(nextPage);
+  //       setIsLoading(false);
+  //     } else {
+  //       setIsLoading(false);
+  //     }
+  //   }
+  // };
 
-  const loadPreviousPage = async () => {
-    if (isLoading) return;
+  // const loadPreviousPage = async () => {
+  //   if (isLoading) return;
 
-    if (page > 1) {
-      setIsLoading(true);
+  //   if (page > 1) {
+  //     setIsLoading(true);
 
-      const prevPage = page - 1;
+  //     const prevPage = page - 1;
 
-      // Cek apakah data notifikasi untuk halaman tersebut sudah ada di cache
-      if (cachedData[prevPage]) {
-        setNotifikasi(cachedData[prevPage]);
-        setPage(prevPage);
-        setIsLoading(false);
-      } else {
-        const response = await refetch({ limit: 10, page: prevPage });
+  //     // Cek apakah data notifikasi untuk halaman tersebut sudah ada di cache
+  //     if (cachedData[prevPage]) {
+  //       setNotifikasi(cachedData[prevPage]);
+  //       setPage(prevPage);
+  //       setIsLoading(false);
+  //     } else {
+  //       const response = await refetch({ limit: 10, page: prevPage });
 
-        if (!response.error) {
-          setPage(prevPage);
-          setIsLoading(false);
-        } else {
-          setIsLoading(false);
-        }
-      }
-    }
-  };
+  //       if (!response.error) {
+  //         setPage(prevPage);
+  //         setIsLoading(false);
+  //       } else {
+  //         setIsLoading(false);
+  //       }
+  //     }
+  //   }
+  // };
 
   return (
     <>
       <LayoutUser>
-        <div className="w-[900px] h-[512px] mx-auto shadow flex flex-col justify-start items-start">
+        <div className="mobile:w-4/5 desktop:w-[900px] desktopfull:w-[900px] h-[512px] mobile:mt-10 desktop:mt-0 desktopfull:mt-0 mx-auto shadow flex flex-col justify-start items-start">
           <div className="w-full h-[62px] p-6 bg-indigo-600 rounded-tl-2xl rounded-tr-2xl flex flex-col justify-start items-center gap-6">
             <div className="text-white text-xl font-bold font-[Montserrat] leading-[14px]">
               Notifikasi
@@ -99,23 +99,18 @@ export const Notifikasi = () => {
                 key={index}
                 className="w-full flex-col justify-start items-start gap-4 flex"
               >
-                <div className="self-stretch flex justify-start items-start gap-4">
-                  <GoBellFill className="text-indigo-600 w-6 h-6" />
-                  <div className="flex-grow flex flex-col justify-start items-start gap-1">
-                    <div className="self-stretch flex justify-start items-center gap-2">
-                      <div className="flex-grow text-indigo-600 text-xs font-normal font-[Montserrat]">
-                        {notif.jenis}
-                      </div>
-                      <div className="text-zinc-500 text-[10px] font-semibold font-[Montserrat]">
-                        {notif.waktu}
-                      </div>
+                <div className="w-full flex items-center gap-4">
+                  <div className="w-[10%] text-center">
+                    <GoBellFill className="text-indigo-600 w-6 h-6 mx-auto" />
+                  </div>
+                  <div className="flex flex-col w-[90%]">
+                    <div className="flex justify-between font-semibold tracking-wide">
+                      <div className="text-primary">{notif.jenis}</div>
                       <div className={`w-2 h-2 ${notif.status} rounded-full`} />
                     </div>
-                    <div className="self-stretch text-black text-[10px] font-semibold font-[Montserrat]">
-                      {notif.judul} {notif.isi}
-                    </div>
-                    <div className="text-zinc-500 text-[10px] font-normal font-[Montserrat]">
-                      Syarat dan Ketentuan berlaku!
+                    <div>
+                      <span className="font-medium">{notif.judul}</span>{" "}
+                      {notif.isi}
                     </div>
                   </div>
                 </div>
@@ -127,26 +122,6 @@ export const Notifikasi = () => {
                 Loading...
               </div>
             )}
-            <div className="flex justify-between mt-4 gap-4">
-              <button
-                onClick={loadPreviousPage}
-                className={`bg-indigo-600 text-white px-4 py-2 rounded ${
-                  isLoading ? "opacity-50" : ""
-                }`}
-                disabled={isLoading}
-              >
-                <GoArrowLeft className="w-4 h-4" />
-              </button>
-              <button
-                onClick={loadNextPage}
-                className={`bg-indigo-600 text-white px-4 py-2 rounded ${
-                  isLoading ? "opacity-50" : ""
-                }`}
-                disabled={isLoading}
-              >
-                <GoArrowRight className="w-4 h-4" />
-              </button>
-            </div>
           </div>
         </div>
       </LayoutUser>

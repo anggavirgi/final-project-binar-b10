@@ -121,10 +121,13 @@ export const AddVideo = () => {
   const [getPreviewVideo, setPreviewVideo] = useState();
 
   // GET VIDEO PER CHAPTER
-  const { data: getVideoPerChapter, isSuccess: successVideoChapter } =
-    useGetVideo({
-      limit: 1000,
-    });
+  const {
+    data: getVideoPerChapter,
+    isSuccess: successVideoChapter,
+    refetch: refetchVideoPerChapter,
+  } = useGetVideo({
+    limit: 1000,
+  });
 
   const dataVideoChapter = getVideoPerChapter?.data?.video || [];
 
@@ -161,6 +164,17 @@ export const AddVideo = () => {
     setPreviewVideo("");
   };
 
+  useEffect(() => {
+    if (getDataVideo?.status === 200) {
+      refetchVideoPerChapter();
+      const filteredVideoChapter = dataVideoChapter?.filter((value) => {
+        return value.chapter_id === getIdChapter && value.video_id !== 201;
+      });
+
+      setVideoChapter(filteredVideoChapter || []);
+    }
+  }, [getDataVideo, getIdChapter, dataVideoChapter, refetchVideoPerChapter]);
+
   // HANDLE BTN SIMPAN ADD VIDEO
   const handleBtnSimpanVideo = () => {
     postVideo({
@@ -170,23 +184,21 @@ export const AddVideo = () => {
       url_video: getUrlVideo,
       is_preview: getPreviewVideo,
     });
-
-    if (getDataVideo?.status === 200) {
-      handleVideoPerChapter(getIdChapter);
-    }
   };
 
   // PUT VIDEO PER CHAPTER
-  const { mutate: putVideo } = usePutVideo({
+  const { mutate: putVideo, data: dataPutVideo } = usePutVideo({
     video_id: getVideoId,
   });
 
   useEffect(() => {
-    setTitleVideo(dataVideoById.title);
-    setDeskripsiVideo(dataVideoById.deskripsi);
-    setUrlVideo(dataVideoById.url_video);
-    setPreviewVideo(dataVideoById.is_preview);
-  }, [dataVideoById]);
+    if (getVideoId) {
+      setTitleVideo(dataVideoById.title);
+      setDeskripsiVideo(dataVideoById.deskripsi);
+      setUrlVideo(dataVideoById.url_video);
+      setPreviewVideo(dataVideoById.is_preview);
+    }
+  }, [dataVideoById, getVideoId]);
 
   // HANDLE EDIT VIDEO
   const handleEditVideo = (id) => {
@@ -206,9 +218,20 @@ export const AddVideo = () => {
     });
   };
 
+  useEffect(() => {
+    if (dataPutVideo?.status === 200) {
+      refetchVideoPerChapter();
+      const filteredVideoChapter = dataVideoChapter?.filter((value) => {
+        return value.chapter_id === getIdChapter && value.video_id !== 201;
+      });
+
+      setVideoChapter(filteredVideoChapter || []);
+    }
+  }, [dataPutVideo, getIdChapter, dataVideoChapter, refetchVideoPerChapter]);
+
   // DELETE VIDEO PER CHAPTER
   const [getVideoIdDelete, setVideoIdDelete] = useState();
-  const { mutate: deleteVideo } = useDeleteVideo({
+  const { mutate: deleteVideo, data: dataDeleteVideo } = useDeleteVideo({
     video_id: getVideoIdDelete,
   });
 
@@ -216,6 +239,17 @@ export const AddVideo = () => {
     setVideoIdDelete(id);
     deleteVideo();
   };
+
+  useEffect(() => {
+    if (dataDeleteVideo?.status === 200) {
+      refetchVideoPerChapter();
+      const filteredVideoChapter = dataVideoChapter?.filter((value) => {
+        return value.chapter_id === getIdChapter && value.video_id !== 201;
+      });
+
+      setVideoChapter(filteredVideoChapter || []);
+    }
+  }, [dataDeleteVideo, getIdChapter, dataVideoChapter, refetchVideoPerChapter]);
 
   return (
     <>

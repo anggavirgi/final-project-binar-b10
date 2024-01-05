@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { CookieStorage, CookiesKeys } from "../../utils/cookies";
 
 export const SidebarProfil = () => {
-  const isMobile = window.innerWidth <= 768;
+  const isMobile = window.innerWidth <= 1024;
   // const navigate = useNavigate()
 
   const handleLogout = () => {

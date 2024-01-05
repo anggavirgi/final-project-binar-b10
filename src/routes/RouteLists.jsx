@@ -16,7 +16,6 @@ import { OTP } from "../pages/Autentikasi/OTP";
 import { Register } from "../pages/Autentikasi/Register";
 import { LoginUser } from "../pages/Autentikasi/LoginUser";
 import { SendEmail } from "../pages/Autentikasi/SendEmail";
-import { ProtectedAuth } from "../components/Protected/ProtectedAuth";
 import { AddVideo } from "../pages/Admin/AddVideo";
 import { MyClass } from "../pages/User/MyClass";
 
