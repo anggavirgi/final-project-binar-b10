@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { GoBellFill, GoSync } from "react-icons/go";
+import { GoBellFill, GoArrowLeft, GoArrowRight, GoSync } from "react-icons/go";
 import { useNotifikasi } from "../../services/User Profile/notifikasi_user";
 import { LayoutUser } from "../../Layout/LayoutUser";
 import { PutNotifikasi, usePutNotifikasi } from "../../services/User Profile/Put_notifikasi";
@@ -24,7 +24,6 @@ export const Notifikasi = () => {
         notifikasiId: notif.notifikasi_id,
       }));
 
-
       setIsLoading(false);
 
       // Menyimpan data notifikasi ke dalam cache
@@ -37,55 +36,55 @@ export const Notifikasi = () => {
     }
   }, [data, page]);
 
-  // const loadNextPage = async () => {
-  //   if (isLoading) return;
+  const loadNextPage = async () => {
+    if (isLoading) return;
 
-  //   setIsLoading(true);
+    setIsLoading(true);
 
-  //   const nextPage = page + 1;
+    const nextPage = page + 1;
 
-  //   // Cek apakah data notifikasi untuk halaman tersebut sudah ada di cache
-  //   if (cachedData[nextPage]) {
-  //     setNotifikasi(cachedData[nextPage]);
-  //     setPage(nextPage);
-  //     setIsLoading(false);
-  //   } else {
-  //     const response = await refetch({ limit: 10, page: nextPage });
+    // Cek apakah data notifikasi untuk halaman tersebut sudah ada di cache
+    if (cachedData[nextPage]) {
+      setNotifikasi(cachedData[nextPage]);
+      setPage(nextPage);
+      setIsLoading(false);
+    } else {
+      const response = await refetch({ limit: 10, page: nextPage });
 
-  //     if (!response.error) {
-  //       setPage(nextPage);
-  //       setIsLoading(false);
-  //     } else {
-  //       setIsLoading(false);
-  //     }
-  //   }
-  // };
+      if (!response.error) {
+        setPage(nextPage);
+        setIsLoading(false);
+      } else {
+        setIsLoading(false);
+      }
+    }
+  };
 
-  // const loadPreviousPage = async () => {
-  //   if (isLoading) return;
+  const loadPreviousPage = async () => {
+    if (isLoading) return;
 
-  //   if (page > 1) {
-  //     setIsLoading(true);
+    if (page > 1) {
+      setIsLoading(true);
 
-  //     const prevPage = page - 1;
+      const prevPage = page - 1;
 
-  //     // Cek apakah data notifikasi untuk halaman tersebut sudah ada di cache
-  //     if (cachedData[prevPage]) {
-  //       setNotifikasi(cachedData[prevPage]);
-  //       setPage(prevPage);
-  //       setIsLoading(false);
-  //     } else {
-  //       const response = await refetch({ limit: 10, page: prevPage });
+      // Cek apakah data notifikasi untuk halaman tersebut sudah ada di cache
+      if (cachedData[prevPage]) {
+        setNotifikasi(cachedData[prevPage]);
+        setPage(prevPage);
+        setIsLoading(false);
+      } else {
+        const response = await refetch({ limit: 10, page: prevPage });
 
-  //       if (!response.error) {
-  //         setPage(prevPage);
-  //         setIsLoading(false);
-  //       } else {
-  //         setIsLoading(false);
-  //       }
-  //     }
-  //   }
-  // };
+        if (!response.error) {
+          setPage(prevPage);
+          setIsLoading(false);
+        } else {
+          setIsLoading(false);
+        }
+      }
+    }
+  };
 
   const handleUpdateNotification = (notifId) => {
     updateNotificationStatus(
@@ -135,6 +134,14 @@ export const Notifikasi = () => {
                 Loading...
               </div>
             )}
+            <div className="flex justify-between mt-4 gap-4 ">
+              <button onClick={loadPreviousPage} className={`bg-indigo-600 bottom-0 text-white px-4 py-2 rounded ${isLoading ? "opacity-50" : ""}`} disabled={isLoading}>
+                <GoArrowLeft className="w-4 h-4" />
+              </button>
+              <button onClick={loadNextPage} className={`bg-indigo-600 text-white px-4 py-2 rounded ${isLoading ? "opacity-50" : ""}`} disabled={isLoading}>
+                <GoArrowRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
       </LayoutUser>
