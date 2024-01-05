@@ -706,7 +706,7 @@ export const ClassAdmin = () => {
                 </tr>
               </thead>
               <tbody>
-                {getDataCourse.map((value, index) => {
+                {getDataCourse?.map((value, index) => {
                   return (
                     <tr key={index}>
                       <td className="ps-2 py-3 text-center">

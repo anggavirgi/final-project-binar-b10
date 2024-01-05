@@ -40,7 +40,6 @@ const LoginUser = async (input) => {
           window.location.href = "/otp";
         }, 4000); // Consider increasing this if needed
       } else {
-       
       }
 
       throw new Error(errorMessage);
