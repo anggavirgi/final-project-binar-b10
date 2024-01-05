@@ -4,9 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 export const ProtectedAuth = ({ children }) => {
   const navigate = useNavigate();
-  const token = CookieStorage.get(CookiesKeys.AuthToken)
-    ? CookieStorage.get(CookiesKeys.AuthToken)
-    : null;
+  const token = CookieStorage.get(CookiesKeys.AuthToken) ? CookieStorage.get(CookiesKeys.AuthToken) : null;
 
   useEffect(() => {
     if (token) {

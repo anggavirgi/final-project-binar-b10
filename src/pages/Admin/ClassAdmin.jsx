@@ -644,7 +644,7 @@ export const ClassAdmin = () => {
                 className={`px-4 py-2 mx-1 rounded text-white font-bold ${
                   currentPage <= 1
                     ? "bg-gray-300"
-                    : "bg-[#489CFF] cursor-pointer"
+                    : "bg-[#489CFF] cursor-pointer hover:bg-secondary"
                 }`}
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage <= 1}
@@ -658,7 +658,7 @@ export const ClassAdmin = () => {
                 className={`px-4 py-2 mx-1 rounded text-white font-bold ${
                   currentPage === lastPage
                     ? "bg-gray-300"
-                    : "bg-[#489CFF] cursor-pointer"
+                    : "bg-[#489CFF] cursor-pointer hover:bg-secondary"
                 }`}
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === lastPage}

@@ -83,14 +83,14 @@ export const Homepage = () => {
     <div className="bg-white">
       <HeaderUser setSearchQuery={setSearchQuery} />
       <div className="flex">
-        <div className="relative w-full h-[90dvh]">
+        <div className="relative w-full h-[91dvh]">
           <img
             src={banner}
             alt="banner"
-            className="w-full h-[90dvh] object-cover"
+            className="w-full h-[91dvh] object-cover"
           />
-          <div className="absolute top-0 w-full h-[90dvh] bg-black/75">
-            <div className="absolute right-0 flex justify-center items-center mobile:w-full desktop:w-1/2 h-[90dvh] text-white">
+          <div className="absolute top-0 w-full h-[91dvh] bg-black/75">
+            <div className="absolute right-0 flex justify-center items-center mobile:w-full desktop:w-1/2 h-[91dvh] text-white">
               <div className="space-y-5 pe-10 mobile:ps-10 desktop:ps-0">
                 <div className="flex flex-col gap-1.5 text-5xl desktopfull:text-6xl tracking-wider font-semibold">
                   <div>Unlock your potential</div>
@@ -152,7 +152,7 @@ export const Homepage = () => {
                   >
                     <MdOutlineSell />
                     <span>
-                      {value.harga === 0 ? "Gratis" : `Rp ${value.harga}`}
+                      {value.harga === 0 ? "Gratis" : `Rp${value.harga}`}
                     </span>
                   </div>
                   <div className="flex items-center gap-0.5 text-xs">
@@ -169,7 +169,58 @@ export const Homepage = () => {
         </div>
       </div>
 
-      <div className="mobile:px-8 desktop:px-16 pt-6 pb-16 text-sm">
+      <div className="mt-12 px-8 pt-8 pb-12 text-sm text-white text-center bg-blue-900">
+        <div className="text-lg text-yellow-300 tracking-wider font-medium mb-3">
+          Trusted by 500k+ Students
+        </div>
+        <div className="text-2xl font-medium tracking-wide mb-3">
+          Gabung komunitas LearnWise Sekarang !
+        </div>
+        <div className="text-lg font-medium text-center desktop:px-64 text-gray-300 mb-10">
+          LearnWise telah dipercaya dan mendapat review baik dari alumni
+          LearnWise dari seluruh Indonesia
+        </div>
+        <div className="carousel carousel-center mobile:w-full desktop:w-4/5 h-[220px] bg-transparent space-x-4 rounded-box">
+          {dataRating.slice(0, 9).map((value, index) => {
+            const categoryReview = (id) => {
+              const result = dataCategory.filter((value) => {
+                if (value.course_id === id) {
+                  return value.category;
+                }
+              });
+
+              return result;
+            };
+
+            const categoryName =
+              categoryReview(value.course_id)[0]?.category || [];
+
+            return (
+              <div
+                className="mobile:w-3/4 tablet:w-1/2 desktop:w-1/4 carousel-item flex-col space-y-3 bg-white text-black rounded-box px-5 py-6"
+                key={index}
+              >
+                <div className="flex items-center gap-3">
+                  <div>
+                    <img
+                      src={value.Account.url_image}
+                      alt="profile pic"
+                      className="w-7 h-7 object-cover rounded-full"
+                    />
+                  </div>
+                  <div className="text-left">
+                    <div className="font-semibold">{value.Account.nama}</div>
+                    <div className="text-gray-500 text-xs">{categoryName}</div>
+                  </div>
+                </div>
+                <div className="text-left mt-2">{value.comment}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="mobile:px-8 desktop:px-16 pt-12 pb-16 text-sm">
         <div className="flex mobile:flex-col desktop:flex-row desktop:justify-between desktop:items-center mobile:gap-2 desktop:gap-10 mb-4">
           <div className="text-2xl font-bold text-primary">
             Mulai karir baru anda
@@ -178,7 +229,7 @@ export const Homepage = () => {
             to={"/kelas"}
             className="flex items-center gap-2 hover:text-gray-400"
           >
-            <div>Lihat semua kategori</div>
+            <div>Lihat semua course</div>
             <HiArrowLongRight />
           </Link>
         </div>
@@ -263,7 +314,7 @@ export const Homepage = () => {
             <div className="mobile:hidden desktop:block">
               Rp.{dataSalary.gaji_dn} / thn
             </div>
-            <div className="desktop:hidden w-2/5 ps-5 py-2 rounded text-white bg-yellow-400">
+            <div className="desktop:hidden mobile:text-xs desktop:text-sm desktopfull:text-sm w-3/5 ps-5 py-2 rounded text-white bg-yellow-400">
               Rp.{dataSalary.gaji_dn} / thn
             </div>
           </div>
@@ -274,7 +325,7 @@ export const Homepage = () => {
             <div className="mobile:hidden desktop:block">
               Rp.{dataSalary.gaji_ln} / thn
             </div>
-            <div className="desktop:hidden w-2/5 ps-5 py-2 rounded text-white bg-yellow-400">
+            <div className="desktop:hidden mobile:text-xs desktop:text-sm desktopfull:text-sm w-full ps-5 py-2 rounded text-white bg-primary">
               Rp.{dataSalary.gaji_ln} / thn
             </div>
           </div>
@@ -313,7 +364,7 @@ export const Homepage = () => {
                     >
                       <MdOutlineSell />
                       <span>
-                        {value.harga === 0 ? "Gratis" : `Rp ${value.harga}`}
+                        {value.harga === 0 ? "Gratis" : `Rp${value.harga}`}
                       </span>
                     </div>
                     <div className="flex items-center text-xs">
@@ -328,57 +379,6 @@ export const Homepage = () => {
               );
             })}
           </div>
-        </div>
-      </div>
-
-      <div className="px-8 pt-8 pb-12 text-sm text-white text-center bg-blue-900">
-        <div className="text-lg text-yellow-300 tracking-wider font-medium mb-3">
-          Trusted by 500k+ Students
-        </div>
-        <div className="text-2xl font-medium tracking-wide mb-3">
-          Gabung komunitas LearnWise Sekarang !
-        </div>
-        <div className="text-lg font-medium text-center desktop:px-64 text-gray-300 mb-10">
-          LearnWise telah dipercaya dan mendapat review baik dari alumni
-          LearnWise dari seluruh Indonesia
-        </div>
-        <div className="carousel carousel-center mobile:w-full desktop:w-4/5 h-[220px] bg-transparent space-x-4 rounded-box">
-          {dataRating.slice(0, 9).map((value, index) => {
-            const categoryReview = (id) => {
-              const result = dataCategory.filter((value) => {
-                if (value.course_id === id) {
-                  return value.category;
-                }
-              });
-
-              return result;
-            };
-
-            const categoryName =
-              categoryReview(value.course_id)[0]?.category || [];
-
-            return (
-              <div
-                className="mobile:w-3/4 tablet:w-1/2 desktop:w-1/4 carousel-item flex-col space-y-3 bg-white text-black rounded-box px-5 py-6"
-                key={index}
-              >
-                <div className="flex items-center gap-3">
-                  <div>
-                    <img
-                      src={value.Account.url_image}
-                      alt="profile pic"
-                      className="w-7 h-7 object-cover rounded-full"
-                    />
-                  </div>
-                  <div className="text-left">
-                    <div className="font-semibold">{value.Account.nama}</div>
-                    <div className="text-gray-500 text-xs">{categoryName}</div>
-                  </div>
-                </div>
-                <div className="text-left mt-2">{value.comment}</div>
-              </div>
-            );
-          })}
         </div>
       </div>
 

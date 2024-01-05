@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LayoutAdmin } from "../../Layout/LayoutAdmin";
 import { IoIosArrowRoundBack } from "react-icons/io";
@@ -13,6 +13,13 @@ import { usePutChapter } from "../../services/admin/PutChapter";
 import { useGetVideo } from "../../services/admin/GetVideo";
 import { usePostVideo } from "../../services/admin/PostVideo";
 import { usePutVideo } from "../../services/admin/PutVideo";
+import { IoRefreshOutline } from "react-icons/io5";
+import { useDeleteCourse } from "../../services/admin/DeleteCourse";
+import { useDeleteVideo } from "../../services/admin/DeleteVideo";
+import { useAllChapter } from "../../services/admin/GetAllChapter";
+import { BsDot } from "react-icons/bs";
+import { useGetVideoId } from "../../services/admin/GetVideoId";
+import { useDeleteChapter } from "../../services/admin/DeleteChapter";
 
 export const AddVideo = () => {
   const { state } = useLocation();
@@ -31,8 +38,27 @@ export const AddVideo = () => {
 
   const dataChapter = getChapter?.data || [];
 
+  // GET CHAPTER FOR VIDEO HEADER
+  const [getDataAllChapter, setDataAllChapter] = useState([]);
+
+  const { data: getAllChapter } = useAllChapter({
+    limit: 1000,
+  });
+
+  const dataAllChapter = getAllChapter?.data.chapter || [];
+
+  useEffect(() => {
+    const filterAllChapter = dataAllChapter.filter((value) => {
+      if (value.chapter_id === getIdChapter) {
+        return { ...value };
+      }
+    });
+
+    setDataAllChapter(filterAllChapter);
+  }, [dataAllChapter, getIdChapter]);
+
   // POST CHAPTER
-  const { mutate: postChapter } = usePostChapter();
+  const { mutate: postChapter, data: dataPostChapter } = usePostChapter();
 
   // HANDLE SAVE ADD CHAPTER
   const handleAddChapter = (e) => {
@@ -40,14 +66,14 @@ export const AddVideo = () => {
       postChapter({
         chapter_title: getInputChapter,
         course_id: state.course_id,
-        video_id: 0,
+        video_id: 201,
       });
     }
   };
 
   // PUT CHAPTER
   const { mutate: putChapter } = usePutChapter({
-    course_id: state.course_id,
+    chapter_id: getIdChapter,
   });
 
   // HANDLE BTN EDIT CHAPTER
@@ -56,19 +82,32 @@ export const AddVideo = () => {
     setIdChapter(id);
   };
 
+  useEffect(() => {
+    setInputChapter(getDataAllChapter[0]?.title);
+  }, [getDataAllChapter]);
+
   // HANDLE SAVE EDIT CHAPTER
   const handleEditChapter = (e) => {
-    // if (e.key === "Enter") {
-    //   putChapter({
-    //     chapter_title: getInputChapter,
-    //     course_id: state.course_id,
-    //     video_id: 0,
-    //   });
-    // }
+    if (e.key === "Enter") {
+      putChapter({
+        chapter_title: getInputChapter,
+        course_id: state.course_id,
+        video_id: 201,
+      });
+    }
   };
 
   // HANDLE DELETE CHAPTER
-  const handleDeleteChapter = () => {};
+  const [getChapterIdDelete, setChapterIdDelete] = useState();
+
+  const { mutate: deleteChapter } = useDeleteChapter({
+    chapter_id: getChapterIdDelete,
+  });
+
+  const handleDeleteChapter = (id) => {
+    setChapterIdDelete(id);
+    deleteChapter();
+  };
 
   // API VIDEO
   const [getCloseAddEdit, setCloseAddEdit] = useState(false);
@@ -82,10 +121,13 @@ export const AddVideo = () => {
   const [getPreviewVideo, setPreviewVideo] = useState();
 
   // GET VIDEO PER CHAPTER
-  const { data: getVideoPerChapter, isSuccess: successVideoChapter } =
-    useGetVideo({
-      limit: 50,
-    });
+  const {
+    data: getVideoPerChapter,
+    isSuccess: successVideoChapter,
+    refetch: refetchVideoPerChapter,
+  } = useGetVideo({
+    limit: 1000,
+  });
 
   const dataVideoChapter = getVideoPerChapter?.data?.video || [];
 
@@ -93,7 +135,7 @@ export const AddVideo = () => {
     setIdChapter(idChapter);
     if (successVideoChapter) {
       const videoChapter = dataVideoChapter?.filter((value) => {
-        if (value.chapter_id === idChapter) {
+        if (value.chapter_id === idChapter && value.video_id !== 201) {
           return { ...value };
         }
       });
@@ -102,12 +144,15 @@ export const AddVideo = () => {
     }
   };
 
+  // GET VIDEO BY ID
+  const { data: getVideoById } = useGetVideoId({
+    video_id: getVideoId,
+  });
+
+  const dataVideoById = getVideoById?.data.video || [];
+
   // POST VIDEO PER CHAPTER
   const { mutate: postVideo, data: getDataVideo } = usePostVideo();
-  console.log(
-    "🚀 ~ file: AddVideo.jsx:106 ~ AddVideo ~ getDataVideo:",
-    getDataVideo
-  );
 
   // HANDLE ADD VIDEO
   const handleAddVideo = () => {
@@ -116,8 +161,19 @@ export const AddVideo = () => {
     setTitleVideo("");
     setUrlVideo("");
     setDeskripsiVideo("");
-    setPreviewVideo();
+    setPreviewVideo("");
   };
+
+  useEffect(() => {
+    if (getDataVideo?.status === 200) {
+      refetchVideoPerChapter();
+      const filteredVideoChapter = dataVideoChapter?.filter((value) => {
+        return value.chapter_id === getIdChapter && value.video_id !== 201;
+      });
+
+      setVideoChapter(filteredVideoChapter || []);
+    }
+  }, [getDataVideo, getIdChapter, dataVideoChapter, refetchVideoPerChapter]);
 
   // HANDLE BTN SIMPAN ADD VIDEO
   const handleBtnSimpanVideo = () => {
@@ -131,9 +187,18 @@ export const AddVideo = () => {
   };
 
   // PUT VIDEO PER CHAPTER
-  const { mutate: putVideo } = usePutVideo({
+  const { mutate: putVideo, data: dataPutVideo } = usePutVideo({
     video_id: getVideoId,
   });
+
+  useEffect(() => {
+    if (getVideoId) {
+      setTitleVideo(dataVideoById.title);
+      setDeskripsiVideo(dataVideoById.deskripsi);
+      setUrlVideo(dataVideoById.url_video);
+      setPreviewVideo(dataVideoById.is_preview);
+    }
+  }, [dataVideoById, getVideoId]);
 
   // HANDLE EDIT VIDEO
   const handleEditVideo = (id) => {
@@ -142,7 +207,7 @@ export const AddVideo = () => {
     setCloseAddEdit(true);
   };
 
-  // HANDLE BTN SIMPAN ADD VIDEO
+  // HANDLE BTN EDIT ADD VIDEO
   const handleBtnEditVideo = () => {
     putVideo({
       chapter_id: getIdChapter,
@@ -153,7 +218,38 @@ export const AddVideo = () => {
     });
   };
 
+  useEffect(() => {
+    if (dataPutVideo?.status === 200) {
+      refetchVideoPerChapter();
+      const filteredVideoChapter = dataVideoChapter?.filter((value) => {
+        return value.chapter_id === getIdChapter && value.video_id !== 201;
+      });
+
+      setVideoChapter(filteredVideoChapter || []);
+    }
+  }, [dataPutVideo, getIdChapter, dataVideoChapter, refetchVideoPerChapter]);
+
   // DELETE VIDEO PER CHAPTER
+  const [getVideoIdDelete, setVideoIdDelete] = useState();
+  const { mutate: deleteVideo, data: dataDeleteVideo } = useDeleteVideo({
+    video_id: getVideoIdDelete,
+  });
+
+  const handleDeleteVideo = (id) => {
+    setVideoIdDelete(id);
+    deleteVideo();
+  };
+
+  useEffect(() => {
+    if (dataDeleteVideo?.status === 200) {
+      refetchVideoPerChapter();
+      const filteredVideoChapter = dataVideoChapter?.filter((value) => {
+        return value.chapter_id === getIdChapter && value.video_id !== 201;
+      });
+
+      setVideoChapter(filteredVideoChapter || []);
+    }
+  }, [dataDeleteVideo, getIdChapter, dataVideoChapter, refetchVideoPerChapter]);
 
   return (
     <>
@@ -194,17 +290,14 @@ export const AddVideo = () => {
                 </div>
                 {dataChapter.map((value, index) => {
                   return (
-                    <div
-                      key={index}
-                      onClick={() => handleVideoPerChapter(value.chapter_id)}
-                      className="py-2 border-b border-gray-300"
-                    >
+                    <div key={index} className="py-2 border-b border-gray-300">
                       {getEditChapter && getIdChapter === value.chapter_id ? (
                         <div className="relative flex items-center border-b border-gray-300">
                           <input
                             type="text"
                             placeholder="new chapter"
                             className="py-2 border-none !ring-0"
+                            value={getInputChapter}
                             onChange={(e) => setInputChapter(e.target.value)}
                             onKeyDown={handleEditChapter}
                           />
@@ -217,7 +310,12 @@ export const AddVideo = () => {
                         </div>
                       ) : (
                         <div className="flex justify-between gap-2 items-center">
-                          <div className="cursor-pointer hover:text-gray-400 whitespace-nowrap overflow-hidden">
+                          <div
+                            onClick={() =>
+                              handleVideoPerChapter(value.chapter_id)
+                            }
+                            className="cursor-pointer hover:text-gray-400 whitespace-nowrap overflow-hidden"
+                          >
                             {value.title}
                           </div>
                           <div className="flex gap-2 items-center">
@@ -265,11 +363,22 @@ export const AddVideo = () => {
                 </div>
               </div>
             </div>
+
             <div className={`${getCloseAddEdit ? "w-1/4" : "w-1/2"}`}>
-              <div className="bg-primary text-white rounded ps-2 text-lg font-semibold">
-                Video
+              <div className="flex gap-2 items-center bg-primary text-white rounded px-2 text-lg font-semibold">
+                <div>Video</div>
+                {getDataAllChapter[0]?.title ? (
+                  <>
+                    <BsDot />
+                    <div className="overflow-hidden whitespace-nowrap">
+                      {getDataAllChapter[0]?.title}
+                    </div>
+                  </>
+                ) : (
+                  ""
+                )}
               </div>
-              <div className="mt-1 font-medium text-sm">
+              <div className="mt-1 font-medium text-sm desktop:h-[470px] desktopfull:h-[800px] overflow-y-auto">
                 <div
                   className={`text-center py-2 ${
                     getVideoChapter.length === 0 ? "block" : "hidden"
@@ -277,6 +386,16 @@ export const AddVideo = () => {
                 >
                   Belum ada video.
                 </div>
+                <div
+                  onClick={() => handleAddVideo()}
+                  className={`${
+                    getIdChapter ? "flex" : "hidden"
+                  } items-center justify-center gap-2 w-fit mx-auto mt-2 px-3 py-1.5 rounded cursor-pointer bg-green-400 text-white hover:text-gray-300`}
+                >
+                  <div>Tambah Video</div>
+                  <BiPlus />
+                </div>
+                <hr className="mt-2" />
                 {getVideoChapter.map((value, index) => {
                   return (
                     <div
@@ -291,25 +410,30 @@ export const AddVideo = () => {
                           onClick={() => handleEditVideo(value.video_id)}
                           className="w-5 h-5 cursor-pointer text-yellow-400 hover:text-yellow-300"
                         />
-                        <HiOutlineTrash className="w-5 h-5 cursor-pointer text-red-400 hover:text-red-300" />
+                        <HiOutlineTrash
+                          onClick={() => handleDeleteVideo(value.video_id)}
+                          className="w-5 h-5 cursor-pointer text-red-400 hover:text-red-300"
+                        />
                       </div>
                     </div>
                   );
                 })}
-                <div
-                  onClick={() => handleAddVideo()}
-                  className={`${
-                    getIdChapter ? "flex" : "hidden"
-                  } items-center justify-center gap-2 w-fit mx-auto mt-2 px-3 py-1.5 rounded cursor-pointer bg-green-400 text-white hover:text-gray-300`}
-                >
-                  <div>Tambah Video</div>
-                  <BiPlus />
-                </div>
               </div>
             </div>
+
             <div className={`${getCloseAddEdit ? "w-1/2 block" : "hidden"}`}>
-              <div className="flex justify-between items-center bg-primary text-white rounded px-2 text-lg font-semibold">
-                <div>{getAddEdit ? "Add Video" : "Edit Video"}</div>
+              <div className="flex justify-between items-center gap-1.5 bg-primary text-white rounded px-2 text-lg font-semibold">
+                <div className=" flex items-center gap-2 overflow-hidden whitespace-nowrap">
+                  <div>{getAddEdit ? "Add Video" : "Edit Video"}</div>
+                  {getDataAllChapter[0]?.title ? (
+                    <>
+                      <BsDot />
+                      <div>{getDataAllChapter[0]?.title}</div>
+                    </>
+                  ) : (
+                    ""
+                  )}
+                </div>
                 <RxCross2
                   className="cursor-pointer hover:text-gray-400"
                   onClick={() => setCloseAddEdit(false)}
@@ -357,9 +481,11 @@ export const AddVideo = () => {
                   <select
                     name="preview"
                     id="preview"
-                    onChange={(e) => setPreviewVideo(e.target.value)}
+                    value={getPreviewVideo}
+                    onChange={(e) => setPreviewVideo(e.target.value === "true")}
                     className="w-full px-4 py-1.5 text-sm rounded"
                   >
+                    <option value="">=== Pilih is_preview ===</option>
                     <option value="false">Lock</option>
                     <option value="true">Open</option>
                   </select>

@@ -12,7 +12,8 @@ const sendOTP = async (otp) => {
       return result.data;
     })
     .catch((err) => {
-      throw new Error("Gagal mengirimkan OTP");
+      console.log(err.response.data.err, "error di page otp kirim");
+      throw new Error(err.response.data.err);
     });
 };
 

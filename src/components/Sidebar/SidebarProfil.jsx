@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { CookieStorage, CookiesKeys } from "../../utils/cookies";
 
 export const SidebarProfil = () => {
-  const isMobile = window.innerWidth <= 768;
+  const isMobile = window.innerWidth <= 1024;
   // const navigate = useNavigate()
 
   const handleLogout = () => {
@@ -17,34 +17,34 @@ export const SidebarProfil = () => {
   return (
     <div className={`p-4 flex flex-col ${isMobile ? "w-full" : "w-1/3"}`}>
       <div className="text-primary">
-        <div className="flex gap-2.5 items-center cursor-pointer">
+        <Link className="flex gap-2.5 items-center cursor-pointer" to={"/profil?edit=true"}>
           <GoPencil className="text-lg" />
           <span className="text-black font-semibold hover:text-primary">
-            <Link className="block cursor-pointer" to={"/profil?edit=true"}>
+            <div className="block cursor-pointer" >
               Profil Saya
-            </Link>
+            </div>
           </span>
-        </div>
+        </Link>
         <hr className="my-4" />
 
-        <div className="flex gap-2 items-center cursor-pointer">
+        <Link className="flex gap-2 items-center cursor-pointer" to={"/profil/gantipassword"}>
           <GoGear className="text-lg" />
           <span className="text-black font-semibold hover:text-primary">
-            <Link className="block cursor-pointer" to={"/profil/gantipassword"}>
+            <div className="block cursor-pointer">
               Ubah Password
-            </Link>
+            </div>
           </span>
-        </div>
+        </Link>
         <hr className="my-4" />
 
-        <div className="flex gap-2 items-center cursor-pointer">
+        <Link className="flex gap-2 items-center cursor-pointer" to={"/profil/riwayat"}>
           <BsCart3 className="text-lg" />
           <span className="text-black font-semibold hover:text-primary">
-            <Link className="block cursor-pointer" to={"/profil/riwayat"}>
+            <div className="block cursor-pointer" >
               Riwayat Pembayaran
-            </Link>
+            </div>
           </span>
-        </div>
+        </Link>
         <hr className="my-4" />
 
         <div

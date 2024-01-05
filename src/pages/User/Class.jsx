@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { FaStar, FaFilter } from "react-icons/fa";
-import { RiShieldStarLine, RiBook3Line } from "react-icons/ri";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useCourse } from "../../services/user/GetCourse";
 import { useCategory } from "../../services/user/GetCategory";
 import { LayoutUser } from "../../Layout/LayoutUser";
-import img1 from "../../assets/img/img1.png";
+import { MdOutlineSell } from "react-icons/md";
+import { BsDot } from "react-icons/bs";
+import { CookieStorage, CookiesKeys } from "../../utils/cookies";
 
 export const Class = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
+  const token = CookieStorage.get(CookiesKeys.AuthToken);
+  const isUserAuthenticated = !!token;
+  const isMobile = window.innerWidth <= 768;
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
-  const [handleAll, setHandleAll] = useState(false);
+  const [handleAll, setHandleAll] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [dataCourses, setDataCourses] = useState([]);
   const [dataCategories, setDataCategories] = useState([]);
@@ -75,7 +80,7 @@ export const Class = () => {
   }, [lastPage, coursesAll]);
 
   const handleCategoryChange = (categoryId) => {
-    setCurrentPage(1)
+    setCurrentPage(1);
     setSelectedCategories((prevCategories) => {
       if (prevCategories.includes(categoryId)) {
         return prevCategories.filter((id) => id !== categoryId);
@@ -86,7 +91,7 @@ export const Class = () => {
   };
 
   const handleLevelChange = (level) => {
-    setCurrentPage(1)
+    setCurrentPage(1);
     setSelectedLevels((prevLevels) => {
       if (prevLevels.includes(level)) {
         return prevLevels.filter((lv) => lv !== level);
@@ -97,7 +102,7 @@ export const Class = () => {
   };
 
   const handleClearFilters = () => {
-    setCurrentPage(1)
+    setCurrentPage(1);
     setSelectedCategories([]);
     setSelectedLevels([]);
   };
@@ -111,15 +116,17 @@ export const Class = () => {
   };
 
   const handlePremiumClick = () => {
-    setCurrentPage(1)
+    setCurrentPage(1);
     setIsPremium(true);
     setIsFree(false);
+    setHandleAll(false);
   };
 
   const handleFreeClick = () => {
-    setCurrentPage(1)
+    setCurrentPage(1);
     setIsPremium(false);
     setIsFree(true);
+    setHandleAll(false);
   };
 
   const handleAllClick = () => {
@@ -133,51 +140,66 @@ export const Class = () => {
     return true;
   });
 
+  const toggleSidebar = () => {
+    setSidebarOpen(!isSidebarOpen);
+  };
+
+  const closeSidebar = () => {
+    setSidebarOpen(false);
+  };
+
+  // Close the sidebar when the window is resized
+  useEffect(() => {
+    const handleResize = () => {
+      if (isMobile && isSidebarOpen) {
+        closeSidebar();
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [isMobile, isSidebarOpen]);
+
+  const [isFilterOpen, setFilterOpen] = useState(false);
+
+  const openFilter = () => {
+    setFilterOpen(true);
+  };
+
+  const closeFilter = () => {
+    setFilterOpen(false);
+  };
+
   return (
     <>
       <LayoutUser>
         {/* Title and Search */}
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-700">Kelas Berjalan</h2>
-        </div>
+        {!isMobile ? (
+          <div className="flex justify-between items-center mb-6 ">
+            <h2 className="text-2xl font-bold text-gray-700">Topik Kelas</h2>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between px-7 mb-4 mt-6">
+            <div className="font-bold text-lg">Topik Kelas</div>
+            <div
+              className="font-bold text-primary cursor-pointer"
+              onClick={openFilter}
+            >
+              Filter
+            </div>
+          </div>
+        )}
 
-        <div className="relative flex desktop:gap-10 desktopfull:gap-14">
+        <div className="relative flex desktop:gap-10 desktopfull:gap-14 mobile:px-3 desktop:px-0">
           {/* FILTER */}
-          <div className="h-fit desktop:1/4 desktopfull:w-1/5 px-7 py-5 bg-white rounded-xl shadow">
+          <div className="mobile:hidden desktop:block desktopfull:block h-fit desktop:1/4 desktopfull:w-1/5 px-7 py-5 bg-white rounded-xl shadow">
             <h3 className="flex items-center gap-2 text-lg font-bold mb-2">
               <FaFilter className="w-3 h-3" />
               <span>FILTER</span>
             </h3>
             <div className="flex flex-col gap-4 whitespace-nowrap overflow-x-hidden">
-              <div className="space-y-3 px-1.5">
-                <h4 className="text-base font-bold text-primary -pt-3">
-                  Jenis
-                </h4>
-                <label className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    id="some_id"
-                    className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
-                  />
-                  <span className="">Paling Baru</span>
-                </label>
-                <label className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    id="some_id"
-                    className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
-                  />
-                  <span className="">Paling Populer</span>
-                </label>
-                <label className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    id="some_id"
-                    className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
-                  />
-                  <span className="">Promo</span>
-                </label>
-              </div>
               <div className="space-y-3 px-1.5">
                 <h4 className="text-base font-bold text-primary -pt-3">
                   Kategori
@@ -197,9 +219,14 @@ export const Class = () => {
                         checked={selectedCategories.includes(
                           category.kategori_id
                         )}
-                        className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
+                        className="appearance-none w-5 h-5 cursor-pointer border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
                       />
-                      <span className="">{category.title}</span>
+                      <label
+                        htmlFor={`category_${category.kategori_id}`}
+                        className="cursor-pointer hover:text-primary"
+                      >
+                        {category.title}
+                      </label>
                     </div>
                   );
                 })}
@@ -218,7 +245,12 @@ export const Class = () => {
                         checked={selectedLevels.includes(level)}
                         className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
                       />
-                      <span className="">{level}</span>
+                      <span
+                        htmlFor={level}
+                        className="cursor-pointer hover:text-primary"
+                      >
+                        {level}
+                      </span>
                     </div>
                   );
                 })}
@@ -234,23 +266,143 @@ export const Class = () => {
             </div>
           </div>
 
+          {/* FILTER Mobile */}
+          {isMobile && (
+            <>
+              <div
+                className="fixed inset-0 bg-black bg-opacity-40 z-50"
+                style={{ display: isFilterOpen ? "block" : "none" }}
+                onClick={closeFilter}
+              ></div>
+              <div
+                className={`fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl transform ${
+                  isFilterOpen ? "translate-y-0" : "translate-y-full"
+                } transition-transform ease-in-out duration-300 overflow-hidden z-50`}
+                style={{ maxHeight: "75vh" }}
+              >
+                <div className="flex justify-between items-center px-5 py-3 border-b">
+                  <FaFilter className="w-3 h-3" />
+                  <span className="font-bold text-lg">Filter</span>
+                  <button onClick={closeFilter}>
+                    <span className="text-gray-500 text-xl">X</span>
+                  </button>
+                </div>
+                <div
+                  className="gap-4 whitespace-nowrap overflow-y-auto px-4"
+                  style={{ maxHeight: "60vh" }}
+                >
+                  <div className="space-y-3 px-1.5 pt-4">
+                    <h4 className="text-base font-bold text-primary -pt-3">
+                      Jenis
+                    </h4>
+                    <label className="flex gap-2 items-center">
+                      <input
+                        type="checkbox"
+                        id="some_id"
+                        className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
+                      />
+                      <span className="">Paling Baru</span>
+                    </label>
+                    <label className="flex gap-2 items-center">
+                      <input
+                        type="checkbox"
+                        id="some_id"
+                        className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
+                      />
+                      <span className="">Paling Populer</span>
+                    </label>
+                  </div>
+                  <div className="space-y-3 px-1.5 pt-4">
+                    <h4 className="text-base font-bold text-primary -pt-3">
+                      Kategori
+                    </h4>
+                    {dataCategories.map((category) => {
+                      return (
+                        <div
+                          className="flex gap-2 items-center"
+                          key={category.kategori_id}
+                        >
+                          <input
+                            type="checkbox"
+                            id={`category_${category.kategori_id}`}
+                            onChange={() =>
+                              handleCategoryChange(category.kategori_id)
+                            }
+                            checked={selectedCategories.includes(
+                              category.kategori_id
+                            )}
+                            className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
+                          />
+                          <span className="">{category.title}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="space-y-3 px-1.5 pt-4">
+                    <h4 className="text-base font-bold text-primary -pt-3">
+                      Level Kesulitan
+                    </h4>
+                    {dataLevels?.map((level) => {
+                      return (
+                        <div className="flex gap-2 items-center">
+                          <input
+                            type="checkbox"
+                            id={level}
+                            onChange={() => handleLevelChange(level)}
+                            checked={selectedLevels.includes(level)}
+                            className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
+                          />
+                          <span className="">{level}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="w-full flex justify-center mt-2">
+                    <button
+                      className="font-bold text-red-500 hover:underline mb-5"
+                      onClick={handleClearFilters}
+                    >
+                      Hapus Filter
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
           {/* BODY */}
-          <div className="desktop:w-3/4 desktopfull:w-4/5">
+          <div
+            className={`${
+              isMobile ? "w-full px-3" : "desktop:w-3/4 desktopfull:w-4/5 "
+            }`}
+          >
             <div className="grid grid-cols-3 gap-4 mb-7 text-center">
               <div
-                className="py-2 font-semibold text-gray-600 hover:text-white rounded-full bg-white hover:bg-primary cursor-pointer shadow"
+                className={`py-2 font-semibold hover:text-white rounded-full hover:bg-primary cursor-pointer shadow-lg ${
+                  handleAll
+                    ? "bg-primary shadow-primary text-white"
+                    : "bg-white text-gray-600"
+                }`}
                 onClick={handleAllClick}
               >
                 All
               </div>
               <div
-                className="py-2 font-semibold text-gray-600 hover:text-white rounded-full bg-white hover:bg-primary cursor-pointer shadow"
+                className={`py-2 font-semibold hover:text-white rounded-full hover:bg-primary cursor-pointer shadow-lg ${
+                  isPremium
+                    ? "bg-primary shadow-primary text-white"
+                    : "bg-white text-gray-600"
+                }`}
                 onClick={handlePremiumClick}
               >
                 Kelas Premium
               </div>
               <div
-                className="py-2 font-semibold text-gray-600 hover:text-white rounded-full bg-white hover:bg-primary cursor-pointer shadow"
+                className={`py-2 font-semibold hover:text-white rounded-full hover:bg-primary cursor-pointer shadow-lg ${
+                  isFree
+                    ? "bg-primary te shadow-primary text-white"
+                    : "bg-white text-gray-600"
+                }`}
                 onClick={handleFreeClick}
               >
                 Kelas Gratis
@@ -280,27 +432,24 @@ export const Class = () => {
                 </div>
               </div>
             )}
-            <div className="grid grid-cols-2 gap-5 gap-y-7">
+            <div className="grid mobile:grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-2 desktopfull:grid-cols-2 gap-5 gap-y-7">
               {/* {render courses} */}
               {!isLoading &&
-                filteredCourses.map((course) => {
+                filteredCourses.map((course, index) => {
                   return (
                     <div
-                      key={course.course_id}
-                      className="rounded-3xl bg-white shadow-lg"
+                      className="rounded-3xl shadow-lg bg-white hover:shadow-2xl hover:border hover:border-gray-300 hover:scale-105 cursor-pointer"
+                      key={index}
                       onClick={() => handleToDetail(course.course_id)}
-                      onKeyDown={() => {}}
                     >
                       <img
-                        src={img1}
-                        alt="img1"
-                        className="w-full h-[9rem] object-cover rounded-3xl"
+                        src={course.url_image_preview}
+                        alt=""
+                        className="w-full h-[9rem] object-cover rounded-t-3xl"
                       />
-                      <div className="flex flex-col gap-1 px-3 pt-3 pb-4">
-                        <div className="flex justify-between font-bold">
-                          <div className="text-primary">
-                            {course.Kategori.title}
-                          </div>
+                      <div className="px-3.5 pt-2 pb-5">
+                        <div className="text-primary flex justify-between items-center">
+                          <div>{course.Kategori.title}</div>
                           <div className="flex items-center gap-1">
                             <FaStar className="fill-yellow-400" />
                             <span>
@@ -310,24 +459,39 @@ export const Class = () => {
                             </span>
                           </div>
                         </div>
-                        <div className="font-bold whitespace-nowrap overflow-hidden">
+                        <div className="font-bold whitespace-nowrap overflow-hidden text-base">
                           {course.title}
                         </div>
-                        <div className="font-medium">
-                          by {course.Mentor.name}
+                        <div className="font-medium text-xs">
+                          by <span>{course.Mentor.name}</span>
                         </div>
-                        <div className="flex items-center gap-3 desktopfull:gap-6 font-medium my-1">
-                          <div className="flex items-center gap-1">
-                            <RiShieldStarLine className="text-[#73CA5C]" />
-                            <span>{course.level}</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <RiBook3Line className="text-[#73CA5C]" />
-                            <span>{course?.module} Modul</span>
-                          </div>
+                        <div
+                          className={`flex gap-1 items-center text-base font-semibold ${
+                            course.harga === 0
+                              ? "text-blue-700"
+                              : "text-green-500 "
+                          }  mt-2.5 mb-1.5`}
+                        >
+                          <MdOutlineSell />
+                          <span>
+                            {course.harga === 0
+                              ? "Gratis"
+                              : `Rp${course.harga}`}
+                          </span>
                         </div>
-                        <button className="bg-[#489CFF] rounded-full p-1 px-6 font-medium text-white">
-                          {course.harga !== 0 ? `Rp ${course.harga}` : "Gratis"}
+                        <div className="flex items-center gap-0.5 text-xs">
+                          <div>{course.level}</div>
+                          <BsDot />
+                          <div>{course.module} Modul</div>
+                          <BsDot />
+                          <div>Sertifikasi Profesional</div>
+                        </div>
+                        <button
+                          className={`${
+                            course.harga !== 0 ? "bg-green-500" : "bg-blue-700"
+                          } rounded-full p-1.5 px-6 font-medium text-white mt-2.5 w-full text-center`}
+                        >
+                          Gabung Kelas
                         </button>
                       </div>
                     </div>
@@ -336,11 +500,13 @@ export const Class = () => {
             </div>
           </div>
         </div>
-        <div className="w-full flex justify-end">
-          <div className="flex justify-center mt-8 mobile:w-[70%] desktop:w-3/4 desktopfull:w-4/5">
+        <div className="w-full flex justify-end mb-8">
+          <div className="flex justify-center mt-8 mobile:w-full tablet:w-full desktop:w-3/4 desktopfull:w-4/5">
             <button
               className={`px-4 py-2 mx-1 rounded text-white font-bold ${
-                currentPage <= 1 ? "bg-gray-300" : "bg-[#489CFF] cursor-pointer"
+                currentPage <= 1
+                  ? "bg-gray-300"
+                  : "bg-[#489CFF] cursor-pointer hover:bg-secondary"
               }`}
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage <= 1}
@@ -354,7 +520,7 @@ export const Class = () => {
               className={`px-4 py-2 mx-1 rounded text-white font-bold ${
                 currentPage === lastPage
                   ? "bg-gray-300"
-                  : "bg-[#489CFF] cursor-pointer"
+                  : "bg-[#489CFF] cursor-pointer hover:bg-secondary"
               }`}
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === lastPage}

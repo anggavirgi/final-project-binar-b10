@@ -2,12 +2,11 @@ import { useMutation } from "@tanstack/react-query";
 import http from "../../utils/http";
 import { API_ENDPOINT } from "../../utils/api-endpoint";
 
-const GantiPassword = async (input) => {
+const PutNotifikasi = async (input) => {
   return await http
-    .put(API_ENDPOINT.GANTI_PASSWORD_USER, input)
+    .put(API_ENDPOINT.PUT_NOTIFIKASI_USER + input.notifikasi_id)
     .then((result) => {
       console.log(result.data.message);
-      alert(result.data.message);
       return result;
     })
     .catch((err) => {
@@ -16,8 +15,8 @@ const GantiPassword = async (input) => {
     });
 };
 
-const useGantiPassword = () => {
-  return useMutation(GantiPassword, {});
+const usePutNotifikasi = () => {
+  return useMutation(PutNotifikasi, {});
 };
 
-export { GantiPassword, useGantiPassword };
+export { PutNotifikasi, usePutNotifikasi };
