@@ -10,14 +10,20 @@ const LoginUser = async (input) => {
     .post(API_ENDPOINT.LOGIN_USER, input)
     .then((result) => {
       CookieStorage.set(CookiesKeys?.AuthToken, result?.data?.data?.token);
-      console.log(result?.data?.data?.user?.role, "role kah ");
       const userRole = result?.data?.data?.user?.role;
 
-      if (userRole === "user") {
-        window.location.href = "/home";
-      } else if (userRole === "admin") {
-        window.location.href = "/admin";
-      }
+      toast.success("Berhasil Login!", {
+        position: "top-center",
+        autoClose: 1500,
+      });
+
+      setTimeout(() => {
+        if (userRole === "user") {
+          window.location.href = "/home";
+        } else if (userRole === "admin") {
+          window.location.href = "/admin";
+        }
+      }, 2000);
 
       return result?.data;
     })
@@ -32,8 +38,9 @@ const LoginUser = async (input) => {
         });
         setTimeout(() => {
           window.location.href = "/otp";
-        }, 4000);
+        }, 4000); // Consider increasing this if needed
       } else {
+        toast.error(errorMessage); // Display other error messages
       }
 
       throw new Error(errorMessage);
