@@ -18,6 +18,7 @@ import { FaRegCirclePlay } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { TiArrowSortedDown } from "react-icons/ti";
 import { TiArrowSortedUp } from "react-icons/ti";
+import { ToastContainer, toast } from "react-toastify";
 
 export const ClassAdmin = () => {
   const navigate = useNavigate();
@@ -39,7 +40,11 @@ export const ClassAdmin = () => {
   const [searchValue] = useDebounce(getSearch, 1200);
 
   // GET COURSE
-  const { data: getCourse, isSuccess: courseSuccess } = useCourseAdmin({
+  const {
+    data: getCourse,
+    isSuccess: courseSuccess,
+    refetch: refetchCourse,
+  } = useCourseAdmin({
     limit: getLimit,
     page: currentPage,
     search: searchValue,
@@ -48,12 +53,19 @@ export const ClassAdmin = () => {
     category: [],
     level: [],
   });
+  console.log(
+    "🚀 ~ file: ClassAdmin.jsx:56 ~ ClassAdmin ~ getCourse:",
+    getDataCourse
+  );
 
   useEffect(() => {
-    setDataCourse(getCourse);
-  }, [searchValue, courseSuccess, currentPage, getCourse]);
-
-  const dataCourse = getDataCourse?.data?.course || [];
+    const resultAll = getCourse?.data?.course?.filter((value) => {
+      if (value.is_visible !== false) {
+        return { ...value };
+      }
+    });
+    setDataCourse(resultAll);
+  }, [searchValue, courseSuccess, refetchCourse, currentPage, getCourse]);
 
   // HANDLE PAGE
   const handlePageChange = (newPage) => {
@@ -98,7 +110,25 @@ export const ClassAdmin = () => {
   const [getLevel, setLevel] = useState();
   const [getImage, setImage] = useState();
 
-  const { mutate: postCourse, data } = usePostCourse();
+  const { mutate: postCourse, isSuccess: successPostCourse } = usePostCourse();
+
+  useEffect(() => {
+    if (successPostCourse) {
+      toast.success("Course berhasil diubah", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+
+    setOpenModalAdd(false);
+    refetchCourse();
+  }, [successPostCourse, setOpenModalAdd, refetchCourse]);
 
   const handleSimpan = () => {
     postCourse({
@@ -119,7 +149,7 @@ export const ClassAdmin = () => {
   };
 
   // PUT COURSE
-  const { mutate: putCourse } = usePutCourse({
+  const { mutate: putCourse, isSuccess: successPutCourse } = usePutCourse({
     course_id: getCourseId,
   });
 
@@ -133,9 +163,27 @@ export const ClassAdmin = () => {
       premium: getPremium,
       mentor_id: getMentor,
       level: getLevel,
-      url_image_preview: "",
+      url_image_preview: getImage,
     });
   };
+
+  useEffect(() => {
+    if (successPutCourse) {
+      toast.success("Course berhasil diubah", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+
+    setOpenModalEdit(false);
+    refetchCourse();
+  }, [successPutCourse, setOpenModalEdit, refetchCourse]);
 
   //GET CATEGORY
   const { data: getDataCategory } = useCategory(50);
@@ -174,16 +222,41 @@ export const ClassAdmin = () => {
       });
       setMentor(mentorName[0]?.mentor_id);
       setLevel(callDataCourseId.level);
+      setImage(callDataCourseId.url_image_preview);
     }
   }, [callDataCourseId, dataCategory, dataMentor, getCourseId]);
 
   // DELETE COURSE
-  const { mutate: deleteCourse } = useDeleteCourse();
+  const [getIdCourseDelete, setIdCourseDelete] = useState();
+
+  const {
+    mutate: deleteCourse,
+    data: dataDeleteCourse,
+    isSuccess: successDeleteCourse,
+  } = useDeleteCourse({
+    course_id: getIdCourseDelete,
+  });
+
+  useEffect(() => {
+    if (successDeleteCourse) {
+      toast.success("Course berhasil dihapus!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+
+    refetchCourse();
+  }, [successDeleteCourse, refetchCourse]);
 
   const handleDeleteCourse = (id) => {
-    deleteCourse({
-      course_id: id,
-    });
+    setIdCourseDelete(id);
+    deleteCourse();
   };
 
   // HANDLE TO PAGE ADD VIDEO
@@ -236,6 +309,18 @@ export const ClassAdmin = () => {
     <>
       <LayoutAdmin>
         <div className="flex flex-col gap-7">
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
           <CardAdmin />
           <div>
             <div className="flex justify-between items-center">
@@ -557,6 +642,15 @@ export const ClassAdmin = () => {
                           className="text-sm border-gray-300 rounded-lg w-full h-28"
                         ></textarea>
                       </div>
+                      <div className="flex flex-col gap-1">
+                        <label htmlFor="gambar">Input Gambar</label>
+                        <input
+                          type="file"
+                          id="gambar"
+                          onChange={handleImageChange}
+                          className="w-full rounded-lg border border-gray-300"
+                        />
+                      </div>
                     </div>
                   </Modal.Body>
                   <Modal.Footer className="flex justify-end gap-3">
@@ -612,7 +706,7 @@ export const ClassAdmin = () => {
                 </tr>
               </thead>
               <tbody>
-                {dataCourse.map((value, index) => {
+                {getDataCourse?.map((value, index) => {
                   return (
                     <tr key={index}>
                       <td className="ps-2 py-3 text-center">
