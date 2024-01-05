@@ -20,6 +20,7 @@ import { useAllChapter } from "../../services/admin/GetAllChapter";
 import { BsDot } from "react-icons/bs";
 import { useGetVideoId } from "../../services/admin/GetVideoId";
 import { useDeleteChapter } from "../../services/admin/DeleteChapter";
+import { ToastContainer, toast } from "react-toastify";
 
 export const AddVideo = () => {
   const { state } = useLocation();
@@ -41,7 +42,7 @@ export const AddVideo = () => {
   // GET CHAPTER FOR VIDEO HEADER
   const [getDataAllChapter, setDataAllChapter] = useState([]);
 
-  const { data: getAllChapter } = useAllChapter({
+  const { data: getAllChapter, refetch: refetchAllChapter } = useAllChapter({
     limit: 1000,
   });
 
@@ -70,6 +71,20 @@ export const AddVideo = () => {
       });
     }
   };
+
+  useEffect(() => {
+    if (dataPostChapter?.status === 200) {
+      refetchAllChapter()
+      const filterAllChapter = dataAllChapter.filter((value) => {
+        if (value.chapter_id === getIdChapter) {
+          return { ...value };
+        }
+      });
+  
+      setAddChapter(false)
+      setDataAllChapter(filterAllChapter || []);
+    }
+  }, [getIdChapter, dataAllChapter, refetchAllChapter, dataPostChapter]);
 
   // PUT CHAPTER
   const { mutate: putChapter } = usePutChapter({
@@ -152,7 +167,11 @@ export const AddVideo = () => {
   const dataVideoById = getVideoById?.data.video || [];
 
   // POST VIDEO PER CHAPTER
-  const { mutate: postVideo, data: getDataVideo } = usePostVideo();
+  const {
+    mutate: postVideo,
+    data: getDataVideo,
+    isSuccess: successDataVideo,
+  } = usePostVideo();
 
   // HANDLE ADD VIDEO
   const handleAddVideo = () => {
@@ -174,6 +193,21 @@ export const AddVideo = () => {
       setVideoChapter(filteredVideoChapter || []);
     }
   }, [getDataVideo, getIdChapter, dataVideoChapter, refetchVideoPerChapter]);
+
+  useEffect(() => {
+    if (successDataVideo) {
+      toast.success("Video berhasil ditambahkan", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  }, [successDataVideo]);
 
   // HANDLE BTN SIMPAN ADD VIDEO
   const handleBtnSimpanVideo = () => {
@@ -254,6 +288,18 @@ export const AddVideo = () => {
   return (
     <>
       <LayoutAdmin>
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
         <div className="text-sm">
           <div className="flex items-center justify-between">
             <div
@@ -325,12 +371,12 @@ export const AddVideo = () => {
                               }
                               className="w-5 h-5 cursor-pointer text-yellow-400 hover:text-yellow-300"
                             />
-                            <HiOutlineTrash
+                            {/* <HiOutlineTrash
                               onClick={() =>
                                 handleDeleteChapter(value.chapter_id)
                               }
                               className="w-5 h-5 cursor-pointer text-red-400 hover:text-red-300"
-                            />
+                            /> */}
                           </div>
                         </div>
                       )}

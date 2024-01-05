@@ -3,8 +3,13 @@ import { API_ENDPOINT } from "../../utils/api-endpoint";
 import http from "../../utils/http";
 
 export const fetchPostCourse = async (input) => {
-  console.log(input);
-  // return await http.post(API_ENDPOINT.POST_ADD_COURSE, input);
+  const response = await http.post(API_ENDPOINT.POST_ADD_COURSE, input, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+
+  return response.data;
 };
 
 export const usePostCourse = () => {

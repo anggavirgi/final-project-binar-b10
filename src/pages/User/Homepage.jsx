@@ -68,6 +68,7 @@ export const Homepage = () => {
   const { data: getDataRating } = useGetRating();
 
   const dataRating = getDataRating?.data.rating || [];
+  console.log("🚀 ~ file: Homepage.jsx:71 ~ Homepage ~ dataRating:", dataRating)
 
   // GET COURSE FOR REVIEW CATEGORY
   const { data: getDataCourse } = useCourse("", 30, [], [], "", "", 1);
@@ -133,7 +134,7 @@ export const Homepage = () => {
                 }
               >
                 <img
-                  src={img1}
+                  src={value.url_image_preview}
                   alt=""
                   className="w-full h-[9rem] object-cover rounded-t-3xl"
                 />

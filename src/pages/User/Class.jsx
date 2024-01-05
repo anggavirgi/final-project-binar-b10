@@ -245,12 +245,12 @@ export const Class = () => {
                         checked={selectedLevels.includes(level)}
                         className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
                       />
-                      <span
+                      <label
                         htmlFor={level}
                         className="cursor-pointer hover:text-primary"
                       >
                         {level}
-                      </span>
+                      </label>
                     </div>
                   );
                 })}
@@ -293,27 +293,6 @@ export const Class = () => {
                 >
                   <div className="space-y-3 px-1.5 pt-4">
                     <h4 className="text-base font-bold text-primary -pt-3">
-                      Jenis
-                    </h4>
-                    <label className="flex gap-2 items-center">
-                      <input
-                        type="checkbox"
-                        id="some_id"
-                        className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
-                      />
-                      <span className="">Paling Baru</span>
-                    </label>
-                    <label className="flex gap-2 items-center">
-                      <input
-                        type="checkbox"
-                        id="some_id"
-                        className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
-                      />
-                      <span className="">Paling Populer</span>
-                    </label>
-                  </div>
-                  <div className="space-y-3 px-1.5 pt-4">
-                    <h4 className="text-base font-bold text-primary -pt-3">
                       Kategori
                     </h4>
                     {dataCategories.map((category) => {
@@ -352,7 +331,9 @@ export const Class = () => {
                             checked={selectedLevels.includes(level)}
                             className="appearance-none w-5 h-5 border-2 border-gray-500 rounded-lg bg-[#E8F1FF] checked:bg-[#6148FF] checked:border-0"
                           />
-                          <span className="">{level}</span>
+                          <label htmlFor={level} className="">
+                            {level}
+                          </label>
                         </div>
                       );
                     })}
@@ -378,7 +359,7 @@ export const Class = () => {
           >
             <div className="grid grid-cols-3 gap-4 mb-7 text-center">
               <div
-                className={`py-2 font-semibold hover:text-white rounded-full hover:bg-primary cursor-pointer shadow-lg ${
+                className={`py-2 font-semibold hover:text-white rounded-full hover:bg-primary cursor-pointer shadow ${
                   handleAll
                     ? "bg-primary shadow-primary text-white"
                     : "bg-white text-gray-600"
@@ -388,7 +369,7 @@ export const Class = () => {
                 All
               </div>
               <div
-                className={`py-2 font-semibold hover:text-white rounded-full hover:bg-primary cursor-pointer shadow-lg ${
+                className={`py-2 font-semibold hover:text-white rounded-full hover:bg-primary cursor-pointer shadow ${
                   isPremium
                     ? "bg-primary shadow-primary text-white"
                     : "bg-white text-gray-600"
@@ -398,7 +379,7 @@ export const Class = () => {
                 Kelas Premium
               </div>
               <div
-                className={`py-2 font-semibold hover:text-white rounded-full hover:bg-primary cursor-pointer shadow-lg ${
+                className={`py-2 font-semibold hover:text-white rounded-full hover:bg-primary cursor-pointer shadow ${
                   isFree
                     ? "bg-primary te shadow-primary text-white"
                     : "bg-white text-gray-600"
@@ -487,9 +468,7 @@ export const Class = () => {
                           <div>Sertifikasi Profesional</div>
                         </div>
                         <button
-                          className={`${
-                            course.harga !== 0 ? "bg-green-500" : "bg-blue-700"
-                          } rounded-full p-1.5 px-6 font-medium text-white mt-2.5 w-full text-center`}
+                          className={`bg-primary rounded-full p-1.5 px-6 font-medium text-white mt-2.5 w-full text-center`}
                         >
                           Gabung Kelas
                         </button>
