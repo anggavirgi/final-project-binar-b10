@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  FaTelegramPlane,
-  FaStar,
-  FaRegClock,
-  FaBookOpen,
-  FaArrowLeft,
-} from "react-icons/fa";
+import { FaTelegramPlane, FaStar, FaRegClock, FaBookOpen, FaArrowLeft } from "react-icons/fa";
 import { RiShieldStarLine } from "react-icons/ri";
 import { Modal } from "flowbite-react";
 import { FaArrowCircleRight } from "react-icons/fa";
@@ -90,8 +84,7 @@ export const Detail = () => {
   });
 
   // BELI COURSE
-  const { mutate: getPostCourse, isSuccess: postCourseSuccess } =
-    usePostCourse();
+  const { mutate: getPostCourse, isSuccess: postCourseSuccess } = usePostCourse();
 
   // GET PROGRESS COURSE USER
   const { data: progressCourse, refetch: refetchProgress } = useGetProgress();
@@ -100,21 +93,11 @@ export const Detail = () => {
   console.log(progress, "progressnyaa");
 
   // mencari progress dari courseid
-  const progressForCurrentCourse = progress?.find(
-    (progress) => progress.course_id === state.courseId
-  );
-  const completionPercentage = progressForCurrentCourse
-    ? progressForCurrentCourse.percentage
-    : 0;
+  const progressForCurrentCourse = progress?.find((progress) => progress.course_id === state.courseId);
+  const completionPercentage = progressForCurrentCourse ? progressForCurrentCourse.percentage : 0;
 
   //fetch rating
-  const { data: ratingCourse } = useGetRating(
-    {},
-    state.courseId,
-    SelctedScore,
-    10,
-    PageNow
-  );
+  const { data: ratingCourse } = useGetRating({}, state.courseId, SelctedScore, 10, PageNow);
   console.log(ratingCourse, "rating courseeee");
 
   //POST RATING
@@ -158,8 +141,18 @@ export const Detail = () => {
   };
 
   const handleVideoClick = (video) => {
-    if (video.is_preview === false && !dataCourseDetail.sudahBeli) {
+    const token = cookies.get("authToken");
+
+    if (!token) {
       setShowLoginModal(true);
+      return;
+    }
+
+    if (video.is_preview === false && !dataCourseDetail.sudahBeli) {
+      toast.error("Anda belum membeli kelas", {
+        autoClose: 1000,
+        position: "top-center",
+      });
       return;
     }
 
@@ -182,9 +175,7 @@ export const Detail = () => {
 
   const isVideoDone = (videoId) => {
     const account_id = userData.id_user;
-    return dataCourseDetail?.progress?.some(
-      (p) => p.video_id === videoId && p.account_id === account_id && p.is_done
-    );
+    return dataCourseDetail?.progress?.some((p) => p.video_id === videoId && p.account_id === account_id && p.is_done);
   };
 
   const handleSelectVideo = (selectedVideo) => {
@@ -194,9 +185,7 @@ export const Detail = () => {
 
     // Loop melalui semua bab dan video untuk mencari video yang sesuai dengan ID yang diklik
     dataCourseDetail.course.Chapter.forEach((chapter, chapterIndex) => {
-      const videoIndex = chapter.Video.findIndex(
-        (video) => video.video_id === selectedVideoId
-      );
+      const videoIndex = chapter.Video.findIndex((video) => video.video_id === selectedVideoId);
       if (videoIndex !== -1) {
         // Jika video ditemukan, set index bab dan index video yang sesuai
         selectedChapterIndex = chapterIndex;
@@ -234,14 +223,9 @@ export const Detail = () => {
             }
 
             // Pindah ke chapter selanjutnya jika ada
-            if (
-              currentChapterIndex <
-              dataCourseDetail.course.Chapter.length - 1
-            ) {
+            if (currentChapterIndex < dataCourseDetail.course.Chapter.length - 1) {
               setCurrentChapterIndex(currentChapterIndex + 1);
-              const nextChapterFirstVideo =
-                dataCourseDetail.course.Chapter[currentChapterIndex + 1]
-                  .Video[0];
+              const nextChapterFirstVideo = dataCourseDetail.course.Chapter[currentChapterIndex + 1].Video[0];
               setActiveVideoIndex(0);
               handleVideoClick(nextChapterFirstVideo);
             }
@@ -295,13 +279,7 @@ export const Detail = () => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
       stars.push(
-        <span
-          key={i}
-          className={`cursor-pointer text-5xl ${
-            selectedScore >= i ? "text-yellow-400" : "text-gray-300"
-          }`}
-          onClick={() => handleStarClick(i)}
-        >
+        <span key={i} className={`cursor-pointer text-5xl ${selectedScore >= i ? "text-yellow-400" : "text-gray-300"}`} onClick={() => handleStarClick(i)}>
           {selectedScore >= i ? <FaStar /> : <FaStar />}
         </span>
       );
@@ -346,20 +324,10 @@ export const Detail = () => {
     }
   };
 
-  const MateriBelajar = ({
-    isMobile,
-    detailSuccess,
-    getCourseDetail,
-    completionPercentage,
-    handleSelectVideo,
-  }) => {
+  const MateriBelajar = ({ isMobile, detailSuccess, getCourseDetail, completionPercentage, handleSelectVideo }) => {
     if (!detailSuccess) return null;
     return (
-      <div
-        className={`${
-          isMobile ? "order-3 mt-10" : "hidden"
-        } px-4 overflow-auto`}
-      >
+      <div className={`${isMobile ? "order-3 mt-10" : "hidden"} px-4 overflow-auto`}>
         <div className="bg-white rounded-lg p-4 shadow-md mb-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-2xl font-bold ">Materi Belajar</h2>
@@ -368,16 +336,10 @@ export const Detail = () => {
               {/* Add relative here */}
               <FaRegCheckCircle className="text-green-500 mr-2" />
               <div className="w-full bg-black rounded-full dark:bg-gray-700 overflow-hidden">
-                <div
-                  className="bg-[#6148FF] h-7 flex items-center rounded-full"
-                  style={{ width: `${completionPercentage}%` }}
-                >
+                <div className="bg-[#6148FF] h-7 flex items-center rounded-full" style={{ width: `${completionPercentage}%` }}>
                   {/* No changes here */}
                 </div>
-                <span
-                  className="absolute left-0 ml-7 text-white font-semibold desktop:text-[10px] desktopfull:text-sm"
-                  style={{ top: "50%", transform: "translateY(-50%)" }}
-                >
+                <span className="absolute left-0 ml-7 text-white font-semibold desktop:text-[10px] desktopfull:text-sm" style={{ top: "50%", transform: "translateY(-50%)" }}>
                   {`${completionPercentage}% complete`}
                 </span>
               </div>
@@ -388,38 +350,16 @@ export const Detail = () => {
             getCourseDetail?.data?.course.Chapter.map((chapter, index) => (
               <div key={chapter?.title}>
                 {index > 0 && <hr className="my-4" />}
-                <h2 className="text-lg font-bold mb-4 text-[#6148FF]">
-                  {chapter.title}
-                </h2>
+                <h2 className="text-lg font-bold mb-4 text-[#6148FF]">{chapter.title}</h2>
                 <ol className="list-decimal list-inside">
                   {chapter.Video.map((video, videoIndex) => (
-                    <li
-                      key={video.video_id}
-                      className="mb-2 mt-2 flex items-center justify-between"
-                      onClick={() => handleSelectVideo(video)}
-                    >
+                    <li key={video.video_id} className="mb-2 mt-2 flex items-center justify-between" onClick={() => handleSelectVideo(video)}>
                       <button className="flex items-center text-xs">
                         <TbPolygon />
-                        <span
-                          className={`text-start mx-2 ${
-                            activeVideoIndex === videoIndex &&
-                            currentChapterIndex === index
-                              ? "font-bold"
-                              : ""
-                          }`}
-                        >
-                          {video.title}
-                        </span>
+                        <span className={`text-start mx-2 ${activeVideoIndex === videoIndex && currentChapterIndex === index ? "font-bold" : ""}`}>{video.title}</span>
                       </button>
-                      {video.is_preview ||
-                      dataCourseDetail.sudahBeli === true ? (
-                        <FaCirclePlay
-                          className={`w-5 h-5 flex-shrink-0 ${
-                            isVideoDone(video.video_id)
-                              ? "text-[#73CA5C]"
-                              : "text-[#6148FF]"
-                          }`}
-                        />
+                      {video.is_preview || dataCourseDetail.sudahBeli === true ? (
+                        <FaCirclePlay className={`w-5 h-5 flex-shrink-0 ${isVideoDone(video.video_id) ? "text-[#73CA5C]" : "text-[#6148FF]"}`} />
                       ) : (
                         <GiPadlock className="w-5 h-5 flex-shrink-0 text-gray-500" />
                       )}
@@ -438,7 +378,6 @@ export const Detail = () => {
       <LayoutUser>
         {/* Modal untuk login */}
         {showLoginModal && (
-
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center px-4" onClick={() => setShowLoginModal(false)}>
             <div className="bg-white rounded-lg p-8 shadow-lg w-full max-w-md mx-auto relative" onClick={(e) => e.stopPropagation()}>
               <button className="absolute top-0 right-0 mt-4 mr-4 text-gray-600 hover:text-gray-800" onClick={() => setShowLoginModal(false)}>
@@ -448,10 +387,7 @@ export const Detail = () => {
               </button>
               <h3 className="text-xl font-semibold text-center mb-6">Masuk ke Akun Anda</h3>
               <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                   Email address
                 </label>
                 <input
@@ -465,10 +401,7 @@ export const Detail = () => {
                 />
               </div>
               <div className="mt-4">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                   Password
                 </label>
                 <div className="mt-1 relative">
@@ -481,15 +414,8 @@ export const Detail = () => {
                     onChange={handleInput}
                     value={password}
                   />
-                  <div
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 cursor-pointer"
-                    onClick={togglePasswordVisibility}
-                  >
-                    {passwordShown ? (
-                      <IoEyeOutline className="text-gray-500" />
-                    ) : (
-                      <IoEyeOffOutline className="text-gray-500" />
-                    )}
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 cursor-pointer" onClick={togglePasswordVisibility}>
+                    {passwordShown ? <IoEyeOutline className="text-gray-500" /> : <IoEyeOffOutline className="text-gray-500" />}
                   </div>
                 </div>
               </div>
@@ -521,80 +447,44 @@ export const Detail = () => {
 
         {/* Modal */}
         {openModal && (
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
-            onClick={closeModal}
-          >
-            <div
-              className="bg-white p-8 rounded shadow-lg desktop:w-[45%] desktopfull:w-[40%]"
-              onClick={(e) => e.stopPropagation()}
-            >
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center" onClick={closeModal}>
+            <div className="bg-white p-8 rounded shadow-lg desktop:w-[45%] desktopfull:w-[40%]" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center flex-col mb-4">
-                <span className="text-black font-bold text-2xl">
-                  Selangkah lagi menuju
-                </span>
-                <span className="text-[#6148FF] font-bold text-2xl">
-                  Kelas Premium
-                </span>
+                <span className="text-black font-bold text-2xl">Selangkah lagi menuju</span>
+                <span className="text-[#6148FF] font-bold text-2xl">Kelas Premium</span>
               </div>
               {detailSuccess && (
                 <div className="flex justify-center">
                   <div className="w-full shadow-xl rounded-3xl mb-4 overflow-hidden">
                     <div className="overflow-hidden">
-                      <img
-                        className="w-full h-40 object-cover"
-                        src={dataCourseDetail?.course?.url_image_preview}
-                        alt="Course thumbnail"
-                      />
+                      <img className="w-full h-40 object-cover" src={dataCourseDetail?.course?.url_image_preview} alt="Course thumbnail" />
                     </div>
                     <div className="px-4 py-5 bg-white rounded-b-3xl shadow-lg">
                       <div className="flex justify-between items-center pt-2">
-                        <h4 className="text-xl font-bold text-[#6148FF]">
-                          {dataCourseDetail?.course.Kategori?.title}
-                        </h4>
+                        <h4 className="text-xl font-bold text-[#6148FF]">{dataCourseDetail?.course.Kategori?.title}</h4>
                         <div className="flex items-center">
                           <FaStar className="text-yellow-400 mr-1" />
-                          <span className=" font-semibold">
-                            {dataCourseDetail?.course?.avgRating !== 0
-                              ? Math.floor(
-                                  dataCourseDetail?.course?.avgRating * 10
-                                ) / 10
-                              : "-"}
-                          </span>
+                          <span className=" font-semibold">{dataCourseDetail?.course?.avgRating !== 0 ? Math.floor(dataCourseDetail?.course?.avgRating * 10) / 10 : "-"}</span>
                         </div>
                       </div>
-                      <h1 className="font-bold text-lg">
-                        {dataCourseDetail?.sudahBeli}
-                      </h1>
-                      <h4 className="text-lg font-bold">
-                        {dataCourseDetail?.course?.title}
-                      </h4>
-                      <p className="text-md mb-2 font-semibold">
-                        by {dataCourseDetail?.course?.Mentor?.name}
-                      </p>
+                      <h1 className="font-bold text-lg">{dataCourseDetail?.sudahBeli}</h1>
+                      <h4 className="text-lg font-bold">{dataCourseDetail?.course?.title}</h4>
+                      <p className="text-md mb-2 font-semibold">by {dataCourseDetail?.course?.Mentor?.name}</p>
                       <div className="text-sm text-gray-600 mb-4 flex gap-10">
                         <div className="flex items-center">
                           <RiShieldStarLine className="text-green-500 mr-2" />
-                          <span className="text-[#6148FF] text-sm font-semibold">
-                            {dataCourseDetail?.course?.level}
-                          </span>
+                          <span className="text-[#6148FF] text-sm font-semibold">{dataCourseDetail?.course?.level}</span>
                         </div>
                         <div className="flex items-center">
                           <FaBookOpen className="text-green-500 mr-2" />
-                          <span className="text-gray-700 text-sm font-semibold">
-                            {dataCourseDetail?.course?.module} Modul
-                          </span>
+                          <span className="text-gray-700 text-sm font-semibold">{dataCourseDetail?.course?.module} Modul</span>
                         </div>
                       </div>
                       <div className="flex items-center">
                         <div className="w-1/2 bg-gray-200 rounded-full dark:bg-gray-700">
                           <div className="bg-[#489CFF] h-7 flex justify-between items-center rounded-full">
-                            <span className="ml-5 text-white font-semibold">
-                              Beli
-                            </span>
-                            <span className="text-white font-semibold mr-5">
-                              Rp.{dataCourseDetail?.course.harga}
-                            </span>
+                            <span className="ml-5 text-white font-semibold">Beli</span>
+                            <span className="text-white font-semibold mr-5">Rp.{dataCourseDetail?.course.harga}</span>
                           </div>
                         </div>
                       </div>
@@ -602,17 +492,10 @@ export const Detail = () => {
                   </div>
                 </div>
               )}
-              <div className="flex justify-center">
-                {/* Isi modal di sini sesuai kebutuhan */}
-              </div>
+              <div className="flex justify-center">{/* Isi modal di sini sesuai kebutuhan */}</div>
               <div className="flex justify-center mt-4">
-                <button
-                  className="bg-[#6148FF] h-12 w-1/2 flex justify-center items-center rounded-full"
-                  onClick={handleCheckout}
-                >
-                  <span className="text-white font-semibold">
-                    Beli Sekarang
-                  </span>
+                <button className="bg-[#6148FF] h-12 w-1/2 flex justify-center items-center rounded-full" onClick={handleCheckout}>
+                  <span className="text-white font-semibold">Beli Sekarang</span>
                   <FaArrowCircleRight className="text-[#EBF3FC] ml-2" />
                 </button>
               </div>
@@ -635,45 +518,29 @@ export const Detail = () => {
                 {detailSuccess && (
                   <div className="flex flex-wrap lg:flex-nowrap justify-between items-start">
                     <div className="flex-1">
-                      <h1 className="text-3xl font-bold text-[#6148FF] mb-2">
-                        {dataCourseDetail.course?.Kategori?.title}
-                      </h1>
-                      <p className="text-xl text-black mb-1">
-                        {dataCourseDetail.course?.title}
-                      </p>
-                      <p className="text-black mb-3">
-                        by {dataCourseDetail.course?.Mentor?.name}
-                      </p>
+                      <h1 className="text-3xl font-bold text-[#6148FF] mb-2">{dataCourseDetail.course?.Kategori?.title}</h1>
+                      <p className="text-xl text-black mb-1">{dataCourseDetail.course?.title}</p>
+                      <p className="text-black mb-3">by {dataCourseDetail.course?.Mentor?.name}</p>
                       <div className="flex flex-wrap items-center mb-4">
                         <div className="flex items-center mr-6">
                           <RiShieldStarLine className="text-[#73CA5C]" />
-                          <span className="ml-1 font-semibold">
-                            {dataCourseDetail.course?.level}
-                          </span>
+                          <span className="ml-1 font-semibold">{dataCourseDetail.course?.level}</span>
                         </div>
                         <div className="flex items-center mr-6">
                           <FaBookOpen className="text-[#73CA5C]" />
-                          <span className="ml-1 font-semibold">
-                            {dataCourseDetail.course?.module} Modul
-                          </span>
+                          <span className="ml-1 font-semibold">{dataCourseDetail.course?.module} Modul</span>
                         </div>
                       </div>
                       <div className="flex">
                         {dataCourseDetail.sudahBeli && (
-                          <button
-                            className="flex items-center px-4 py-2 bg-[#73CA5C] hover:bg-[#5ba347] text-white rounded-full mr-4"
-                            onClick={handleJoinTelegram}
-                          >
+                          <button className="flex items-center px-4 py-2 bg-[#73CA5C] hover:bg-[#5ba347] text-white rounded-full mr-4" onClick={handleJoinTelegram}>
                             Join Grup Telegram
                             <FaTelegramPlane className="ml-2" />
                           </button>
                         )}
 
                         {!dataCourseDetail.sudahBeli && (
-                          <button
-                            className="flex items-center px-4 py-2 bg-[#73CA5C] hover:bg-[#5ba347] text-white rounded-full"
-                            onClick={handleJoinClass}
-                          >
+                          <button className="flex items-center px-4 py-2 bg-[#73CA5C] hover:bg-[#5ba347] text-white rounded-full" onClick={handleJoinClass}>
                             Gabung Kelas
                           </button>
                         )}
@@ -681,13 +548,7 @@ export const Detail = () => {
                     </div>
                     <div className="flex items-center ml-4 mt-4 lg:mt-0">
                       <FaStar className="text-yellow-500" />
-                      <span className="text-black ml-1">
-                        {dataCourseDetail?.course?.avgRating !== 0
-                          ? Math.floor(
-                              dataCourseDetail?.course?.avgRating * 10
-                            ) / 10
-                          : "-"}
-                      </span>
+                      <span className="text-black ml-1">{dataCourseDetail?.course?.avgRating !== 0 ? Math.floor(dataCourseDetail?.course?.avgRating * 10) / 10 : "-"}</span>
                     </div>
                   </div>
                 )}
@@ -695,9 +556,7 @@ export const Detail = () => {
             </div>
 
             {/* Video Section - Adjusted size */}
-            <div
-              className={`${isMobile ? "mx-5 order-2" : "justify-start mb-6"}`}
-            >
+            <div className={`${isMobile ? "mx-5 order-2" : "justify-start mb-6"}`}>
               <iframe
                 className="w-full aspect-video rounded-3xl" // This line controls the width at different breakpoints
                 src={activeVideoUrl}
@@ -707,62 +566,35 @@ export const Detail = () => {
                 allowFullScreen
               ></iframe>
               <div className="flex justify-end mt-5 gap-5">
-                <Link
-                  to="/kelas"
-                  className="bg-[#EBF3FC] hover:bg-[#d6e9ff] text-[#6148FF] py-2 px-4 rounded-full shadow-lg w-1/5 text-center"
-                >
+                <Link to="/kelas" className="bg-[#EBF3FC] hover:bg-[#d6e9ff] text-[#6148FF] py-2 px-4 rounded-full shadow-lg w-1/5 text-center">
                   Kelas Lainnya
                 </Link>
                 {dataCourseDetail.sudahBeli && (
-                  <button
-                    className="bg-[#6148FF] hover:bg-[#41368a] text-white py-2 px-4 rounded-full shadow-lg w-1/5 text-center"
-                    onClick={handleNextVideo}
-                  >
+                  <button className="bg-[#6148FF] hover:bg-[#41368a] text-white py-2 px-4 rounded-full shadow-lg w-1/5 text-center" onClick={handleNextVideo}>
                     Next
                   </button>
                 )}
               </div>
             </div>
 
-            <MateriBelajar
-              isMobile={isMobile}
-              detailSuccess={detailSuccess}
-              getCourseDetail={getCourseDetail}
-              completionPercentage={completionPercentage}
-              handleSelectVideo={handleSelectVideo}
-            />
+            <MateriBelajar isMobile={isMobile} detailSuccess={detailSuccess} getCourseDetail={getCourseDetail} completionPercentage={completionPercentage} handleSelectVideo={handleSelectVideo} />
 
             {/* Content Section */}
             <hr className="my-3" />
-            <div
-              className={`${
-                isMobile ? "mx-5 order-3" : ""
-              } desktop:mx-0 desktopfull:mx-0`}
-            >
+            <div className={`${isMobile ? "mx-5 order-3" : ""} desktop:mx-0 desktopfull:mx-0`}>
               <h2 className="text-xl font-bold mb-2">Tentang Kelas</h2>
-              <p className="mb-6 text-base">
-                {dataCourseDetail.course?.deskripsi}
-              </p>
+              <p className="mb-6 text-base">{dataCourseDetail.course?.deskripsi}</p>
             </div>
             {completionPercentage === 100 && (
-              <form
-                onSubmit={handleRatingSubmit}
-                className="w-full max-w-lg mobile:mx-5 desktop:mx-0 desktopfull:mx-0"
-              >
+              <form onSubmit={handleRatingSubmit} className="w-full max-w-lg mobile:mx-5 desktop:mx-0 desktopfull:mx-0">
                 <div className="mb-4">
                   <p className="font-bold text-2xl mb-4">Beri Rating Course</p>
-                  <div
-                    className="flex items-center"
-                    aria-label="Beri Rating Course"
-                  >
+                  <div className="flex items-center" aria-label="Beri Rating Course">
                     {renderStars()}
                   </div>
                 </div>
                 <div className="mb-4">
-                  <label
-                    htmlFor="comment"
-                    className="text-black-300 text-xl font-semibold mb-2 block"
-                  >
+                  <label htmlFor="comment" className="text-black-300 text-xl font-semibold mb-2 block">
                     Komentar
                   </label>
                   <input
@@ -785,15 +617,11 @@ export const Detail = () => {
             )}
             <hr className="my-3" />
             <div>
-              <h1 className="text-xl font-bold mb-4 mobile:mx-5 desktop:mx-0 desktopfull:mx-0">
-                Review Dari User Yang Telah Berlangganan
-              </h1>
+              <h1 className="text-xl font-bold mb-4 mobile:mx-5 desktop:mx-0 desktopfull:mx-0">Review Dari User Yang Telah Berlangganan</h1>
               <div className="flex gap-5 items-center mb-4 mobile:mx-5 desktop:mx-0 desktopfull:mx-0">
                 <button
                   className={`mobile:w-full mobile:text-sm desktop:w-[15%] desktop:text-base desktopfull:text-base desktopfull:w-[10%] px-2 py-1 rounded-full font-semibold text-center flex justify-center items-center ${
-                    SelctedScore === ""
-                      ? "bg-black text-white"
-                      : " bg-slate-300 text-black"
+                    SelctedScore === "" ? "bg-black text-white" : " bg-slate-300 text-black"
                   }`}
                   onClick={() => handleFilterByScore("")}
                 >
@@ -801,9 +629,7 @@ export const Detail = () => {
                 </button>
                 <button
                   className={`mobile:w-full mobile:text-sm desktop:w-[15%] desktop:text-base desktopfull:text-base desktopfull:w-[10%] px-2 py-1 rounded-full font-semibold text-center flex justify-center items-center ${
-                    SelctedScore === "1"
-                      ? "bg-black text-white"
-                      : " bg-slate-300 text-black hover:bg-slate-400"
+                    SelctedScore === "1" ? "bg-black text-white" : " bg-slate-300 text-black hover:bg-slate-400"
                   }`}
                   onClick={() => handleFilterByScore("1")}
                 >
@@ -811,9 +637,7 @@ export const Detail = () => {
                 </button>
                 <button
                   className={`mobile:w-full mobile:text-sm desktop:w-[15%] desktop:text-base desktopfull:text-base desktopfull:w-[10%] px-2 py-1 rounded-full font-semibold text-center flex justify-center items-center ${
-                    SelctedScore === "2"
-                      ? "bg-black text-white"
-                      : " bg-slate-300 text-black hover:bg-slate-400"
+                    SelctedScore === "2" ? "bg-black text-white" : " bg-slate-300 text-black hover:bg-slate-400"
                   }`}
                   onClick={() => handleFilterByScore("2")}
                 >
@@ -821,9 +645,7 @@ export const Detail = () => {
                 </button>
                 <button
                   className={`mobile:w-full mobile:text-sm desktop:w-[15%] desktop:text-base desktopfull:text-base desktopfull:w-[10%] px-2 py-1 rounded-full font-semibold text-center flex justify-center items-center ${
-                    SelctedScore === "3"
-                      ? "bg-black text-white"
-                      : " bg-slate-300 text-black hover:bg-slate-400"
+                    SelctedScore === "3" ? "bg-black text-white" : " bg-slate-300 text-black hover:bg-slate-400"
                   }`}
                   onClick={() => handleFilterByScore("3")}
                 >
@@ -831,9 +653,7 @@ export const Detail = () => {
                 </button>
                 <button
                   className={`mobile:w-full mobile:text-sm desktop:w-[15%] desktop:text-base desktopfull:text-base desktopfull:w-[10%] px-2 py-1 rounded-full font-semibold text-center flex justify-center items-center ${
-                    SelctedScore === "4"
-                      ? "bg-black text-white"
-                      : " bg-slate-300 text-black hover:bg-slate-400"
+                    SelctedScore === "4" ? "bg-black text-white" : " bg-slate-300 text-black hover:bg-slate-400"
                   }`}
                   onClick={() => handleFilterByScore("4")}
                 >
@@ -841,9 +661,7 @@ export const Detail = () => {
                 </button>
                 <button
                   className={`mobile:w-full mobile:text-sm desktop:w-[15%] desktop:text-base desktopfull:text-base desktopfull:w-[10%] px-2 py-1 rounded-full font-semibold text-center flex justify-center items-center ${
-                    SelctedScore === "5"
-                      ? "bg-black text-white"
-                      : " bg-slate-300 text-black hover:bg-slate-400"
+                    SelctedScore === "5" ? "bg-black text-white" : " bg-slate-300 text-black hover:bg-slate-400"
                   }`}
                   onClick={() => handleFilterByScore("5")}
                 >
@@ -854,27 +672,14 @@ export const Detail = () => {
               <div className="flex justify-between flex-wrap gap-5 mobile:justify-center mobile:mx-5 desktop:mx-0 desktop:justify-between desktopfull:mx-0 desktop:w-full desktopfull:w-[90%] desktopfull:justify-between bg-white rounded-xl shadow p-6">
                 {ratingCourse?.data?.rating.length > 0 ? (
                   (() => {
-                    const filteredRating = ratingCourse?.data?.rating.filter(
-                      (rating) =>
-                        SelctedScore === ""
-                          ? true
-                          : rating.skor === parseInt(SelctedScore)
-                    );
+                    const filteredRating = ratingCourse?.data?.rating.filter((rating) => (SelctedScore === "" ? true : rating.skor === parseInt(SelctedScore)));
                     return filteredRating.length > 0 ? (
                       filteredRating.map((rating) => (
-                        <div
-                          key={rating.rating_id}
-                          className="mobile:w-full desktop:w-[100%] desktopfull:w-[47%] flex flex-col gap-2 border-b border-gray-200 pb-4"
-                        >
-                          <div className="font-semibold text-base">
-                            {rating.comment}
-                          </div>
+                        <div key={rating.rating_id} className="mobile:w-full desktop:w-[100%] desktopfull:w-[47%] flex flex-col gap-2 border-b border-gray-200 pb-4">
+                          <div className="font-semibold text-base">{rating.comment}</div>
                           <div className="flex items-center">
                             {Array.from({ length: rating.skor }, (_, index) => (
-                              <FaStar
-                                key={index}
-                                className="text-yellow-400 mr-1"
-                              />
+                              <FaStar key={index} className="text-yellow-400 mr-1" />
                             ))}
                           </div>
                           <div className="flex items-center gap-2 mt-1">
@@ -923,17 +728,13 @@ export const Detail = () => {
                       ))
                     ) : (
                       <div className="w-[100%] gap-5 flex flex-col rounded-xl">
-                        <h1 className="font-bold text-lg">
-                          Belum ada review dengan skor {SelctedScore}
-                        </h1>
+                        <h1 className="font-bold text-lg">Belum ada review dengan skor {SelctedScore}</h1>
                       </div>
                     );
                   })()
                 ) : (
                   <div className="w-[100%] gap-5 flex flex-col rounded-xl">
-                    <h1 className="font-bold text-lg">
-                      Belum ada review sejauh ini
-                    </h1>
+                    <h1 className="font-bold text-lg">Belum ada review sejauh ini</h1>
                   </div>
                 )}
               </div>
@@ -945,25 +746,15 @@ export const Detail = () => {
               <div className="bg-white rounded-lg p-4 shadow-md mb-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-2xl font-bold ">Materi Belajar</h2>
-                  <div
-                    className={`flex items-center w-3/5 relative ${
-                      dataCourseDetail.sudahBeli ? "" : "hidden"
-                    }`}
-                  >
+                  <div className={`flex items-center w-3/5 relative ${dataCourseDetail.sudahBeli ? "" : "hidden"}`}>
                     {" "}
                     {/* Add relative here */}
                     <FaRegCheckCircle className="text-green-500 mr-2" />
                     <div className="w-full bg-black rounded-full dark:bg-gray-700 overflow-hidden">
-                      <div
-                        className="bg-[#6148FF] h-7 flex items-center rounded-full"
-                        style={{ width: `${completionPercentage}%` }}
-                      >
+                      <div className="bg-[#6148FF] h-7 flex items-center rounded-full" style={{ width: `${completionPercentage}%` }}>
                         {/* No changes here */}
                       </div>
-                      <span
-                        className="absolute left-0 ml-7 text-white font-semibold desktop:text-[10px] desktopfull:text-sm"
-                        style={{ top: "50%", transform: "translateY(-50%)" }}
-                      >
+                      <span className="absolute left-0 ml-7 text-white font-semibold desktop:text-[10px] desktopfull:text-sm" style={{ top: "50%", transform: "translateY(-50%)" }}>
                         {`${completionPercentage}% complete`}
                       </span>
                     </div>
@@ -971,53 +762,27 @@ export const Detail = () => {
                 </div>
 
                 {getCourseDetail?.data?.course.Chapter &&
-                  getCourseDetail?.data?.course.Chapter.map(
-                    (chapter, index) => (
-                      <div key={chapter?.title}>
-                        {index > 0 && <hr className="my-4" />}
-                        <h2 className="text-lg font-bold mb-4 text-[#6148FF]">
-                          {chapter.title}
-                        </h2>
-                        <ol className="list-decimal list-inside">
-                          {chapter.Video.map((video, videoIndex) => (
-                            <li
-                              key={video.video_id}
-                              className="mb-2 mt-2 flex items-center justify-between"
-                              onClick={() => handleSelectVideo(video)}
-                            >
-                              <button className="flex items-center">
-                                <span className="flex items-center justify-center h-6 w-6 flex-shrink-0 bg-blue-100 text-black rounded-full text-xs mr-2">
-                                  {videoIndex + 1}
-                                </span>
-                                <span
-                                  className={`text-start mx-2 ${
-                                    activeVideoIndex === videoIndex &&
-                                    currentChapterIndex === index
-                                      ? "font-bold"
-                                      : ""
-                                  }`}
-                                >
-                                  {video.title}
-                                </span>
-                              </button>
-                              {video.is_preview ||
-                              dataCourseDetail.sudahBeli === true ? (
-                                <FaCirclePlay
-                                  className={`w-6 h-6 flex-shrink-0 ${
-                                    isVideoDone(video.video_id)
-                                      ? "text-[#73CA5C]"
-                                      : "text-[#6148FF]"
-                                  }`}
-                                />
-                              ) : (
-                                <GiPadlock className="w-6 h-6 flex-shrink-0 text-gray-500" />
-                              )}
-                            </li>
-                          ))}
-                        </ol>
-                      </div>
-                    )
-                  )}
+                  getCourseDetail?.data?.course.Chapter.map((chapter, index) => (
+                    <div key={chapter?.title}>
+                      {index > 0 && <hr className="my-4" />}
+                      <h2 className="text-lg font-bold mb-4 text-[#6148FF]">{chapter.title}</h2>
+                      <ol className="list-decimal list-inside">
+                        {chapter.Video.map((video, videoIndex) => (
+                          <li key={video.video_id} className="mb-2 mt-2 flex items-center justify-between" onClick={() => handleSelectVideo(video)}>
+                            <button className="flex items-center">
+                              <span className="flex items-center justify-center h-6 w-6 flex-shrink-0 bg-blue-100 text-black rounded-full text-xs mr-2">{videoIndex + 1}</span>
+                              <span className={`text-start mx-2 ${activeVideoIndex === videoIndex && currentChapterIndex === index ? "font-bold" : ""}`}>{video.title}</span>
+                            </button>
+                            {video.is_preview || dataCourseDetail.sudahBeli === true ? (
+                              <FaCirclePlay className={`w-6 h-6 flex-shrink-0 ${isVideoDone(video.video_id) ? "text-[#73CA5C]" : "text-[#6148FF]"}`} />
+                            ) : (
+                              <GiPadlock className="w-6 h-6 flex-shrink-0 text-gray-500" />
+                            )}
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  ))}
               </div>
             </div>
           )}
