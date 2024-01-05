@@ -259,7 +259,7 @@ export const AddVideo = () => {
   };
 
   // PUT VIDEO PER CHAPTER
-  const { mutate: putVideo, data: dataPutVideo } = usePutVideo({
+  const { mutate: putVideo, data: dataPutVideo, isSuccess: successPutVideo, } = usePutVideo({
     video_id: getVideoId,
   });
 
@@ -301,6 +301,21 @@ export const AddVideo = () => {
     }
   }, [dataPutVideo, getIdChapter, dataVideoChapter, refetchVideoPerChapter]);
 
+  useEffect(() => {
+    if (successPutVideo) {
+      toast.success("Video berhasil ditambahkan", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  }, [successPutVideo]);
+  
   // DELETE VIDEO PER CHAPTER
   const [getVideoIdDelete, setVideoIdDelete] = useState();
   const { mutate: deleteVideo, data: dataDeleteVideo } = useDeleteVideo({
